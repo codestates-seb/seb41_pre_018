@@ -13,6 +13,11 @@
 
 ## 프로젝트 개요
 
+### ![settings](https://user-images.githubusercontent.com/61323917/208302868-0afad42c-b5ad-4a01-8b76-53c987fa8d31.png) 프로젝트 핵심 기능 소개
+*
+*
+*
+
 ### 🎯 프로젝트 목표
 * 프로젝트를 분석 및 설계하고 실제 구현을 함으로써 실제에 가까운 개발 프로세스를 경험합니다.
 * 프로젝트를 관리할 수 있는 GitHub를 적극 활용함으로써 원할한 팀 단위 개발을 수행 할 수 있게 됩니다.
@@ -32,10 +37,10 @@
 ## 사용된 기술 스택
 프로젝트에서 사용된 기술 스택은 다음과 같습니다:
 * Front-End
-  * React <img src="https://camo.githubusercontent.com/98ce3f27aec475c03ad0441a7d4092f6b956814c7adc7f0049689dccedb82f1d/68747470733a2f2f6564656e742e6769746875622e696f2f537570657254696e7949636f6e732f696d616765732f7376672f72656163742e737667" alt="GitHub Icon" width="50px"/>
-  * Styled-Component <img src="https://user-images.githubusercontent.com/61323917/208299058-48f6d624-82e8-4961-ae7d-3c60b5cff06d.png" alt="GitHub Icon" width="50px"/>
+  * React <img src="https://camo.githubusercontent.com/98ce3f27aec475c03ad0441a7d4092f6b956814c7adc7f0049689dccedb82f1d/68747470733a2f2f6564656e742e6769746875622e696f2f537570657254696e7949636f6e732f696d616765732f7376672f72656163742e737667" alt="GitHub Icon" width="25px"/>
+  * Styled-Component <img src="https://user-images.githubusercontent.com/61323917/208299058-48f6d624-82e8-4961-ae7d-3c60b5cff06d.png" alt="GitHub Icon" width="25px"/>
 * Back-End
-  * MySQL <img src="https://user-images.githubusercontent.com/61323917/208299278-c54b030b-cab9-4ec6-8ed8-c869997fae90.png" alt="GitHub Icon" width="50px"/>
+  * MySQL <img src="https://user-images.githubusercontent.com/61323917/208299278-c54b030b-cab9-4ec6-8ed8-c869997fae90.png" alt="GitHub Icon" width="25px"/>
 	
 ## 프로젝트 상세
 이후 프로젝트에 대한 상세 설명 및 구동 시연 gif 등이 들어갈 예정입니다.
