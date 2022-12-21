@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { BiUser } from 'react-icons/bi';
 import { BsKey } from 'react-icons/bs';
+import { Link } from 'react-router-dom';
 
 const Login_Wrapper = styled.div`
   margin: 50px auto 0 auto;
@@ -33,14 +34,9 @@ const Login_Wrapper = styled.div`
     padding: 15px;
     box-shadow: 0 5px 10px rgb(0, 0, 0, 0.2);
 
-    span {
-      color: rgba(240, 40, 70, 0.95);
-    }
-
-    label {
-      margin-top: 5px;
-      font-size: 12px;
-      font-weight: 600;
+    .Error_Message {
+      margin-top: 2.5px;
+      color: rgba(240, 40, 70, 0.9);
     }
 
     .Input_Wrapper {
@@ -65,17 +61,65 @@ const Login_Wrapper = styled.div`
     }
 
     input[type='submit'] {
+      margin: 10px auto 0 auto;
       border: none;
-      width: 75px;
-      margin-top: 10px;
-      padding: 5px;
-      font-size: 14px;
-      background-color: rgba(241, 223, 91, 0.5);
+      border-radius: 2px;
+      width: 100px;
+      padding: 10px;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      background-color: rgba(51, 152, 219, 0.9);
 
       &:hover {
         cursor: pointer;
         scale: 1.025;
         border: solid black 1px;
+      }
+    }
+  }
+
+  .Password_Wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 10px 0 0;
+
+    a {
+      font-size: 13px;
+      color: blue;
+      text-decoration: none;
+
+      &:visited {
+        color: blue;
+      }
+
+      &:hover {
+        cursor: pointer;
+        color: blueviolet;
+      }
+    }
+  }
+
+  .Form_Label {
+    font-weight: 600;
+  }
+
+  .Signup_Guide {
+    margin: 15px auto;
+    width: 300px;
+
+    .Signup_Link {
+      color: blue;
+      text-decoration: none;
+
+      &:visited {
+        color: blue;
+      }
+
+      &:hover {
+        cursor: pointer;
+        color: blueviolet;
       }
     }
   }
@@ -99,7 +143,9 @@ export default function Login() {
       </div>
       <h1>Log in</h1>
       <form className="Login_Form" onSubmit={handleSubmit(onSubmit)}>
-        <label htmlFor="email">이메일</label>
+        <label className="Form_Label" htmlFor="email">
+          이메일
+        </label>
         <div className="Input_Wrapper">
           <BiUser className="Login_Icon" />
           <input
@@ -114,9 +160,18 @@ export default function Login() {
             type="email"
           />
         </div>
-        {errors.email && <span role="alert">{errors.email.message}</span>}
+        {errors.email && (
+          <span className="Error_Message" role="alert">
+            {errors.email.message}
+          </span>
+        )}
 
-        <label htmlFor="password">비밀번호</label>
+        <div className="Password_Wrapper">
+          <label className="Form_Label" htmlFor="password">
+            비밀번호
+          </label>
+          <Link to="/find/credentials">비밀번호를 잊으셨나요?</Link>
+        </div>
 
         <div className="Input_Wrapper">
           <BsKey className="Login_Icon" />
@@ -132,9 +187,20 @@ export default function Login() {
             type="password"
           />
         </div>
-        {errors.password && <span role="alert">{errors.password.message}</span>}
-        <input type="submit" />
+        {errors.password && (
+          <span className="Error_Message" role="alert">
+            {errors.password.message}
+          </span>
+        )}
+        <input value="로그인" type="submit" />
       </form>
+      <p className="Signup_Guide">
+        회원이 아니신가요? 지금 바로{' '}
+        <Link className="Signup_Link" to="/signup">
+          회원가입
+        </Link>
+        하세요.
+      </p>
     </Login_Wrapper>
   );
 }
