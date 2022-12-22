@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { AiOutlineBold, AiOutlineItalic } from 'react-icons/ai';
 import styled from 'styled-components';
 
 const New_Question_Wrapper = styled.div`
@@ -27,8 +29,19 @@ const New_Question_Wrapper = styled.div`
       background-color: aliceblue;
       border: none;
       width: 150px;
+      height: 30px;
       padding: 5px;
+      font-size: 16px;
       margin-right: 25px;
+
+      &:hover {
+        cursor: pointer;
+        border: solid black 1px;
+      }
+    }
+
+    button {
+      color: red;
     }
   }
 `;
@@ -42,6 +55,27 @@ const Text_Wrapper = styled.div`
   input {
     height: 30px;
   }
+
+  &:nth-child(3) {
+    position: relative;
+  }
+
+  .Tag_Wrapper {
+    position: absolute;
+    display: flex;
+    top: 75%;
+    margin-left: 10px;
+
+    .Tag {
+      border: 1px solid black;
+      background-color: aliceblue;
+      margin-right: 5px;
+    }
+  }
+`;
+
+const Tag_Input_Field = styled.input`
+  padding-left: ${(props) => props.tagInputXCord}px;
 `;
 
 export default function NewQuestion() {
@@ -51,7 +85,21 @@ export default function NewQuestion() {
     formState: { errors },
   } = useForm();
   const onSubmit = (data) => console.log(data);
+  const [userTags, setUserTags] = useState([]);
+  const [userInput, setUserInput] = useState('');
+  const [tagInputXCord, setTagInputXCord] = useState(0);
 
+  const handleUserTagInput = (event) => {
+    if (userInput !== '' && (event.keyCode === 188 || event.keyCode === 32)) {
+      setUserInput('');
+      userTags.push(event.target.value);
+    }
+  };
+
+  const handleUserInput = (event) => {
+    setUserInput(event.target.value.trim());
+    setTagInputXCord(document.querySelector('.Tag_Wrapper').clientWidth + 7.5);
+  };
   return (
     <New_Question_Wrapper>
       <h1>새 질문을 추가합니다.</h1>
@@ -100,6 +148,12 @@ export default function NewQuestion() {
             </label>
           </h3>
           <p>최소 20자 이상</p>
+          <textarea rows="20" cols="50"></textarea>
+          {errors.textField && (
+            <span className="Error_Message" role="alert">
+              {errors.textField.message}
+            </span>
+          )}
         </Text_Wrapper>
 
         <Text_Wrapper>
@@ -111,14 +165,28 @@ export default function NewQuestion() {
           <p>
             현재 문제와 연관성이 있다고 생각하는 키워드로 태그를 작성해 주세요.
           </p>
-          <input
+
+          <Tag_Input_Field
             id="tags"
-            {...register('tags', {
-              required: '태그를 입력해주세요',
-            })}
-            placeholder="태그를 입력해주세요"
+            {...register('tags')}
             type="text"
+            value={userInput}
+            onChange={handleUserInput}
+            onKeyDown={handleUserTagInput}
+            tagInputXCord={tagInputXCord}
           />
+          {userTags ? (
+            <div className="Tag_Wrapper">
+              {userTags.map((a, idx) => {
+                return (
+                  <div className="Tag" key={`Tag${idx}`}>
+                    <span>{a}</span>
+                    <button>x</button>
+                  </div>
+                );
+              })}
+            </div>
+          ) : null}
         </Text_Wrapper>
 
         <div className="Form_Buttons">
