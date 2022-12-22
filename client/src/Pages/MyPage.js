@@ -64,12 +64,18 @@ const MyPage_About = styled.div`
     margin-bottom: 10px;
   }
   & div:nth-child(2) {
+    display: flex;
     height: 200px;
     border: 2px solid rgba(0, 0, 0, 0.5);
     border-radius: 6px;
     padding: 5px;
     overflow: auto;
     background-color: white;
+    .No_Aboutme {
+      display: block;
+      align-self: center;
+      font-size: 20px;
+    }
   }
   & div:nth-child(2)::-webkit-scrollbar {
     width: 10px;
@@ -218,42 +224,53 @@ function MyPage() {
           <button>Click to edit</button>
         </div>
         <div>
-          <span>{aboutMe}</span>
+          {aboutMe === '' ? (
+            <span className="No_Aboutme">
+              Your about me section is currently blank. Would you like to add
+              one?
+            </span>
+          ) : (
+            <span>{aboutMe}</span>
+          )}
         </div>
       </MyPage_About>
       <MyPage_AnswerQuestion_Wrapper>
         <MyPage_AnswerQuestion className="Answer_Box">
           <MyPage_Title_Span>Answers</MyPage_Title_Span>
           <MyPage_AnswerQuestion_Body>
-            {answers.map((answer) => {
-              return (
-                <div key={answer.answer_id}>
-                  <MyPage_AnswerQuestion_Title>
-                    {answer.answer_title}
-                  </MyPage_AnswerQuestion_Title>
-                  <MyPage_AnswerQuestion_Text>
-                    {answer.answer_content}
-                  </MyPage_AnswerQuestion_Text>
-                </div>
-              );
-            })}
+            {answers.length === 0
+              ? null
+              : answers.map((answer) => {
+                  return (
+                    <div key={answer.answer_id}>
+                      <MyPage_AnswerQuestion_Title>
+                        {answer.answer_title}
+                      </MyPage_AnswerQuestion_Title>
+                      <MyPage_AnswerQuestion_Text>
+                        {answer.answer_content}
+                      </MyPage_AnswerQuestion_Text>
+                    </div>
+                  );
+                })}
           </MyPage_AnswerQuestion_Body>
         </MyPage_AnswerQuestion>
         <MyPage_AnswerQuestion>
           <MyPage_Title_Span>Questions</MyPage_Title_Span>
           <MyPage_AnswerQuestion_Body>
-            {questions.map((question) => {
-              return (
-                <div key={question.question_id}>
-                  <MyPage_AnswerQuestion_Title>
-                    {question.question_title}
-                  </MyPage_AnswerQuestion_Title>
-                  <MyPage_AnswerQuestion_Text>
-                    {question.question_content}
-                  </MyPage_AnswerQuestion_Text>
-                </div>
-              );
-            })}
+            {questions.length === 0
+              ? null
+              : questions.map((question) => {
+                  return (
+                    <div key={question.question_id}>
+                      <MyPage_AnswerQuestion_Title>
+                        {question.question_title}
+                      </MyPage_AnswerQuestion_Title>
+                      <MyPage_AnswerQuestion_Text>
+                        {question.question_content}
+                      </MyPage_AnswerQuestion_Text>
+                    </div>
+                  );
+                })}
           </MyPage_AnswerQuestion_Body>
         </MyPage_AnswerQuestion>
       </MyPage_AnswerQuestion_Wrapper>
