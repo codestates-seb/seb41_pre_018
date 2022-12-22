@@ -5,8 +5,43 @@ const New_Question_Wrapper = styled.div`
   background-color: rgba(0, 0, 0, 0.1);
   padding: 30px 50px;
   width: 80%;
-  height: 700px;
+  height: 1200px;
   margin: 0 auto;
+
+  .New_Question_Guide {
+    background-color: aliceblue;
+    padding: 15px 25px;
+  }
+
+  .Login_Form {
+    width: 100%;
+  }
+
+  .Form_Buttons {
+    background-color: white;
+    display: flex;
+    padding: 15px 25px;
+
+    button,
+    input {
+      background-color: aliceblue;
+      border: none;
+      width: 150px;
+      padding: 5px;
+      margin-right: 25px;
+    }
+  }
+`;
+
+const Text_Wrapper = styled.div`
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 15px 25px;
+
+  input {
+    height: 30px;
+  }
 `;
 
 export default function NewQuestion() {
@@ -21,34 +56,32 @@ export default function NewQuestion() {
     <New_Question_Wrapper>
       <h1>새 질문을 추가합니다.</h1>
       <div className="New_Question_Guide">
-        <h3>Writing a good question</h3>
+        <h3>좋은 질문을 하는 법</h3>
         <p>
-          You’re ready to ask a programming-related question and this form will
-          help guide you through the process. Looking to ask a non-programming
-          question? See the topics here to find a relevant site.
+          이제 프로그래밍과 관련된 질문을 할 준비가 되었군요. 아래 항목을 참조해
+          질문을 작성해 보세요. 분명 도움이 되실 겁니다.
         </p>
         <ul>
-          <li>Summarize your problem in a one-line title.</li>
-          <li>Describe your problem in more detail.</li>
-          <li>Describe what you tried and what you expected to happen.</li>
+          <li>현재 겪고 있는 문제를 제목에 한 줄로 요약해 보세요.</li>
+          <li>해당 문제에 대해 더 자세한 설명을 적어 보세요.</li>
           <li>
-            Add “tags” which help surface your question to members of the
-            community.
+            어떠한 시도를 했고, 그 때 예상했던 결과물이 무엇인지 설명해 보세요.
           </li>
-          <li>Review your question and post it to the site</li>
+          <li>
+            커뮤니티 멤버들이 질문을 알아차릴 수 있게 "태그"를 추가해 보세요.
+          </li>
+          <li>마지막으로 질문을 점검하고, 웹 사이트에 추가해 보세요.</li>
         </ul>
       </div>
 
       <form className="Login_Form" onSubmit={handleSubmit(onSubmit)}>
-        <div className="Text_Wrapper">
+        <Text_Wrapper>
           <h3>
             <label className="Form_Label" htmlFor="email">
-              Title
+              제목
             </label>
           </h3>
-          <p>
-            Be specific and imagine you’re asking a question to another person.
-          </p>
+          <p>다른 사람에게 질문한다고 생각하고 자세하게 설명해 주세요.</p>
           <input
             id="title"
             {...register('title', {
@@ -57,26 +90,26 @@ export default function NewQuestion() {
             placeholder="제목을 입력해주세요"
             type="text"
           />
-        </div>
+        </Text_Wrapper>
 
-        <div className="Text_Wrapper">
+        <Text_Wrapper>
           <h3>
             <label className="Form_Label" htmlFor="email">
-              What are the details of your problem and what did you try and what
-              were you expecting?
+              현재 질문하고자 하는 문제에 대해 더 자세한 설명과 문제를 해결하기
+              위해 어떤 노력을 했고, 어떤 결과를 예상했는지 적어 주세요.
             </label>
           </h3>
-          <p>Minimum 20 characters.</p>
-        </div>
+          <p>최소 20자 이상</p>
+        </Text_Wrapper>
 
-        <div className="Text_Wrapper">
+        <Text_Wrapper>
           <h3>
             <label className="Form_Label" htmlFor="email">
-              Tags
+              태그
             </label>
           </h3>
           <p>
-            Be specific and imagine you’re asking a question to another person.
+            현재 문제와 연관성이 있다고 생각하는 키워드로 태그를 작성해 주세요.
           </p>
           <input
             id="tags"
@@ -86,10 +119,11 @@ export default function NewQuestion() {
             placeholder="태그를 입력해주세요"
             type="text"
           />
-        </div>
+        </Text_Wrapper>
+
         <div className="Form_Buttons">
-          <input value="Post your question" type="submit" />
-          <button>Discard draft</button>
+          <input value="질문 등록하기" role="button" type="submit" />
+          <button>등록 취소하기</button>
         </div>
       </form>
     </New_Question_Wrapper>
