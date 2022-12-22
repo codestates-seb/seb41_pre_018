@@ -5,6 +5,7 @@ import Navbar from './Components/Navbar';
 // import Question from './Components/Question';
 import Login from './Components/Login';
 import Main from './Pages/Main';
+import NewQuestion from './Pages/NewQuestion';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Main />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/question/new" element={<NewQuestion />} />
       </Routes>
     </BrowserRouter>
   );
