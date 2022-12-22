@@ -191,35 +191,35 @@ export let data = {
         'https://meloncoffee.com/wp-content/uploads/2020/11/hamster-690108_1280.jpg',
       answers: [
         {
-          answers_title: 'Sample Answer 1',
-          answers_content:
+          answer_title: 'Sample Answer 1',
+          answer_content:
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna...',
         },
         {
-          answers_title: 'Sample Answer 2',
-          answers_content:
+          answer_title: 'Sample Answer 2',
+          answer_content:
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna...',
         },
         {
-          answers_title: 'Sample Answer 3',
-          answers_content:
+          answer_title: 'Sample Answer 3',
+          answer_content:
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna...',
         },
       ],
       questions: [
         {
-          questions_title: 'Sample Question 1',
-          answers_content:
+          question_title: 'Sample Question 1',
+          question_content:
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna...',
         },
         {
-          questions_title: 'Sample Question 2',
-          answers_content:
+          question_title: 'Sample Question 2',
+          question_content:
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna...',
         },
         {
-          questions_title: 'Sample Question 3',
-          answers_content:
+          question_title: 'Sample Question 3',
+          question_content:
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna...',
         },
       ],

@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { RxMagnifyingGlass, RxTextAlignJustify } from 'react-icons/rx';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Orange_Line = styled.div`
   display: flex;
@@ -16,7 +17,7 @@ const Navbar_Background = styled.div`
   align-items: center;
   border-bottom: rgb(209, 209, 209);
   box-shadow: 0px 10px 10px 4px rgba(209, 209, 209, 0.56);
-  * {
+  *:not(a) {
     margin: 10px;
   }
 `;
@@ -95,15 +96,22 @@ const Logout_Button = styled.button`
 `;
 
 const Navbar = (props) => {
+  const navigate = useNavigate();
+  const navigateToSearch = () => {
+    navigate('/search');
+  };
+
   return (
     <div>
       <Orange_Line />
       <Navbar_Background>
         <RxTextAlignJustify color="gray" size={30} />
-        <Logo src="Logo.png" />
+        <Link to="/">
+          <Logo src="Logo.png" />
+        </Link>
         <Search_Wrapper>
           <RxMagnifyingGlass color="gray" size={25} />
-          <Search_Input placeholder="Search..." />
+          <Search_Input placeholder="Search..." onChange={(e)=>console.log(e.target.value)} onKeyUp={(e) => e.keyCode === 13 ? navigateToSearch() : null}/>
         </Search_Wrapper>
         {props.isLoggedIn ? (
           <>
@@ -112,8 +120,12 @@ const Navbar = (props) => {
           </>
         ) : (
           <>
-            <Login_Button>Log in</Login_Button>
-            <Signup_Button>Sign up</Signup_Button>
+            <Link to="/login">
+              <Login_Button>Log in</Login_Button>
+            </Link>
+            <Link to="/signup">
+              <Signup_Button>Sign up</Signup_Button>
+            </Link>
           </>
         )}
       </Navbar_Background>

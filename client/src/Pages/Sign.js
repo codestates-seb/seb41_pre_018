@@ -7,7 +7,6 @@ const Sign_Container = styled.div`
   align-items: center;
   height: 100vh;
   width: 100vw;
-  background-color: #f1f2f3;
 `;
 const Sign_Form = styled.form`
   display: flex;
