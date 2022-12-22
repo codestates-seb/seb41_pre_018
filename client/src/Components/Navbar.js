@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 import { RxMagnifyingGlass, RxTextAlignJustify } from 'react-icons/rx';
 
-const Orange_line = styled.div`
+const Orange_Line = styled.div`
   display: flex;
   flex-grow: 1;
   height: 3px;
   background-color: #f48225;
 `;
-const Navbar_background = styled.div`
+const Navbar_Background = styled.div`
   display: flex;
   flex-grow: 1;
   height: 47px;
@@ -19,7 +19,6 @@ const Navbar_background = styled.div`
   * {
     margin: 10px;
   }
-  /* box-shadow: 0 4px 2px -2px gray; */
 `;
 
 const Logo = styled.img`
@@ -28,7 +27,7 @@ const Logo = styled.img`
   height: 30px;
   margin-left: 10px;
 `;
-const Search_wrapper = styled.div`
+const Search_Wrapper = styled.div`
   width: 800px;
   height: 25px;
   border: 1.5px solid lightgray;
@@ -42,7 +41,7 @@ const Search_wrapper = styled.div`
     box-shadow: 0px 0px 5px 0px rgba(126, 202, 230, 1);
   }
 `;
-const Search_input = styled.input`
+const Search_Input = styled.input`
   flex-grow: 1;
   border: none;
   &:focus {
@@ -50,17 +49,17 @@ const Search_input = styled.input`
   }
 `;
 
-const Profile_image = styled.img`
+const Profile_Image = styled.img`
   cursor: pointer;
   height: 30px;
   width: 30px;
   border-radius: 5px;
 `;
 
-const Login_button = styled.button`
+const Login_Button = styled.button`
   height: 30px;
   width: 80px;
-  border: 2px solid #7aa7c7;
+  border: 1px solid #7aa7c7;
   border-radius: 5px;
   background-color: #e1ecf4;
   color: #3973b3;
@@ -69,7 +68,8 @@ const Login_button = styled.button`
     cursor: pointer;
   }
 `;
-const Signup_button = styled.button`
+
+const Signup_Button = styled.button`
   height: 30px;
   width: 80px;
   border: none;
@@ -81,10 +81,10 @@ const Signup_button = styled.button`
     cursor: pointer;
   }
 `;
-const Logout_button = styled.button`
+const Logout_Button = styled.button`
   height: 30px;
   width: 80px;
-  border: 2px solid #7aa7c7;
+  border: 1px solid #7aa7c7;
   border-radius: 5px;
   background-color: #e1ecf4;
   color: #3973b3;
@@ -95,33 +95,28 @@ const Logout_button = styled.button`
 `;
 
 const Navbar = (props) => {
-  return props.isLoggedIn ? (
+  return (
     <div>
-      <Orange_line />
-      <Navbar_background>
+      <Orange_Line />
+      <Navbar_Background>
         <RxTextAlignJustify color="gray" size={30} />
         <Logo src="Logo.png" />
-        <Search_wrapper>
+        <Search_Wrapper>
           <RxMagnifyingGlass color="gray" size={25} />
-          <Search_input placeholder="Search..." />
-        </Search_wrapper>
-        <Profile_image src="Sample_Avatar.png" />
-        <Logout_button>Log out</Logout_button>
-      </Navbar_background>
-    </div>
-  ) : (
-    <div>
-      <Orange_line />
-      <Navbar_background>
-        <RxTextAlignJustify color="gray" size={30} />
-        <Logo src="Logo.png" />
-        <Search_wrapper>
-          <RxMagnifyingGlass color="gray" size={25} />
-          <Search_input placeholder="Search..." />
-        </Search_wrapper>
-        <Login_button>Log in</Login_button>
-        <Signup_button>Sign up</Signup_button>
-      </Navbar_background>
+          <Search_Input placeholder="Search..." />
+        </Search_Wrapper>
+        {props.isLoggedIn ? (
+          <>
+            <Profile_Image src="Sample_Avatar.png" />
+            <Logout_Button>Log out</Logout_Button>
+          </>
+        ) : (
+          <>
+            <Login_Button>Log in</Login_Button>
+            <Signup_Button>Sign up</Signup_Button>
+          </>
+        )}
+      </Navbar_Background>
     </div>
   );
 };
