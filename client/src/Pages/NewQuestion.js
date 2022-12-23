@@ -116,7 +116,6 @@ export default function NewQuestion() {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const onSubmit = (data) => console.log(data);
   const [userTags, setUserTags] = useState([]);
   const [userInput, setUserInput] = useState('');
   const [tagInputXCord, setTagInputXCord] = useState(0);
@@ -160,6 +159,12 @@ export default function NewQuestion() {
 
   const handleTextEditorChange = (val) => {
     setTextEditorValue(val);
+  };
+
+  const onSubmit = (data) => {
+    data['text'] = textEditorValue;
+    data['tags'] = userTags;
+    console.log(data);
   };
 
   return (
@@ -235,7 +240,6 @@ export default function NewQuestion() {
 
           <Tag_Input_Field
             id="tags"
-            {...register('tags')}
             type="text"
             value={userInput}
             onChange={handleUserInput}
