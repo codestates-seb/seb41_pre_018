@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { AiOutlineBold, AiOutlineItalic } from 'react-icons/ai';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const New_Question_Wrapper = styled.div`
   background-color: rgba(0, 0, 0, 0.1);
@@ -52,8 +54,13 @@ const Text_Wrapper = styled.div`
   flex-direction: column;
   padding: 15px 25px;
 
+  h3 {
+    margin: 0;
+  }
+
   input {
     height: 30px;
+    border: 1px solid black;
   }
 
   &:nth-child(3) {
@@ -63,13 +70,38 @@ const Text_Wrapper = styled.div`
   .Tag_Wrapper {
     position: absolute;
     display: flex;
-    top: 75%;
+    top: 69%;
     margin-left: 10px;
 
     .Tag {
+      display: flex;
+      justify-content: center;
+      align-items: center;
       border: 1px solid black;
       background-color: aliceblue;
       margin-right: 5px;
+
+      span {
+        margin-right: 2px;
+      }
+      button {
+        height: 100%;
+        border: none;
+        border-left: 1px solid black;
+        background-color: white;
+
+        &:hover {
+          cursor: pointer;
+          background-color: gainsboro;
+        }
+      }
+    }
+  }
+
+  .Rich_Text_Editor {
+    border: 1px solid black;
+    .ql-container {
+      height: 250px;
     }
   }
 `;
@@ -88,6 +120,8 @@ export default function NewQuestion() {
   const [userTags, setUserTags] = useState([]);
   const [userInput, setUserInput] = useState('');
   const [tagInputXCord, setTagInputXCord] = useState(0);
+  const [textEditorValue, setTextEditorValue] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     setTagInputXCord(document.querySelector('.Tag_Wrapper').clientWidth + 7.5);
@@ -101,13 +135,31 @@ export default function NewQuestion() {
   };
 
   const handleUserInput = (event) => {
-    setUserInput(event.target.value.trim());
+    const filteredString = event.target.value.replace(',', '');
+    setUserInput(filteredString.trim());
     setTagInputXCord(document.querySelector('.Tag_Wrapper').clientWidth + 7.5);
   };
 
-  const deleteTag = (event) => {
+  const deleteTag = () => {
     userTags.pop();
-    setTagInputXCord(document.querySelector('.Tag_Wrapper').clientWidth + 7.5);
+    console.log(document.querySelector(`#Tag${userTags.length}`).clientWidth);
+    setTagInputXCord(
+      document.querySelector('.Tag_Wrapper').clientWidth +
+        7.5 -
+        document.querySelector(`#Tag${userTags.length}`).clientWidth -
+        5
+    );
+  };
+
+  const cancelRegister = () => {
+    if (confirm('정말 취소하시겠습니까?')) {
+      navigate('/');
+    } else {
+    }
+  };
+
+  const handleTextEditorChange = (val) => {
+    setTextEditorValue(val);
   };
 
   return (
@@ -139,7 +191,7 @@ export default function NewQuestion() {
               제목
             </label>
           </h3>
-          <p>다른 사람에게 질문한다고 생각하고 자세하게 설명해 주세요.</p>
+          <p>실제 사람에게 질문한다고 생각하고 자세하게 설명해 주세요.</p>
           <input
             id="title"
             {...register('title', {
@@ -157,8 +209,13 @@ export default function NewQuestion() {
               위해 어떤 노력을 했고, 어떤 결과를 예상했는지 적어 주세요.
             </label>
           </h3>
-          <p>최소 20자 이상</p>
-          <textarea rows="20" cols="50"></textarea>
+          <p>최소 20자 이상 입력해주세요</p>
+          <ReactQuill
+            theme="snow"
+            className="Rich_Text_Editor"
+            value={textEditorValue}
+            onChange={handleTextEditorChange}
+          />
           {errors.textField && (
             <span className="Error_Message" role="alert">
               {errors.textField.message}
@@ -189,7 +246,7 @@ export default function NewQuestion() {
             <div className="Tag_Wrapper">
               {userTags.map((a, idx) => {
                 return (
-                  <div className="Tag" key={`Tag${idx}`}>
+                  <div className="Tag" key={`Tag${idx}`} id={`Tag${idx}`}>
                     <span>{a}</span>
                     <button onClick={deleteTag}>x</button>
                   </div>
@@ -201,7 +258,7 @@ export default function NewQuestion() {
 
         <div className="Form_Buttons">
           <input value="질문 등록하기" role="button" type="submit" />
-          <button>등록 취소하기</button>
+          <button onClick={cancelRegister}>등록 취소하기</button>
         </div>
       </form>
     </New_Question_Wrapper>
