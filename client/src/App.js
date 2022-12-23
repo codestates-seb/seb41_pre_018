@@ -6,7 +6,6 @@ import Navbar from './Components/Navbar';
 import Login from './Components/Login';
 import Main from './Pages/Main';
 import Sign from './Pages/Sign';
-
 const GlobalStyle = createGlobalStyle`
   body {
     background-color: #f1f2f3;
