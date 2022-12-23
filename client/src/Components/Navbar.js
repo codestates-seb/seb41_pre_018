@@ -107,18 +107,17 @@ const Navbar = (props) => {
       <Navbar_Background>
         <RxTextAlignJustify color="gray" size={30} />
         <Link to="/">
-          <Logo src="Logo.png" />
+          <Logo src={process.env.PUBLIC_URL + '/Logo.png'} />
         </Link>
-        <Logo src={process.env.PUBLIC_URL + '/Logo.png'} />
         <Search_Wrapper>
           <RxMagnifyingGlass color="gray" size={25} />
           <Search_Input placeholder="Search..." onChange={(e)=>console.log(e.target.value)} onKeyUp={(e) => e.keyCode === 13 ? navigateToSearch() : null}/>
         </Search_Wrapper>
         {props.isLoggedIn ? (
           <>
-            <Profile_Image
-              src={process.env.PUBLIC_URL + '/Sample_Avatar.png'}
-            />
+            <Link to="/user/human_001">
+              <Profile_Image src={process.env.PUBLIC_URL + '/Sample_Avatar.png'}/>
+            </Link>
             <Logout_Button>Log out</Logout_Button>
           </>
         ) : (

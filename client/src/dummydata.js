@@ -183,6 +183,7 @@ export let data = {
   ],
   member: [
     {
+      email: 'human@gmail.com',
       username: 'human_001',
       created_time: '2022. 12. 22. 오전 11:30:23',
       modified_time: '2022. 12. 22. 오전 11:30:23',
@@ -191,16 +192,19 @@ export let data = {
         'https://meloncoffee.com/wp-content/uploads/2020/11/hamster-690108_1280.jpg',
       answers: [
         {
+          answer_id: 0,
           answer_title: 'Sample Answer 1',
           answer_content:
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna...',
         },
         {
+          answer_id: 1,
           answer_title: 'Sample Answer 2',
           answer_content:
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna...',
         },
         {
+          answer_id: 2,
           answer_title: 'Sample Answer 3',
           answer_content:
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna...',
@@ -208,16 +212,19 @@ export let data = {
       ],
       questions: [
         {
+          question_id: 0,
           question_title: 'Sample Question 1',
           question_content:
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna...',
         },
         {
+          question_id: 1,
           question_title: 'Sample Question 2',
           question_content:
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna...',
         },
         {
+          question_id: 2,
           question_title: 'Sample Question 3',
           question_content:
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna...',
