@@ -73,9 +73,9 @@ const Pagination_Button = styled.button`
 
 const Main = (props) => {
 
-  let postPerPage = 10; // 한 페이지에 표시할 글 수
-  let postCount = data.question.length; // 모든 글 수
-  let pageCount = Math.ceil(postCount/postPerPage); // 페이지 수
+  const postPerPage = 10; // 한 페이지에 표시할 글 수
+  const postCount = data.question.length; // 모든 글 수
+  const pageCount = Math.ceil(postCount/postPerPage); // 페이지 수
   let pages = []; // 페이지 아이콘을 렌더링 하기 위한 배열
   for (let i = 1; i < pageCount + 1; i++) { // 페이지 아이콘 배열에 페이지 넘버 푸쉬
       pages.push(i);

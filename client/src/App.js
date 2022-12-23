@@ -5,7 +5,6 @@ import Navbar from './Components/Navbar';
 // import Question from './Components/Question';
 import Login from './Components/Login';
 import Main from './Pages/Main';
-import Search from './Pages/Search';
 import Sign from './Pages/Sign';
 
 const GlobalStyle = createGlobalStyle`
@@ -23,7 +22,6 @@ function App() {
       <Routes>
         <Route path="/" element={<Main isLoggedIn={isLoggedIn}/>} />
         <Route path="/login" element={<Login />} />
-        <Route path="/search" element={<Search />}/>
         <Route path="/signup" element={<Sign />}/>
       </Routes>
     </BrowserRouter>
