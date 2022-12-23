@@ -100,14 +100,16 @@ const Navbar = (props) => {
       <Orange_Line />
       <Navbar_Background>
         <RxTextAlignJustify color="gray" size={30} />
-        <Logo src="Logo.png" />
+        <Logo src={process.env.PUBLIC_URL + '/Logo.png'} />
         <Search_Wrapper>
           <RxMagnifyingGlass color="gray" size={25} />
           <Search_Input placeholder="Search..." />
         </Search_Wrapper>
         {props.isLoggedIn ? (
           <>
-            <Profile_Image src="Sample_Avatar.png" />
+            <Profile_Image
+              src={process.env.PUBLIC_URL + '/Sample_Avatar.png'}
+            />
             <Logout_Button>Log out</Logout_Button>
           </>
         ) : (

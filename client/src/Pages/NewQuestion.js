@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { AiOutlineBold, AiOutlineItalic } from 'react-icons/ai';
 import styled from 'styled-components';
@@ -89,6 +89,10 @@ export default function NewQuestion() {
   const [userInput, setUserInput] = useState('');
   const [tagInputXCord, setTagInputXCord] = useState(0);
 
+  useEffect(() => {
+    setTagInputXCord(document.querySelector('.Tag_Wrapper').clientWidth + 7.5);
+  }, [userTags]);
+
   const handleUserTagInput = (event) => {
     if (userInput !== '' && (event.keyCode === 188 || event.keyCode === 32)) {
       setUserInput('');
@@ -100,6 +104,12 @@ export default function NewQuestion() {
     setUserInput(event.target.value.trim());
     setTagInputXCord(document.querySelector('.Tag_Wrapper').clientWidth + 7.5);
   };
+
+  const deleteTag = (event) => {
+    userTags.pop();
+    setTagInputXCord(document.querySelector('.Tag_Wrapper').clientWidth + 7.5);
+  };
+
   return (
     <New_Question_Wrapper>
       <h1>새 질문을 추가합니다.</h1>
@@ -181,7 +191,7 @@ export default function NewQuestion() {
                 return (
                   <div className="Tag" key={`Tag${idx}`}>
                     <span>{a}</span>
-                    <button>x</button>
+                    <button onClick={deleteTag}>x</button>
                   </div>
                 );
               })}
