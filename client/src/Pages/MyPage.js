@@ -4,14 +4,14 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { HiCake } from 'react-icons/hi';
 //username 파라미터와 user e-mail 토큰? 기반으로? 받아와야하지 않나?
-const Mypage_Container = styled.div`
+const My_Page_Container = styled.div`
   height: 100vh;
   display: flex;
   align-items: center;
   flex-direction: column;
   padding: 50px;
 `;
-const Mypage_Header = styled.div`
+const My_Page_Header = styled.div`
   display: flex;
   align-items: center;
   width: 670px;
@@ -45,12 +45,12 @@ const Mypage_Header = styled.div`
     }
   }
 `;
-const Mypage_Profile_Image = styled.img`
+const My_Page_Profile_Image = styled.img`
   height: 130px;
   width: 130px;
   border-radius: 10%;
 `;
-const MyPage_About = styled.div`
+const My_Page_About = styled.div`
   width: 780px;
   display: flex;
   flex-direction: column;
@@ -104,16 +104,16 @@ const MyPage_About = styled.div`
     }
   }
 `;
-const MyPage_AnswerQuestion_Wrapper = styled.div`
+const My_Page_Answer_Question_Wrapper = styled.div`
   display: flex;
   width: 794px;
   justify-content: space-between;
 `;
-const MyPage_AnswerQuestion = styled.div`
+const My_Page_Answer_Question = styled.div`
   margin: 40px 0px;
   width: 370px;
 `;
-const MyPage_AnswerQuestion_Body = styled.div`
+const My_Page_Answer_Question_Body = styled.div`
   padding: 5px;
   background-color: white;
   height: 200px;
@@ -140,19 +140,19 @@ const MyPage_AnswerQuestion_Body = styled.div`
     flex-direction: column;
   }
 `;
-const MyPage_Title_Span = styled.span`
+const My_Page_Title_Span = styled.span`
   display: block;
   font-size: 20px;
   margin-bottom: 10px;
 `;
-const MyPage_AnswerQuestion_Title = styled.span`
+const My_Page_Answer_Question_Title = styled.span`
   font-size: 14px;
   color: #0080ff;
 `;
-const MyPage_AnswerQuestion_Text = styled.span`
+const My_Page_Answer_Question_Text = styled.span`
   font-size: 12px;
 `;
-const MyPage_Delete_User_Button = styled.button`
+const My_Page_Delete_User_Button = styled.button`
   height: 30px;
   width: 300px;
   border: 1px solid #7aa7c7;
@@ -166,8 +166,8 @@ const MyPage_Delete_User_Button = styled.button`
 `;
 //
 //
-function dateChange(UserVirthDay) {
-  const d1 = UserVirthDay.split('.')
+function dateChange(UserBirthDay) {
+  const d1 = UserBirthDay.split('.')
     .slice(0, 3)
     .map((el) => Number(el))
     .join('-');
@@ -181,7 +181,7 @@ function dateChange(UserVirthDay) {
   const date2 = new Date(d2);
 
   const diffDate = date2.getTime() - date1.getTime();
-  return Math.abs(diffDate / (1000 * 60 * 60 * 24));
+  return diffDate / (1000 * 60 * 60 * 24);
 }
 //
 //
@@ -205,9 +205,9 @@ function MyPage() {
   }, []);
 
   return (
-    <Mypage_Container>
-      <Mypage_Header>
-        <Mypage_Profile_Image
+    <My_Page_Container>
+      <My_Page_Header>
+        <My_Page_Profile_Image
           src={process.env.PUBLIC_URL + '/Sample_Avatar.png'}
         />
         <div className="Header_Right_Wrapper">
@@ -217,10 +217,10 @@ function MyPage() {
             <span>Member for {dayAgo} days</span>
           </div>
         </div>
-      </Mypage_Header>
-      <MyPage_About>
+      </My_Page_Header>
+      <My_Page_About>
         <div>
-          <MyPage_Title_Span>About</MyPage_Title_Span>
+          <My_Page_Title_Span>About</My_Page_Title_Span>
           <button>Click to edit</button>
         </div>
         <div>
@@ -233,49 +233,49 @@ function MyPage() {
             <span>{aboutMe}</span>
           )}
         </div>
-      </MyPage_About>
-      <MyPage_AnswerQuestion_Wrapper>
-        <MyPage_AnswerQuestion className="Answer_Box">
-          <MyPage_Title_Span>Answers</MyPage_Title_Span>
-          <MyPage_AnswerQuestion_Body>
+      </My_Page_About>
+      <My_Page_Answer_Question_Wrapper>
+        <My_Page_Answer_Question className="Answer_Box">
+          <My_Page_Title_Span>Answers</My_Page_Title_Span>
+          <My_Page_Answer_Question_Body>
             {answers.length === 0
               ? null
               : answers.map((answer) => {
                   return (
                     <div key={answer.answer_id}>
-                      <MyPage_AnswerQuestion_Title>
+                      <My_Page_Answer_Question_Title>
                         {answer.answer_title}
-                      </MyPage_AnswerQuestion_Title>
-                      <MyPage_AnswerQuestion_Text>
+                      </My_Page_Answer_Question_Title>
+                      <My_Page_Answer_Question_Text>
                         {answer.answer_content}
-                      </MyPage_AnswerQuestion_Text>
+                      </My_Page_Answer_Question_Text>
                     </div>
                   );
                 })}
-          </MyPage_AnswerQuestion_Body>
-        </MyPage_AnswerQuestion>
-        <MyPage_AnswerQuestion>
-          <MyPage_Title_Span>Questions</MyPage_Title_Span>
-          <MyPage_AnswerQuestion_Body>
+          </My_Page_Answer_Question_Body>
+        </My_Page_Answer_Question>
+        <My_Page_Answer_Question>
+          <My_Page_Title_Span>Questions</My_Page_Title_Span>
+          <My_Page_Answer_Question_Body>
             {questions.length === 0
               ? null
               : questions.map((question) => {
                   return (
                     <div key={question.question_id}>
-                      <MyPage_AnswerQuestion_Title>
+                      <My_Page_Answer_Question_Title>
                         {question.question_title}
-                      </MyPage_AnswerQuestion_Title>
-                      <MyPage_AnswerQuestion_Text>
+                      </My_Page_Answer_Question_Title>
+                      <My_Page_Answer_Question_Text>
                         {question.question_content}
-                      </MyPage_AnswerQuestion_Text>
+                      </My_Page_Answer_Question_Text>
                     </div>
                   );
                 })}
-          </MyPage_AnswerQuestion_Body>
-        </MyPage_AnswerQuestion>
-      </MyPage_AnswerQuestion_Wrapper>
-      <MyPage_Delete_User_Button>Delete profile</MyPage_Delete_User_Button>
-    </Mypage_Container>
+          </My_Page_Answer_Question_Body>
+        </My_Page_Answer_Question>
+      </My_Page_Answer_Question_Wrapper>
+      <My_Page_Delete_User_Button>Delete profile</My_Page_Delete_User_Button>
+    </My_Page_Container>
   );
 }
 
