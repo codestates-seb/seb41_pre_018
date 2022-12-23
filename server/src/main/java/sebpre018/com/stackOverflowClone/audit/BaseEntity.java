@@ -1,4 +1,4 @@
-package sebpre018.com.stackOverflowClone.question.audit;
+package sebpre018.com.stackOverflowClone.audit;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
