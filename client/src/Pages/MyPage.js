@@ -164,8 +164,6 @@ const My_Page_Delete_User_Button = styled.button`
     cursor: pointer;
   }
 `;
-//
-//
 function dateChange(UserBirthDay) {
   const d1 = UserBirthDay.split('.')
     .slice(0, 3)
@@ -183,8 +181,6 @@ function dateChange(UserBirthDay) {
   const diffDate = date2.getTime() - date1.getTime();
   return diffDate / (1000 * 60 * 60 * 24);
 }
-//
-//
 function MyPage() {
   const { name } = useParams();
   const [dayAgo, setDayAgo] = useState('');

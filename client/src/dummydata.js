@@ -183,6 +183,7 @@ export let data = {
   ],
   member: [
     {
+      email: 'human@gmail.com',
       username: 'human_001',
       created_time: '2022. 12. 22. 오전 11:30:23',
       modified_time: '2022. 12. 22. 오전 11:30:23',
