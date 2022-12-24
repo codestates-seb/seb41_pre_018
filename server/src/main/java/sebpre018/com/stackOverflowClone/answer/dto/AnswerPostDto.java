@@ -1,5 +1,6 @@
 package sebpre018.com.stackOverflowClone.answer.dto;
 
+import lombok.Getter;
 import org.w3c.dom.Text;
 
 import javax.validation.constraints.NotBlank;
@@ -7,27 +8,16 @@ import java.math.BigInteger;
 import java.sql.Blob;
 import java.time.LocalDateTime;
 
+@Getter
 public class AnswerPostDto {
 
-    private BigInteger memberId;
-    private Blob answerImage;
-    @NotBlank
-    private Text answerText;
-    private LocalDateTime createdTime;
+//    private Long answerId;
 
-    public LocalDateTime getCreatedTime() {
-        return createdTime;
-    }
+    private Long memberId;
+    private Long questionId;
 
-    public Text getAnswerText() {
-        return answerText;
-    }
+    @NotBlank(message = "내용을 입력해야 합니다.")
+    private String text;
 
-    public Blob getAnswerImage() {
-        return answerImage;
-    }
-
-    public BigInteger getMemberId() {
-        return memberId;
-    }
+//    private LocalDateTime createdTime;
 }
