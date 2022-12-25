@@ -67,6 +67,11 @@ const Text_Wrapper = styled.div`
     position: relative;
   }
 
+  .Error_Message {
+    margin-top: 2.5px;
+    color: rgba(240, 40, 70, 0.9);
+  }
+
   .Tag_Wrapper {
     position: absolute;
     display: flex;
@@ -162,7 +167,17 @@ export default function NewQuestion() {
   };
 
   const onSubmit = (data) => {
-    data['text'] = textEditorValue;
+    // 기본적으로 <p>Tag 만 삭제했지만, 이 부분에 대한 논의가 필요할 것 같아 우선 남겨둠.
+    // 이후 논의 후  삭제 예정
+    const tagReplacedString = textEditorValue
+      .replaceAll('<p>', '')
+      .replaceAll('</p>', '');
+    if (tagReplacedString === '') {
+      alert('질문의 내용을 작성해 주세요.');
+    } else if (tagReplacedString.length < 20) {
+      alert('질문은 20자 이상이어야 합니다.');
+    }
+    data['text'] = tagReplacedString;
     data['tags'] = userTags;
     console.log(data);
   };
@@ -205,6 +220,11 @@ export default function NewQuestion() {
             placeholder="제목을 입력해주세요"
             type="text"
           />
+          {errors.title && (
+            <span className="Error_Message" role="alert">
+              {errors.title.message}
+            </span>
+          )}
         </Text_Wrapper>
 
         <Text_Wrapper>
@@ -221,11 +241,6 @@ export default function NewQuestion() {
             value={textEditorValue}
             onChange={handleTextEditorChange}
           />
-          {errors.textField && (
-            <span className="Error_Message" role="alert">
-              {errors.textField.message}
-            </span>
-          )}
         </Text_Wrapper>
 
         <Text_Wrapper>
