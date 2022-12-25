@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+
 const Sign_Container = styled.div`
   display: flex;
   justify-content: center;
@@ -188,10 +190,12 @@ function Sign() {
             <Sign_Text>비밀번호가 일치하지 않습니다.</Sign_Text>
           )}
         </Sign_Input_Container>
-        <Sign_Submit
-          type="submit"
-          disabled={!Object.values(verify).every((el) => el.boolean === true)}
-        />
+        <Link to='/signup-completed'>
+          <Sign_Submit
+            type="submit"
+            disabled={!Object.values(verify).every((el) => el.boolean === true)}
+          />
+        </Link>
       </Sign_Form>
     </Sign_Container>
   );
