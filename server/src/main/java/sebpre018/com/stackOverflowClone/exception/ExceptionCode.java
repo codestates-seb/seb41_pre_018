@@ -26,6 +26,8 @@ public enum ExceptionCode {
 
     VOTED(409, "Already Voted"),
 
+    TAG_NOT_FOUND(404, "Tag not found" ),
+
     UNAUTHORIZED(401, "Unauthorized");
 
 

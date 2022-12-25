@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import sebpre018.com.stackOverflowClone.audit.BaseEntity;
+import sebpre018.com.stackOverflowClone.member.entity.Member;
 
 import javax.persistence.*;
 
