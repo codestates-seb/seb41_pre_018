@@ -1,8 +1,11 @@
 package sebpre018.com.stackOverflowClone.answer.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import sebpre018.com.stackOverflowClone.answer.dto.AnswerDto;
 import sebpre018.com.stackOverflowClone.answer.dto.AnswerPatchDto;
@@ -10,6 +13,7 @@ import sebpre018.com.stackOverflowClone.answer.dto.AnswerPostDto;
 import sebpre018.com.stackOverflowClone.answer.dto.AnswerResponseDto;
 import sebpre018.com.stackOverflowClone.answer.entity.Answer;
 import sebpre018.com.stackOverflowClone.answer.mapper.AnswerMapper;
+import sebpre018.com.stackOverflowClone.answer.response.ErrorResponse;
 import sebpre018.com.stackOverflowClone.answer.service.AnswerService;
 
 import javax.validation.Valid;
@@ -19,6 +23,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/answers")
 @Validated
+@Slf4j
 public class AnswerController {
     private final AnswerService answerService;
     private final AnswerMapper mapper;
@@ -68,4 +73,18 @@ public class AnswerController {
         answerService.deleteAnswer(answerId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+//    @ExceptionHandler
+//    public ResponseEntity handleException(MethodArgumentNotValidException e) {
+//        final List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
+//
+//        List<ErrorResponse.FieldError> errors = fieldErrors.stream()
+//                .map(error -> new ErrorResponse.FieldError(
+//                        error.getField(),
+//                        error.getRejectedValue(),
+//                        error.getDefaultMessage()))
+//                .collect(Collectors.toList());
+//
+//        return new ResponseEntity<>(new ErrorResponse(errors), HttpStatus.BAD_REQUEST);
+//    }
 }
