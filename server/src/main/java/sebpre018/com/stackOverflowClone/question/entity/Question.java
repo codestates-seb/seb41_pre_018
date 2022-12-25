@@ -3,8 +3,7 @@ package sebpre018.com.stackOverflowClone.question.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import sebpre018.com.stackOverflowClone.Time;
-import sebpre018.com.stackOverflowClone.question.audit.BaseEntity;
+import sebpre018.com.stackOverflowClone.audit.BaseEntity;
 
 import javax.persistence.*;
 
