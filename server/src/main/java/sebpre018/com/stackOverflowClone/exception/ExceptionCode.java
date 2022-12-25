@@ -19,7 +19,7 @@ public enum ExceptionCode {
 
     MEMBER_NOT_FOUND(404, "Member not found"),
     EMAIL_EXISTS(409, "Email Exists"),
-    MEMBER_EXISTS(409, "Member exists");
+    MEMBER_EXISTS(409, "Member exists"),
 
     MEMBER_NOT_ALLOWED(403, "MEMBER Not Allowed"),
     MEMBER_CANNOT_CHANGE(403,"MEMBER Can Not Be Changed"),
