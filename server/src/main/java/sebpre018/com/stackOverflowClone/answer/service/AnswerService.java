@@ -1,9 +1,13 @@
 package sebpre018.com.stackOverflowClone.answer.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import sebpre018.com.stackOverflowClone.answer.entity.Answer;
 import sebpre018.com.stackOverflowClone.answer.repository.AnswerRepository;
+import sebpre018.com.stackOverflowClone.exception.BusinessLogicException;
+import sebpre018.com.stackOverflowClone.exception.ExceptionCode;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,14 +30,12 @@ public class AnswerService {
     }
 
     public Answer findAnswer(Long answerId) {
-
-        Answer answer = new Answer(answerId, 1, 1, "답변 내용");
-        return findVerifiedAnswer(answerId);
+        throw new RuntimeException("Not found answer");
+//        return findVerifiedAnswer(answerId);
     }
 
-    public List<Answer> findAnswers() {
-
-        return answerRepository.findAll(Sort.by(answerId).descending);
+    public Page<Answer> findAnswers(int page, int size) {
+        return answerRepository.findAll(PageRequest.of(page, size, Sort.by("answerId").descending()));
     }
 
     public void deleteAnswer(Long answerId) {
@@ -43,12 +45,13 @@ public class AnswerService {
 
     public Answer findVerifiedAnswer(Long answerId) {
         Optional<Answer> optionalAnswer = answerRepository.findById(answerId);
-        Answer findAnswer = optionalAnswer.orElseThrow(() -> new BusinessLogicException(ExceptionCode.));
+        Answer findAnswer = optionalAnswer.orElseThrow(() -> new BusinessLogicException(ExceptionCode.ANSWER_NOT_FOUND));
+        return findAnswer;
     }
 
-//    private void verifyExistsAnswerId(Long answerId) {
-//        Optional<Answer> answer = answerRepository.findByAnswerId(answerId);
-//        if(answer.isPresent())
-//            throw new BusinessLogicException(ExceptionCode.)
-//    }
+    private void verifyExistsAnswer(Long answerId) {
+        Optional<Answer> answer = answerRepository.findByAnswer(answerId);
+        if(answer.isPresent())
+            throw new BusinessLogicException(ExceptionCode.ANSWER_EXISTS);
+    }
 }

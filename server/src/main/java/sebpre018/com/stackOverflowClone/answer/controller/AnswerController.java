@@ -1,6 +1,7 @@
 package sebpre018.com.stackOverflowClone.answer.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -13,8 +14,8 @@ import sebpre018.com.stackOverflowClone.answer.dto.AnswerPostDto;
 import sebpre018.com.stackOverflowClone.answer.dto.AnswerResponseDto;
 import sebpre018.com.stackOverflowClone.answer.entity.Answer;
 import sebpre018.com.stackOverflowClone.answer.mapper.AnswerMapper;
-import sebpre018.com.stackOverflowClone.answer.response.ErrorResponse;
 import sebpre018.com.stackOverflowClone.answer.service.AnswerService;
+import sebpre018.com.stackOverflowClone.response.MultiResponseDto;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -61,11 +62,12 @@ public class AnswerController {
     }
 
     @GetMapping
-    public ResponseEntity getAnswers() {
-        List<AnswerResponseDto> response = answers.stream()
-                .map(answer -> mapper.answerToAnswerResponseDto(answers))
-                .collect(Collectors.toList());
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity getAnswers(@RequestParam int page,
+                                     @RequestParam int size) {
+        Page<Answer> pageAnswers = answerService.findAnswers(page-1, size);
+        List<Answer> answers = pageAnswers.getContent();
+        return new ResponseEntity<>(new MultiResponseDto<>(mapper.answersToAnswerResponseDtos(answers),pageAnswers),
+                HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
