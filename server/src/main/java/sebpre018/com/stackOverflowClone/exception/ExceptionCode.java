@@ -3,6 +3,7 @@ package sebpre018.com.stackOverflowClone.exception;
 import lombok.Getter;
 
 public enum ExceptionCode {
+
     QUESTION_NOT_FOUND(404,"Question Not Found"),
     QUESTION_EXISTS(409, "Question Exists"),
     QUESTION_CANNOT_CHANGE(403,"Question Can Not Be Changed"),
@@ -16,16 +17,17 @@ public enum ExceptionCode {
     ANSWER_CANNOT_CHANGE(403,"Answer Can Not Be Changed"),
     ANSWER_DELETED(405, "Answer Already Deleted"),
 
-    USER_NOT_FOUND(404,"User Not Found"),
+    MEMBER_NOT_FOUND(404, "Member not found"),
     EMAIL_EXISTS(409, "Email Exists"),
-    NICKNAME_EXISTS(409, "Nickname Exists"),
+    MEMBER_EXISTS(409, "Member exists");
 
-    USER_NOT_ALLOWED(403, "User Not Allowed"),
-    USER_CANNOT_CHANGE(403,"User Can Not Be Changed"),
+    MEMBER_NOT_ALLOWED(403, "MEMBER Not Allowed"),
+    MEMBER_CANNOT_CHANGE(403,"MEMBER Can Not Be Changed"),
 
     VOTED(409, "Already Voted"),
 
     UNAUTHORIZED(401, "Unauthorized");
+
 
     @Getter
     private int status;
