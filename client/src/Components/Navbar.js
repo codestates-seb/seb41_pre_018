@@ -118,7 +118,7 @@ const Navbar = (props) => {
             <Link to="/user/human_001">
               <Profile_Image src={process.env.PUBLIC_URL + '/Sample_Avatar.png'}/>
             </Link>
-            <Logout_Button>Log out</Logout_Button>
+              <Logout_Button>Log out</Logout_Button>
           </>
         ) : (
           <>
