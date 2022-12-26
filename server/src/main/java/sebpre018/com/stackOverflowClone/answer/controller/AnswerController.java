@@ -34,8 +34,9 @@ public class AnswerController {
         this.mapper = mapper;
     }
 
-    @PostMapping
-    public ResponseEntity postAnswer(@Valid @RequestBody AnswerDto.Post requestBody){
+    @PostMapping("/{question-id}")
+    public ResponseEntity postAnswer(@PathVariable("question-id") Long questionId,
+                                     @Valid @RequestBody AnswerDto.Post requestBody){
 
         Answer answer = mapper.answerPostDtoToAnswer(requestBody);
         Answer createdAnswer = answerService.createAnswer(answer);
@@ -43,8 +44,9 @@ public class AnswerController {
         return new ResponseEntity<>(mapper.answerToAnswerResponseDto(createdAnswer), HttpStatus.CREATED);
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity patchAnswer(@PathVariable("id") Long answerId,
+    @PatchMapping("/{question-id}/{answer-id}")
+    public ResponseEntity patchAnswer(@PathVariable("question-id") Long questionId,
+                                      @PathVariable("answer-id") Long answerId,
                                       @Valid @RequestBody AnswerDto.Patch requestBody) {
         requestBody.setAnswerId(answerId);
 
@@ -53,8 +55,9 @@ public class AnswerController {
         return new ResponseEntity<>(mapper.answerToAnswerResponseDto(answer), HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity getAnswer(@PathVariable("id") Long answerId) {
+    @GetMapping("/{question-id}/{answer-id}")
+    public ResponseEntity getAnswer(@PathVariable("question-id") Long questionId,
+                                    @PathVariable("answer-id") Long answerId) {
 
         Answer answer = answerService.findAnswer(answerId);
 
@@ -70,8 +73,8 @@ public class AnswerController {
                 HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity deleteAnswer(@PathVariable("id") Long answerId) {
+    @DeleteMapping("/{answer-id}")
+    public ResponseEntity deleteAnswer(@PathVariable("answer-id") Long answerId) {
         answerService.deleteAnswer(answerId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
