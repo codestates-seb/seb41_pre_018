@@ -4,8 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { data } from './../dummydata.js';
 
-const New_Question_Wrapper = styled.div`
+const Edit_Question_Wrapper = styled.div`
   background-color: rgba(0, 0, 0, 0.1);
   padding: 30px 50px;
   width: 80%;
@@ -116,15 +117,16 @@ const Tag_Input_Field = styled.input`
 `;
 
 export default function NewQuestion() {
+  console.log(data.question[0].title);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const [userTags, setUserTags] = useState([]);
+  const [userTags, setUserTags] = useState(data.question[0].tags);
   const [userInput, setUserInput] = useState('');
   const [tagInputXCord, setTagInputXCord] = useState(0);
-  const [textEditorValue, setTextEditorValue] = useState('');
+  const [textEditorValue, setTextEditorValue] = useState(data.question[0].text);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -169,7 +171,7 @@ export default function NewQuestion() {
     if (textEditorValue === '') {
       alert('질문의 내용을 작성해 주세요.');
     } else if (textEditorValue.length < 27) {
-      // <p> 태그를 기본적으로 포함하고 있기 때문에 길이를 20자 이상일 경우 +7 <p> </p>
+      // <p> 태그를 기본적으로 포함하고 있기 때문에 길이를 20자 이상일 경우 +7
       alert('질문은 20자 이상이어야 합니다.');
     } else {
       data['text'] = textEditorValue;
@@ -179,27 +181,8 @@ export default function NewQuestion() {
   };
 
   return (
-    <New_Question_Wrapper>
-      <h1>새 질문을 추가합니다.</h1>
-      <div className="New_Question_Guide">
-        <h3>좋은 질문을 하는 법</h3>
-        <p>
-          이제 프로그래밍과 관련된 질문을 할 준비가 되었군요. 아래 항목을 참조해
-          질문을 작성해 보세요. 분명 도움이 되실 겁니다.
-        </p>
-        <ul>
-          <li>현재 겪고 있는 문제를 제목에 한 줄로 요약해 보세요.</li>
-          <li>해당 문제에 대해 더 자세한 설명을 적어 보세요.</li>
-          <li>
-            어떠한 시도를 했고, 그 때 예상했던 결과물이 무엇인지 설명해 보세요.
-          </li>
-          <li>
-            커뮤니티 멤버들이 질문을 알아차릴 수 있게 "태그"를 추가해 보세요.
-          </li>
-          <li>마지막으로 질문을 점검하고, 웹 사이트에 추가해 보세요.</li>
-        </ul>
-      </div>
-
+    <Edit_Question_Wrapper>
+      <h1>질문 수정 페이지</h1>
       <form className="Login_Form" onSubmit={handleSubmit(onSubmit)}>
         <Text_Wrapper>
           <h3>
@@ -207,13 +190,12 @@ export default function NewQuestion() {
               제목
             </label>
           </h3>
-          <p>실제 사람에게 질문한다고 생각하고 자세하게 설명해 주세요.</p>
           <input
             id="title"
             {...register('title', {
               required: '제목을 입력해주세요',
             })}
-            placeholder="제목을 입력해주세요"
+            value={data.question[0].title}
             type="text"
           />
           {errors.title && (
@@ -226,11 +208,9 @@ export default function NewQuestion() {
         <Text_Wrapper>
           <h3>
             <label className="Form_Label" htmlFor="email">
-              현재 질문하고자 하는 문제에 대해 더 자세한 설명과 문제를 해결하기
-              위해 어떤 노력을 했고, 어떤 결과를 예상했는지 적어 주세요.
+              내용
             </label>
           </h3>
-          <p>최소 20자 이상 입력해주세요</p>
           <ReactQuill
             theme="snow"
             className="Rich_Text_Editor"
@@ -246,9 +226,6 @@ export default function NewQuestion() {
               태그
             </label>
           </h3>
-          <p>
-            현재 문제와 연관성이 있다고 생각하는 키워드로 태그를 작성해 주세요.
-          </p>
 
           <Tag_Input_Field
             id="tags"
@@ -275,10 +252,10 @@ export default function NewQuestion() {
         </Text_Wrapper>
 
         <div className="Form_Buttons">
-          <input value="질문 등록하기" role="button" type="submit" />
-          <button onClick={cancelRegister}>등록 취소하기</button>
+          <input value="질문 수정하기" role="button" type="submit" />
+          <button onClick={cancelRegister}>수정 취소하기</button>
         </div>
       </form>
-    </New_Question_Wrapper>
+    </Edit_Question_Wrapper>
   );
 }
