@@ -10,6 +10,7 @@ import MyPage from './Pages/MyPage';
 import Signup_Completed from './Pages/Signup_Completed';
 import Search from './Pages/Search';
 import Deleteuser_Completed from './Pages/Deleteuser_Completed';
+import Question_Page from './Pages/QuestionPage';
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -31,6 +32,7 @@ function App() {
         <Route path="/signup-completed" element={<Signup_Completed />} />
         <Route path="/search" element={<Search />} />
         <Route path="/deleteuser-completed" element={<Deleteuser_Completed />} />
+        <Route path="/question-page" element={<Question_Page />} />
       </Routes>
     </BrowserRouter>
   );
