@@ -13,7 +13,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface CommentMapper {
-    Comment commentPostDtoToComment(CommentPostDto commentPostDto) {
+    default Comment commentPostDtoToComment(CommentPostDto commentPostDto) {
         // question id, answer id 받아오기 + text 받아오기
         Question question = new Question();
         question.setId(commentPostDto.getQuestionId());
@@ -28,7 +28,7 @@ public interface CommentMapper {
 
         return comment;
     }
-    Comment commentPatchDtoToComment(CommentPatchDto commentPatchDto){
+    default Comment commentPatchDtoToComment(CommentPatchDto commentPatchDto){
         Question question = new Question();
         question.setId(commentPatchDto.getQuestionId());
 
