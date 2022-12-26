@@ -59,7 +59,7 @@ const Modal_Button_Box = styled.div`
     margin: 0 20px;
   }
 `;
-const Modal_Secession_Button = styled.button`
+const Modal_DeleteUser_Button = styled.button`
   height: 30px;
   width: 100px;
   border: 1px solid #7aa7c7;
@@ -90,7 +90,7 @@ const Modal_Cancel_Button = styled.button`
     cursor: pointer;
   }
 `;
-function SecessionModal({ secessionHandle }) {
+function DeleteUserModal({ deleteUserHandle }) {
   const [checked, setChecked] = useState(false);
   const checkHandle = (e) => {
     setChecked(e.target.checked);
@@ -135,15 +135,15 @@ function SecessionModal({ secessionHandle }) {
           </span>
         </Modal_Check_Box>
         <Modal_Button_Box>
-          <Modal_Cancel_Button onClick={() => secessionHandle(false)}>
+          <Modal_Cancel_Button onClick={() => deleteUserHandle(false)}>
             Cancel
           </Modal_Cancel_Button>
-          <Modal_Secession_Button disabled={checked === true ? false : true}>
+          <Modal_DeleteUser_Button disabled={checked === true ? false : true}>
             Delete profile
-          </Modal_Secession_Button>
+          </Modal_DeleteUser_Button>
         </Modal_Button_Box>
       </Modal_Tail_Container>
     </Modal_Container>
   );
 }
-export default SecessionModal;
+export default DeleteUserModal;

@@ -3,7 +3,7 @@ import { data } from '../dummydata';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { HiCake } from 'react-icons/hi';
-import MyPageSecession from '../Components/SecessionModal';
+import DeleteUserModal from '../Components/DeleteUserModal';
 //username 파라미터와 user e-mail 토큰? 기반으로? 받아와야하지 않나?
 const My_page_Container = styled.div`
   display: flex;
@@ -213,7 +213,7 @@ function MyPage() {
       break;
     }
   }
-  const secessionHandle = (boolean) => {
+  const deleteUserHandle = (boolean) => {
     setHiddenAction(boolean);
   };
   const { username, created_time, modified_time, aboutMe, answers, questions } =
@@ -304,14 +304,14 @@ function MyPage() {
           </My_Page_Answer_Question>
         </My_Page_Answer_Question_Wrapper>
         <My_Page_Delete_User_Button
-          onClick={() => secessionHandle(true)}
+          onClick={() => deleteUserHandle(true)}
           disabled={hiddenAction === true ? true : false}
         >
           Delete profile
         </My_Page_Delete_User_Button>
       </My_Page_Sub_Container>
       {hiddenAction === false ? null : (
-        <MyPageSecession className="hi" secessionHandle={secessionHandle} />
+        <DeleteUserModal className="hi" deleteUserHandle={deleteUserHandle} />
       )}
     </My_page_Container>
   );
