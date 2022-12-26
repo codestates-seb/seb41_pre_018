@@ -138,6 +138,10 @@ export default function NewQuestion() {
   }, [userTags]);
 
   const handleUserTagInput = (event) => {
+    if (event.keyCode === 13) {
+      event.preventDefault();
+    }
+
     if (userInput !== '' && (event.keyCode === 188 || event.keyCode === 32)) {
       setUserInput('');
       userTags.push(event.target.value);
@@ -158,12 +162,12 @@ export default function NewQuestion() {
         document.querySelector(`#Tag${userTags.length}`).clientWidth -
         5
     );
+    event.preventDefault();
   };
 
   const cancelRegister = () => {
     if (confirm('정말 취소하시겠습니까?')) {
       navigate('/');
-    } else {
     }
   };
 
@@ -175,12 +179,14 @@ export default function NewQuestion() {
     if (textEditorValue === '') {
       alert('질문의 내용을 작성해 주세요.');
     } else if (textEditorValue.length < 27) {
-      // <p> 태그를 기본적으로 포함하고 있기 때문에 길이를 20자 이상일 경우 +7 <p> </p>
+      // <p> 태그를 기본적으로 포함하고 있기 때문에 길이를 20자 이상일 경우 +7
       alert('질문은 20자 이상이어야 합니다.');
     } else {
-      data['text'] = textEditorValue;
-      data['tags'] = userTags;
-      console.log(data);
+      if (confirm('질문을 등록하시겠습니까?')) {
+        data['text'] = textEditorValue;
+        data['tags'] = userTags;
+        console.log(data);
+      }
     }
   };
 
