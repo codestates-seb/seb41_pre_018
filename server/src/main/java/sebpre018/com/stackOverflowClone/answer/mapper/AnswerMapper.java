@@ -8,23 +8,42 @@ import sebpre018.com.stackOverflowClone.answer.dto.AnswerPostDto;
 import sebpre018.com.stackOverflowClone.answer.dto.AnswerResponseDto;
 import sebpre018.com.stackOverflowClone.answer.entity.Answer;
 import sebpre018.com.stackOverflowClone.member.entity.Member;
+import sebpre018.com.stackOverflowClone.question.entity.Question;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface AnswerMapper {
-    default Answer answerPostToAnswer(AnswerPostDto answerPostDto) {
-        Member member = new Member();
-        Member.setAnswerId(answerPostDto.getMemberId());
-
+    default Answer answerPostDtoToAnswer(AnswerPostDto answerPostDto) {
+        // Question Id 받아오기 + Text 받아오기
+        Question question = new Question();
+        question.setId(answerPostDto.getQuestionId());
         Answer answer = new Answer();
-        answer.setMemberId(member);
+        answer.setText(answerPostDto.getText());
+
+        return answer;
+    }
+    default Answer answerPatchDtoToAnswer(AnswerPatchDto answerPatchDto) {
+        Question question = new Question();
+        question.setId(answerPatchDto.getQuestionId());
+        Answer answer = new Answer();
+        answer.setText(answerPatchDto.getText());
 
         return answer;
     }
 
-    Answer answerPostDtoToAnswer(AnswerDto.Post requestBody);
-    Answer answerPatchDtoToAnswer(AnswerDto.Patch requestBody);
+    default AnswerResponseDto answerToAnswerResponse(Answer answer) {
+//        Member member = answer.getMemberId();  // 토큰으로 받아오는 정보라면 빼야함
+        Question question = answer.getQuestionId();
+//         Question Id 를 받아와야함
+
+        return AnswerResponseDto.builder()
+                .answerId(answer.getAnswerId())
+//                .memberId(member.getId())
+                .questionId(question.getId())
+                .text(answer.getText())
+                .build();
+    }
     AnswerDto.Response answerToAnswerResponseDto(Answer answer);
     List<AnswerDto.Response> answersToAnswerResponseDtos(List<Answer> answers);
 
