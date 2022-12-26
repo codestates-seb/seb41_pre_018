@@ -177,7 +177,7 @@ export default function NewQuestion() {
     } else if (tagReplacedString.length < 20) {
       alert('질문은 20자 이상이어야 합니다.');
     }
-    data['text'] = tagReplacedString;
+    data['text'] = textEditorValue;
     data['tags'] = userTags;
     console.log(data);
   };
@@ -238,6 +238,7 @@ export default function NewQuestion() {
           <ReactQuill
             theme="snow"
             className="Rich_Text_Editor"
+            placeholder="내용을 입력해주세요"
             value={textEditorValue}
             onChange={handleTextEditorChange}
           />

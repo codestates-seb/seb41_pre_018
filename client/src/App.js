@@ -7,6 +7,9 @@ import Main from './Pages/Main';
 import NewQuestion from './Pages/NewQuestion';
 import Sign from './Pages/Sign';
 import MyPage from './Pages/MyPage';
+import Signup_Completed from './Pages/Signup_Completed';
+import Search from './Pages/Search';
+import Deleteuser_Completed from './Pages/Deleteuser_Completed';
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -26,6 +29,12 @@ function App() {
         <Route path="/question/new" element={<NewQuestion />} />
         <Route path="/signup" element={<Sign />} />
         <Route path="/user/:name" element={<MyPage />} />
+        <Route path="/signup-completed" element={<Signup_Completed />} />
+        <Route path="/search" element={<Search />} />
+        <Route
+          path="/deleteuser-completed"
+          element={<Deleteuser_Completed />}
+        />
       </Routes>
     </BrowserRouter>
   );

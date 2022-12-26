@@ -121,6 +121,7 @@ const Main = (props) => {
                   vote={item.vote_result}
                   username={item.username}
                   createdAt={item.created_time}
+                  tags={['tag sample', 'tag sample', 'tag sample']}
                 />
               ))}
           </div>
