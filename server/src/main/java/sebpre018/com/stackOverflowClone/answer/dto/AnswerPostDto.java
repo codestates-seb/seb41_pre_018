@@ -1,5 +1,6 @@
 package sebpre018.com.stackOverflowClone.answer.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.w3c.dom.Text;
 
@@ -9,6 +10,7 @@ import java.sql.Blob;
 import java.time.LocalDateTime;
 
 @Getter
+@AllArgsConstructor
 public class AnswerPostDto {
 
 //    private Long answerId;

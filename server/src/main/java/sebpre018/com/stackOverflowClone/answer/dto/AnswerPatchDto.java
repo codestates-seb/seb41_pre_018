@@ -1,5 +1,6 @@
 package sebpre018.com.stackOverflowClone.answer.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.w3c.dom.Text;
@@ -10,6 +11,7 @@ import java.sql.Blob;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class AnswerPatchDto {
     private Long answerId;
     private Long memberId;

@@ -31,7 +31,7 @@ public class Answer extends BaseEntity {
     private Member memberId;
 
 //    @OneToMany(mappedBy = "answer")
-    private Question id;
+    private Question questionId;
 
     @Column(nullable = false)
     private String text;
