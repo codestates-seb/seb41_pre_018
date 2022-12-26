@@ -111,6 +111,10 @@ const Tags = styled.div`
   padding: 5px;
   color: #39739D;
   width: fit-content;
+  &:hover {
+    background-color: #D0E3F1;
+    cursor: pointer;
+  }
 `
 
 
