@@ -167,14 +167,10 @@ export default function NewQuestion() {
   };
 
   const onSubmit = (data) => {
-    // 기본적으로 <p>Tag 만 삭제했지만, 이 부분에 대한 논의가 필요할 것 같아 우선 남겨둠.
-    // 이후 논의 후  삭제 예정
-    const tagReplacedString = textEditorValue
-      .replaceAll('<p>', '')
-      .replaceAll('</p>', '');
-    if (tagReplacedString === '') {
+    if (textEditorValue === '') {
       alert('질문의 내용을 작성해 주세요.');
-    } else if (tagReplacedString.length < 20) {
+    } else if (textEditorValue.length < 26) {
+      // <p> 태그를 기본적으로 포함하고 있기 때문에 길이를 20자 이상일 경우 +6
       alert('질문은 20자 이상이어야 합니다.');
     }
     data['text'] = textEditorValue;
