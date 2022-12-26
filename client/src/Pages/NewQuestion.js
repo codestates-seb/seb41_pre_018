@@ -144,9 +144,8 @@ export default function NewQuestion() {
     setTagInputXCord(document.querySelector('.Tag_Wrapper').clientWidth + 7.5);
   };
 
-  const deleteTag = () => {
-    userTags.pop();
-    console.log(document.querySelector(`#Tag${userTags.length}`).clientWidth);
+  const deleteTag = (event) => {
+    userTags.splice(event.target.id, 1);
     setTagInputXCord(
       document.querySelector('.Tag_Wrapper').clientWidth +
         7.5 -
@@ -264,7 +263,9 @@ export default function NewQuestion() {
                 return (
                   <div className="Tag" key={`Tag${idx}`} id={`Tag${idx}`}>
                     <span>{a}</span>
-                    <button onClick={deleteTag}>x</button>
+                    <button onClick={deleteTag} id={idx}>
+                      x
+                    </button>
                   </div>
                 );
               })}

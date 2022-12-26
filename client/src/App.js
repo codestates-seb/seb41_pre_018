@@ -16,7 +16,7 @@ const GlobalStyle = createGlobalStyle`
     background-color: #f1f2f3;
   }
 `;
-let isLoggedIn = false;
+let isLoggedIn = true;
 
 function App() {
   return (
