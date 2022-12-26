@@ -4,7 +4,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import sebpre018.com.stackOverflowClone.audit.BaseEntity;
+import sebpre018.com.stackOverflowClone.member.entity.Member;
 import sebpre018.com.stackOverflowClone.question.entity.Question;
+import sebpre018.com.stackOverflowClone.answer.entity.Answer;
+
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -22,15 +25,15 @@ public class Comment extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "question_id")
-    private Question questionId;
+    private Question question;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
-    private Long memberId;
+    private Member member;
 
     @ManyToOne
     @JoinColumn(name = "answer_id")
-    private Long answerId;
+    private Answer answer;
 
     @NotBlank
     private String text;
