@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
+
 const Pagination_Wrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -25,7 +26,13 @@ const Questions_Wrapper = styled.div`
 const All_Questions =  styled.p`
   font-size: 30px;
 `
+const Keyword_Result = styled.p`
+  color: #454545;
+  font-size: 14px;
+  margin: 0;
+`
 const Number_Of_Questions =  styled.p`
+  font-size: 20px;
 `
 const Ask_Question = styled.button`
   font-size: 18px;
@@ -71,7 +78,7 @@ const Pagination_Button = styled.button`
   }
 `
 
-const Main = (props) => {
+const Search = (props) => {
 
   const postPerPage = 10; // 한 페이지에 표시할 글 수
   const postCount = data.question.length; // 모든 글 수
@@ -105,10 +112,11 @@ const Main = (props) => {
           <Title_And_Button_Wrapper>
           <All_Questions_Wrapper>
             <All_Questions>
-              All Questions        
+              Search Results       
             </All_Questions>
+            <Keyword_Result>{`Results for {search keyword}`}</Keyword_Result>
             <Number_Of_Questions>
-              {`${data.question.length} questions`}        
+              {`${data.question.length} results`}        
             </Number_Of_Questions>
           </All_Questions_Wrapper>
           <Link to={props.isLoggedIn ? null : '/login'}>
@@ -122,12 +130,13 @@ const Main = (props) => {
         {pageState? //클릭한 페이지에 따른 조건부 렌더링
             (<div className = 'posts'>{data.question.slice((pageState-1)*postPerPage, pageState * postPerPage).map((item) => (
               <Question
-                title={item.title}
+                title={`${item.title}`}
                 content={item.text}
                 views={item.views}
                 vote={item.vote_result}
                 username={item.username}
                 createdAt={item.created_time}
+                isSearch={true}
                 tags={['tag sample', 'tag sample', 'tag sample']}
               />
             ))}
@@ -144,4 +153,4 @@ const Main = (props) => {
   );
 };
 
-export default Main;
+export default Search;

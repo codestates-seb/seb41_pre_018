@@ -7,6 +7,7 @@ import Login from './Components/Login';
 import Main from './Pages/Main';
 import Sign from './Pages/Sign';
 import MyPage from './Pages/MyPage';
+import Search from './Pages/Search';
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -25,6 +26,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Sign />}/>
         <Route path="/user/:name" element={<MyPage />} />
+        <Route path="/search" element={<Search />} />
       </Routes>
     </BrowserRouter>
   );
