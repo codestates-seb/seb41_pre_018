@@ -3,8 +3,17 @@ import { data } from '../dummydata';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { HiCake } from 'react-icons/hi';
+import DeleteUserModal from '../Components/DeleteUserModal';
 //username 파라미터와 user e-mail 토큰? 기반으로? 받아와야하지 않나?
-const My_Page_Container = styled.div`
+const My_page_Container = styled.div`
+  display: flex;
+  justify-content: center;
+
+  .opacityComponent {
+    opacity: 0.3;
+  }
+`;
+const My_Page_Sub_Container = styled.div`
   height: 100vh;
   display: flex;
   align-items: center;
@@ -102,6 +111,10 @@ const My_Page_About = styled.div`
       background-color: #b3d3ea;
       cursor: pointer;
     }
+    &:disabled:hover {
+      background-color: #e1ecf4;
+      cursor: auto;
+    }
   }
 `;
 const My_Page_Answer_Question_Wrapper = styled.div`
@@ -152,18 +165,24 @@ const My_Page_Answer_Question_Title = styled.span`
 const My_Page_Answer_Question_Text = styled.span`
   font-size: 12px;
 `;
-const My_Page_Delete_User_Button = styled.button`
+export const My_Page_Delete_User_Button = styled.button`
   height: 30px;
   width: 300px;
   border: 1px solid #7aa7c7;
   border-radius: 5px;
   background-color: #f78181;
   color: #3973b3;
+
   &:hover {
     background-color: #fe2e2e;
     cursor: pointer;
   }
+  &:disabled:hover {
+    background-color: #f78181;
+    cursor: auto;
+  }
 `;
+
 function dateChange(UserBirthDay) {
   const d1 = UserBirthDay.split('.')
     .slice(0, 3)
@@ -181,9 +200,11 @@ function dateChange(UserBirthDay) {
   const diffDate = date2.getTime() - date1.getTime();
   return diffDate / (1000 * 60 * 60 * 24);
 }
+
 function MyPage() {
   const { name } = useParams();
   const [dayAgo, setDayAgo] = useState('');
+  const [hiddenAction, setHiddenAction] = useState(false);
   //현재 더미데이터 조건부
   let response;
   for (let i = 0; i < data.member.length; i++) {
@@ -192,6 +213,9 @@ function MyPage() {
       break;
     }
   }
+  const deleteUserHandle = (boolean) => {
+    setHiddenAction(boolean);
+  };
   const { username, created_time, modified_time, aboutMe, answers, questions } =
     response;
 
@@ -201,77 +225,95 @@ function MyPage() {
   }, []);
 
   return (
-    <My_Page_Container>
-      <My_Page_Header>
-        <My_Page_Profile_Image
-          src={process.env.PUBLIC_URL + '/Sample_Avatar.png'}
-        />
-        <div className="Header_Right_Wrapper">
-          <span>{username}</span>
-          <div className="Created_User_Day">
-            <HiCake className="Hi_Cake" />
-            <span>Member for {dayAgo} days</span>
+    <My_page_Container
+      onClick={(e) => {
+        console.log(e);
+      }}
+    >
+      <My_Page_Sub_Container
+        className={hiddenAction === true ? 'opacityComponent' : null}
+      >
+        <My_Page_Header>
+          <My_Page_Profile_Image
+            src={process.env.PUBLIC_URL + '/Sample_Avatar.png'}
+          />
+          <div className="Header_Right_Wrapper">
+            <span>{username}</span>
+            <div className="Created_User_Day">
+              <HiCake className="Hi_Cake" />
+              <span>Member for {dayAgo} days</span>
+            </div>
           </div>
-        </div>
-      </My_Page_Header>
-      <My_Page_About>
-        <div>
-          <My_Page_Title_Span>About</My_Page_Title_Span>
-          <button>Click to edit</button>
-        </div>
-        <div>
-          {aboutMe === '' ? (
-            <span className="No_Aboutme">
-              Your about me section is currently blank. Would you like to add
-              one?
-            </span>
-          ) : (
-            <span>{aboutMe}</span>
-          )}
-        </div>
-      </My_Page_About>
-      <My_Page_Answer_Question_Wrapper>
-        <My_Page_Answer_Question className="Answer_Box">
-          <My_Page_Title_Span>Answers</My_Page_Title_Span>
-          <My_Page_Answer_Question_Body>
-            {answers.length === 0
-              ? null
-              : answers.map((answer) => {
-                  return (
-                    <div key={answer.answer_id}>
-                      <My_Page_Answer_Question_Title>
-                        {answer.answer_title}
-                      </My_Page_Answer_Question_Title>
-                      <My_Page_Answer_Question_Text>
-                        {answer.answer_content}
-                      </My_Page_Answer_Question_Text>
-                    </div>
-                  );
-                })}
-          </My_Page_Answer_Question_Body>
-        </My_Page_Answer_Question>
-        <My_Page_Answer_Question>
-          <My_Page_Title_Span>Questions</My_Page_Title_Span>
-          <My_Page_Answer_Question_Body>
-            {questions.length === 0
-              ? null
-              : questions.map((question) => {
-                  return (
-                    <div key={question.question_id}>
-                      <My_Page_Answer_Question_Title>
-                        {question.question_title}
-                      </My_Page_Answer_Question_Title>
-                      <My_Page_Answer_Question_Text>
-                        {question.question_content}
-                      </My_Page_Answer_Question_Text>
-                    </div>
-                  );
-                })}
-          </My_Page_Answer_Question_Body>
-        </My_Page_Answer_Question>
-      </My_Page_Answer_Question_Wrapper>
-      <My_Page_Delete_User_Button>Delete profile</My_Page_Delete_User_Button>
-    </My_Page_Container>
+        </My_Page_Header>
+        <My_Page_About>
+          <div>
+            <My_Page_Title_Span>About</My_Page_Title_Span>
+            <button disabled={hiddenAction === true ? true : false}>
+              Click to edit
+            </button>
+          </div>
+          <div>
+            {aboutMe === '' ? (
+              <span className="No_Aboutme">
+                Your about me section is currently blank. Would you like to add
+                one?
+              </span>
+            ) : (
+              <span>{aboutMe}</span>
+            )}
+          </div>
+        </My_Page_About>
+        <My_Page_Answer_Question_Wrapper>
+          <My_Page_Answer_Question className="Answer_Box">
+            <My_Page_Title_Span>Answers</My_Page_Title_Span>
+            <My_Page_Answer_Question_Body>
+              {answers.length === 0
+                ? null
+                : answers.map((answer) => {
+                    return (
+                      <div key={answer.answer_id}>
+                        <My_Page_Answer_Question_Title>
+                          {answer.answer_title}
+                        </My_Page_Answer_Question_Title>
+                        <My_Page_Answer_Question_Text>
+                          {answer.answer_content}
+                        </My_Page_Answer_Question_Text>
+                      </div>
+                    );
+                  })}
+            </My_Page_Answer_Question_Body>
+          </My_Page_Answer_Question>
+          <My_Page_Answer_Question>
+            <My_Page_Title_Span>Questions</My_Page_Title_Span>
+            <My_Page_Answer_Question_Body>
+              {questions.length === 0
+                ? null
+                : questions.map((question) => {
+                    return (
+                      <div key={question.question_id}>
+                        <My_Page_Answer_Question_Title>
+                          {question.question_title}
+                        </My_Page_Answer_Question_Title>
+                        <My_Page_Answer_Question_Text>
+                          {question.question_content}
+                        </My_Page_Answer_Question_Text>
+                      </div>
+                    );
+                  })}
+            </My_Page_Answer_Question_Body>
+          </My_Page_Answer_Question>
+        </My_Page_Answer_Question_Wrapper>
+        <My_Page_Delete_User_Button
+          onClick={() => deleteUserHandle(true)}
+          disabled={hiddenAction === true ? true : false}
+        >
+          Delete profile
+        </My_Page_Delete_User_Button>
+      </My_Page_Sub_Container>
+      {hiddenAction === false ? null : (
+        <DeleteUserModal className="hi" deleteUserHandle={deleteUserHandle} />
+      )}
+    </My_page_Container>
   );
 }
 
