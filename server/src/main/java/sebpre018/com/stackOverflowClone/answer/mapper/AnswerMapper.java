@@ -7,11 +7,21 @@ import sebpre018.com.stackOverflowClone.answer.dto.AnswerPatchDto;
 import sebpre018.com.stackOverflowClone.answer.dto.AnswerPostDto;
 import sebpre018.com.stackOverflowClone.answer.dto.AnswerResponseDto;
 import sebpre018.com.stackOverflowClone.answer.entity.Answer;
+import sebpre018.com.stackOverflowClone.member.entity.Member;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface AnswerMapper {
+    default Answer answerPostToAnswer(AnswerPostDto answerPostDto) {
+        Member member = new Member();
+        Member.setAnswerId(answerPostDto.getMemberId());
+
+        Answer answer = new Answer();
+        answer.setMemberId(member);
+
+        return answer;
+    }
 
     Answer answerPostDtoToAnswer(AnswerDto.Post requestBody);
     Answer answerPatchDtoToAnswer(AnswerDto.Patch requestBody);
