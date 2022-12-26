@@ -19,6 +19,7 @@ public interface AnswerMapper {
         Question question = new Question();
         question.setId(answerPostDto.getQuestionId());
         Answer answer = new Answer();
+        answer.setQuestion(question);
         answer.setText(answerPostDto.getText());
 
         return answer;
@@ -27,6 +28,7 @@ public interface AnswerMapper {
         Question question = new Question();
         question.setId(answerPatchDto.getQuestionId());
         Answer answer = new Answer();
+        answer.setQuestion(question);
         answer.setText(answerPatchDto.getText());
 
         return answer;
@@ -34,7 +36,7 @@ public interface AnswerMapper {
 
     default AnswerResponseDto answerToAnswerResponse(Answer answer) {
 //        Member member = answer.getMemberId();  // 토큰으로 받아오는 정보라면 빼야함
-        Question question = answer.getQuestionId();
+        Question question = answer.getQuestion();
 //         Question Id 를 받아와야함
 
         return AnswerResponseDto.builder()

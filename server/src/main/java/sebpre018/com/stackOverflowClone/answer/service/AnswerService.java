@@ -29,7 +29,7 @@ public class AnswerService {
 
     public Answer updateAnswer(Answer answer) {
         Answer findAnswer = findVerifiedAnswer(answer.getAnswerId());
-        Member writer = memberService.findVerifiedMember(findAnswer.getMemberId().getId());
+        Member writer = memberService.findVerifiedMember(findAnswer.getMember().getId());
         return answerRepository.save(answer);
     }
 
@@ -44,7 +44,7 @@ public class AnswerService {
 
     public void deleteAnswer(Long answerId) {
         Answer findAnswer = findVerifiedAnswer(answerId);
-        Member writer = memberService.findVerifiedMember(findAnswer.getMemberId().getId());
+        Member writer = memberService.findVerifiedMember(findAnswer.getMember().getId());
         answerRepository.delete(findAnswer);
     }
 

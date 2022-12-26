@@ -28,10 +28,10 @@ public class Answer extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "member_id")
-    private Member memberId;
+    private Member member;
 
 //    @OneToMany(mappedBy = "answer")
-    private Question questionId;
+    private Question question;
 
     @Column(nullable = false)
     private String text;
