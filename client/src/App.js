@@ -12,18 +12,18 @@ const GlobalStyle = createGlobalStyle`
   body {
     background-color: #f1f2f3;
   }
-`
+`;
 let isLoggedIn = true;
 
 function App() {
   return (
     <BrowserRouter>
-      <GlobalStyle/>
+      <GlobalStyle />
       <Navbar isLoggedIn={isLoggedIn} />
       <Routes>
-        <Route path="/" element={<Main isLoggedIn={isLoggedIn}/>} />
+        <Route path="/" element={<Main isLoggedIn={isLoggedIn} />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Sign />}/>
+        <Route path="/signup" element={<Sign />} />
         <Route path="/user/:name" element={<MyPage />} />
       </Routes>
     </BrowserRouter>
