@@ -27,24 +27,35 @@ const Edit_Question_Wrapper = styled.div`
     display: flex;
     padding: 15px 25px;
 
-    button,
-    input {
-      background-color: aliceblue;
+    input,
+    button {
       border: none;
-      width: 150px;
+      width: 100px;
       height: 30px;
+      border-radius: 5px;
       padding: 5px;
-      font-size: 16px;
       margin-right: 25px;
+      font-size: 14px;
+    }
+
+    input {
+      background-color: rgb(9, 149, 253);
+      color: white;
 
       &:hover {
         cursor: pointer;
-        border: solid black 1px;
+        border: solid black 1.5px;
       }
     }
 
     button {
-      color: red;
+      color: rgb(110, 152, 183);
+      background-color: transparent;
+
+      &:hover {
+        cursor: pointer;
+        color: black;
+      }
     }
   }
 `;
@@ -56,7 +67,7 @@ const Text_Wrapper = styled.div`
   padding: 15px 25px;
 
   h3 {
-    margin: 0;
+    margin: 0 0 10px 0;
   }
 
   input {
@@ -76,29 +87,35 @@ const Text_Wrapper = styled.div`
   .Tag_Wrapper {
     position: absolute;
     display: flex;
-    top: 69%;
+    top: 55%;
+    color: rgb(40, 128, 185);
+    font-size: 14px;
     margin-left: 10px;
 
     .Tag {
       display: flex;
       justify-content: center;
       align-items: center;
-      border: 1px solid black;
-      background-color: aliceblue;
+      background-color: rgb(225, 236, 244);
+      padding: 2.5px;
       margin-right: 5px;
+      border-radius: 3px;
 
       span {
         margin-right: 2px;
       }
+
       button {
         height: 100%;
         border: none;
-        border-left: 1px solid black;
-        background-color: white;
+        font-size: 16px;
+        font-weight: bold;
+        background-color: rgb(225, 236, 244);
+        color: rgb(40, 128, 185);
 
         &:hover {
           cursor: pointer;
-          background-color: gainsboro;
+          color: black;
         }
       }
     }

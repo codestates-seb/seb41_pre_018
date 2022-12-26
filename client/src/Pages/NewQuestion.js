@@ -75,29 +75,35 @@ const Text_Wrapper = styled.div`
   .Tag_Wrapper {
     position: absolute;
     display: flex;
-    top: 69%;
+    top: 68%;
+    color: rgb(40, 128, 185);
+    font-size: 14px;
     margin-left: 10px;
 
     .Tag {
       display: flex;
       justify-content: center;
       align-items: center;
-      border: 1px solid black;
-      background-color: aliceblue;
+      background-color: rgb(225, 236, 244);
+      padding: 2.5px;
       margin-right: 5px;
+      border-radius: 3px;
 
       span {
         margin-right: 2px;
       }
+
       button {
         height: 100%;
         border: none;
-        border-left: 1px solid black;
-        background-color: white;
+        font-size: 16px;
+        font-weight: bold;
+        background-color: rgb(225, 236, 244);
+        color: rgb(40, 128, 185);
 
         &:hover {
           cursor: pointer;
-          background-color: gainsboro;
+          color: black;
         }
       }
     }
