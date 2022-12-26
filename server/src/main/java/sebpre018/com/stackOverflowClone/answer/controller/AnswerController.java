@@ -16,6 +16,7 @@ import sebpre018.com.stackOverflowClone.answer.entity.Answer;
 import sebpre018.com.stackOverflowClone.answer.mapper.AnswerMapper;
 import sebpre018.com.stackOverflowClone.answer.service.AnswerService;
 import sebpre018.com.stackOverflowClone.response.MultiResponseDto;
+import sebpre018.com.stackOverflowClone.response.SingleResponseDto;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -36,23 +37,23 @@ public class AnswerController {
 
     @PostMapping("/{question-id}")
     public ResponseEntity postAnswer(@PathVariable("question-id") Long questionId,
-                                     @Valid @RequestBody AnswerDto.Post requestBody){
+                                     @Valid @RequestBody AnswerPostDto answerPostDto){
 
-        Answer answer = mapper.answerPostDtoToAnswer(requestBody);
-        Answer createdAnswer = answerService.createAnswer(answer);
+        Answer answer = answerService.createAnswer(mapper.answerPostDtoToAnswer((answerPostDto)));
+        AnswerResponseDto response = mapper.answerToAnswerResponse(answer);
 
-        return new ResponseEntity<>(mapper.answerToAnswerResponseDto(createdAnswer), HttpStatus.CREATED);
+        return new ResponseEntity<>(new SingleResponseDto<>(response), HttpStatus.CREATED);
     }
 
     @PatchMapping("/{question-id}/{answer-id}")
     public ResponseEntity patchAnswer(@PathVariable("question-id") Long questionId,
                                       @PathVariable("answer-id") Long answerId,
-                                      @Valid @RequestBody AnswerDto.Patch requestBody) {
-        requestBody.setAnswerId(answerId);
+                                      @Valid @RequestBody AnswerPatchDto answerPatchDto) {
 
-        Answer answer = answerService.updateAnswer(mapper.answerPatchDtoToAnswer(requestBody));
+        Answer answer = answerService.updateAnswer(mapper.answerPatchDtoToAnswer(answerPatchDto));
+        AnswerResponseDto response = mapper.answerToAnswerResponse(answer);
 
-        return new ResponseEntity<>(mapper.answerToAnswerResponseDto(answer), HttpStatus.OK);
+        return new ResponseEntity<>(new SingleResponseDto<>(response), HttpStatus.OK);
     }
 
     @GetMapping("/{question-id}/{answer-id}")
@@ -60,8 +61,9 @@ public class AnswerController {
                                     @PathVariable("answer-id") Long answerId) {
 
         Answer answer = answerService.findAnswer(answerId);
+        AnswerResponseDto response = mapper.answerToAnswerResponse(answer);
 
-        return new ResponseEntity<>(mapper.answerToAnswerResponseDto(answer), HttpStatus.OK);
+        return new ResponseEntity<>(new SingleResponseDto<>(response), HttpStatus.OK);
     }
 
     @GetMapping
