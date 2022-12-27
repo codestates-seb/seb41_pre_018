@@ -1,20 +1,25 @@
 package sebpre018.com.stackOverflowClone.question.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import sebpre018.com.stackOverflowClone.Tag.service.TagService;
+import sebpre018.com.stackOverflowClone.question.dto.AllResponseDto;
 import sebpre018.com.stackOverflowClone.question.dto.QuestionPatchDto;
 import sebpre018.com.stackOverflowClone.question.dto.QuestionPostDto;
 import sebpre018.com.stackOverflowClone.question.dto.QuestionResponseDto;
 import sebpre018.com.stackOverflowClone.question.entity.Question;
 import sebpre018.com.stackOverflowClone.question.mapper.QuestionMapper;
 import sebpre018.com.stackOverflowClone.question.service.QuestionService;
+import sebpre018.com.stackOverflowClone.response.MultiResponseDto;
 import sebpre018.com.stackOverflowClone.response.SingleResponseDto;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
+import java.util.List;
 
 @RestController
 @RequestMapping("/questions")
@@ -25,6 +30,8 @@ public class QuestionController {
     private final QuestionService questionService;
 
     private final QuestionMapper mapper;
+
+    private final TagService tagService;
 
     //질문 등록
 //   @Secured("ROLE_USER") -> 로그인한 회원에게 권한 부여
@@ -51,18 +58,33 @@ public class QuestionController {
         );
     }
 
-    //질문 조회
+    //질문 조회(질문 상세 페이지)
     @GetMapping("/{id}")
     public ResponseEntity getQuestion(@PathVariable("id") @Positive Long id) {
         Question question = questionService.findQuestion(id);
         int view = question.getViews();
-        question.setViews(++view); //조회수
-        QuestionResponseDto response = mapper.questionToQuestionResponse(question);
+        question.setViews(++view); //조회수 증가
+
+        AllResponseDto response = mapper.questionToAllResponse(question);
         return new ResponseEntity<>(
                 new SingleResponseDto<>(response), HttpStatus.OK
         );
     }
 
+    //전체 질문 페이지
+    @GetMapping("/question")
+    public ResponseEntity getQuestions(@Positive @RequestParam("page") int page,
+                                       @Positive @RequestParam("size") int size,
+                                       @RequestParam("sort") String sort){
+        Page<Question> pageQuestions = questionService.findQuestions(page-1, size, sort);
+
+        List<Question> questions = pageQuestions.getContent();
+        questions.stream().forEach(question -> question.setTags(tagService.findTags()));
+
+        return new ResponseEntity<> (new MultiResponseDto<>(
+                mapper.questionsToQuestionResponseDtos(questions), pageQuestions)
+                , HttpStatus.OK);
+    }
     //질문 삭제
     @DeleteMapping("/{id}")
     public ResponseEntity deleteQuestion(@PathVariable("id") @Positive Long id){

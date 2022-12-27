@@ -3,10 +3,13 @@ package sebpre018.com.stackOverflowClone.question.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import sebpre018.com.stackOverflowClone.Tag.entity.Tag;
 import sebpre018.com.stackOverflowClone.audit.BaseEntity;
 import sebpre018.com.stackOverflowClone.member.entity.Member;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -22,6 +25,15 @@ public class Question extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @OneToMany(mappedBy = "question", cascade = CascadeType.PERSIST)
+    private List<Tag> Tags = new ArrayList<>();
+
+    @OneToMany(mappedBy = "question", cascade = CascadeType.PERSIST)
+    private List<Answer> answers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "question", cascade = CascadeType.PERSIST)
+    private List<Comment> comments = new ArrayList<>();
 
     @Column(nullable = false)
     private String title;
@@ -39,4 +51,5 @@ public class Question extends BaseEntity {
 //    @Embedded
 //    @Column(nullable = false)
 //    private Time time;
+
 }
