@@ -142,7 +142,7 @@ export default function NewQuestion() {
   const [userTags, setUserTags] = useState(data.question[0].tags);
   const [userInput, setUserInput] = useState('');
   const [tagInputXCord, setTagInputXCord] = useState(0);
-  const [textEditorValue, setTextEditorValue] = useState(data.question[0].text);
+  const [textEditorValue, setTextEditorValue] = useState(data.question[7].text);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -197,6 +197,7 @@ export default function NewQuestion() {
       if (confirm('수정한 내용을 등록하시겠습니까?')) {
         data['text'] = textEditorValue;
         data['tags'] = userTags;
+        console.log(textEditorValue);
         console.log(data);
       }
     }
