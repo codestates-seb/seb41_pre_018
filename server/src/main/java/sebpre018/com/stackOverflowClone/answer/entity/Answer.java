@@ -31,6 +31,8 @@ public class Answer extends BaseEntity {
     private Member member;
 
 //    @OneToMany(mappedBy = "answer")
+    @ManyToOne
+    @JoinColumn(name = "question_id")
     private Question question;
 
     @Column(nullable = false)

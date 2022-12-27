@@ -4,8 +4,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import sebpre018.com.stackOverflowClone.Tag.entity.Tag;
+import sebpre018.com.stackOverflowClone.answer.entity.Answer;
 import sebpre018.com.stackOverflowClone.audit.BaseEntity;
 import sebpre018.com.stackOverflowClone.member.entity.Member;
+import sebpre018.com.stackOverflowClone.comment.entity.Comment;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -29,11 +31,12 @@ public class Question extends BaseEntity {
     @OneToMany(mappedBy = "question", cascade = CascadeType.PERSIST)
     private List<Tag> Tags = new ArrayList<>();
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.PERSIST)
-    private List<Answer> answers = new ArrayList<>();
-
-    @OneToMany(mappedBy = "question", cascade = CascadeType.PERSIST)
-    private List<Comment> comments = new ArrayList<>();
+//    Post시 값을 넣어주지 않으므로 양방향 필요하지 않음
+//    @OneToMany(mappedBy = "question", cascade = CascadeType.PERSIST)
+//    private List<Answer> answers = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "question", cascade = CascadeType.PERSIST)
+//    private List<Comment> comments = new ArrayList<>();
 
     @Column(nullable = false)
     private String title;
