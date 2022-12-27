@@ -4,6 +4,12 @@ import org.mapstruct.Mapper;
 import sebpre018.com.stackOverflowClone.Tag.dto.TagPostDto;
 import sebpre018.com.stackOverflowClone.Tag.dto.TagResponseDto;
 import sebpre018.com.stackOverflowClone.Tag.entity.Tag;
+import sebpre018.com.stackOverflowClone.answer.dto.AnswerResponseDto;
+import sebpre018.com.stackOverflowClone.answer.entity.Answer;
+import sebpre018.com.stackOverflowClone.answer.repository.AnswerRepository;
+import sebpre018.com.stackOverflowClone.comment.dto.CommentResponseDto;
+import sebpre018.com.stackOverflowClone.comment.entity.Comment;
+import sebpre018.com.stackOverflowClone.comment.repository.CommentRepository;
 import sebpre018.com.stackOverflowClone.member.entity.Member;
 import sebpre018.com.stackOverflowClone.question.dto.AllResponseDto;
 import sebpre018.com.stackOverflowClone.question.dto.QuestionPatchDto;
@@ -84,7 +90,28 @@ public interface QuestionMapper {
 
     List<QuestionResponseDto> questionsToQuestionResponseDtos(List<Question> questions);
 
-    AllResponseDto questionToAllResponse(Question question){
+    default List<AnswerResponseDto> answersToAnswerResponseDtos(List<Answer> answers){
+        return answers.stream()
+                .map(answer -> AnswerResponseDto.builder()
+                        .answerId(answer.getAnswerId())
+                        .questionId(answer.getQuestion().getId())
+                        .memberId(answer.getMember().getId())
+                        .text(answer.getText())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    default List<CommentResponseDto> commentsToCommentResponseDtos(List<Comment> comments){
+        return comments.stream()
+                .map(comment -> CommentResponseDto.builder()
+                        .commentId(comment.getId())
+                        .questionId(comment.getQuestion().getId())
+                        .memberId(comment.getMember().getId())
+                        .text(comment.getText())
+                        .build())
+                .collect(Collectors.toList());
+    }
+    default AllResponseDto questionToAllResponse(Question question, AnswerRepository answerRepository, CommentRepository commentRepository){
         Member member = question.getMember();
 
         return AllResponseDto.builder()
@@ -95,8 +122,8 @@ public interface QuestionMapper {
                 .voteResult(question.getVoteResult())
                 .views(question.getViews())
                 .tags(tagsToTagResponseDtos(question.getTags()))
-                .answers(answersToAnswerResponseDtos(question.getAnswers()))
-                .comments(commentsToCommentResponseDtos(question.getComments()))
+                .answers(answersToAnswerResponseDtos(answerRepository.findAllByQuestionId(question.getId())))
+                .comments(commentsToCommentResponseDtos(commentRepository.findAllByQuestionId(question.getId())))
                 .build();
     }
 }

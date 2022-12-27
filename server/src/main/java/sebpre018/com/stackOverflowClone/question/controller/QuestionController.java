@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import sebpre018.com.stackOverflowClone.Tag.service.TagService;
+import sebpre018.com.stackOverflowClone.answer.repository.AnswerRepository;
+import sebpre018.com.stackOverflowClone.comment.repository.CommentRepository;
 import sebpre018.com.stackOverflowClone.question.dto.AllResponseDto;
 import sebpre018.com.stackOverflowClone.question.dto.QuestionPatchDto;
 import sebpre018.com.stackOverflowClone.question.dto.QuestionPostDto;
@@ -32,6 +34,10 @@ public class QuestionController {
     private final QuestionMapper mapper;
 
     private final TagService tagService;
+
+    private final AnswerRepository answerRepository;
+
+    private final CommentRepository commentRepository;
 
     //질문 등록
 //   @Secured("ROLE_USER") -> 로그인한 회원에게 권한 부여
@@ -65,7 +71,7 @@ public class QuestionController {
         int view = question.getViews();
         question.setViews(++view); //조회수 증가
 
-        AllResponseDto response = mapper.questionToAllResponse(question);
+        AllResponseDto response = mapper.questionToAllResponse(question, answerRepository, commentRepository);
         return new ResponseEntity<>(
                 new SingleResponseDto<>(response), HttpStatus.OK
         );
