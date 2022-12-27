@@ -13,9 +13,7 @@ import sebpre018.com.stackOverflowClone.member.service.MemberService;
 import sebpre018.com.stackOverflowClone.question.entity.Question;
 import sebpre018.com.stackOverflowClone.question.service.QuestionService;
 import sebpre018.com.stackOverflowClone.response.SingleResponseDto;
-import sebpre018.com.stackOverflowClone.vote.dto.VoteDto;
 import sebpre018.com.stackOverflowClone.vote.entity.Vote;
-import sebpre018.com.stackOverflowClone.vote.mapper.VoteMapper;
 import sebpre018.com.stackOverflowClone.vote.service.VoteService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,10 +30,10 @@ public class VoteController {
 
     //question 추천
     @PostMapping("/question/{questionId}/vote/{voteId}")
-    public void QuestionUpVote(@PathVariable("questionId") Long questionId,
+    public void QuestionVote(@PathVariable("questionId") Long questionId,
                                  HttpServletRequest request) {
         boolean result = false;
-        result = voteService.QuestionVote(memberService.getLoginMember(), questionId);
+        result = voteService.addQuestionVote(memberService.getLoginMember(), questionId);
 
         if (!result) {
             throw new BusinessLogicException(ExceptionCode.VOTED);//중복투표시 예외 발생
@@ -43,16 +41,15 @@ public class VoteController {
     }
 
     //answer 추천
-    @PostMapping("/answer/{answerId}/vote/{voteId}/up")
-    public void plusAnswerVote(@PathVariable("answerId") Long answerId,
+    @PostMapping("/answer/{answerId}/vote/{voteId}")
+    public void AnswerVote(@PathVariable("answerId") Long answerId,
                                HttpServletRequest request) {
         boolean result = false;
-        result = voteService.AnswerVote(memberService.getLoginMember(), anwerId);
+        result = voteService.addAnswerVote(memberService.getLoginMember(), answerId);
 
         if (!result) {
-            throw new BusinessLogicException(ExceptionCode.VOTED;//중복투표시 예외 발생
+            throw new BusinessLogicException(ExceptionCode.VOTED);//중복투표시 예외 발생
         }
     }
 
-}
 }

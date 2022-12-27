@@ -1,6 +1,7 @@
 package sebpre018.com.stackOverflowClone.vote.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import sebpre018.com.stackOverflowClone.answer.entity.Answer;
 import sebpre018.com.stackOverflowClone.member.entity.Member;
 import sebpre018.com.stackOverflowClone.question.entity.Question;
 import sebpre018.com.stackOverflowClone.vote.entity.Vote;
