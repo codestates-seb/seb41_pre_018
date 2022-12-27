@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import sebpre018.com.stackOverflowClone.question.entity.Member;
 
 import javax.persistence.Column;
 import javax.persistence.FetchType;

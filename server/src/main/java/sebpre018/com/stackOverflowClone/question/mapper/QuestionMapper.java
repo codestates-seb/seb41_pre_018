@@ -1,10 +1,10 @@
 package sebpre018.com.stackOverflowClone.question.mapper;
 
 import org.mapstruct.Mapper;
+import sebpre018.com.stackOverflowClone.member.entity.Member;
 import sebpre018.com.stackOverflowClone.question.dto.QuestionPatchDto;
 import sebpre018.com.stackOverflowClone.question.dto.QuestionPostDto;
 import sebpre018.com.stackOverflowClone.question.dto.QuestionResponseDto;
-import sebpre018.com.stackOverflowClone.question.entity.Member;
 import sebpre018.com.stackOverflowClone.question.entity.Question;
 
 @Mapper(componentModel = "spring")
