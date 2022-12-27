@@ -9,10 +9,16 @@ import sebpre018.com.stackOverflowClone.exception.ExceptionCode;
 import sebpre018.com.stackOverflowClone.member.entity.Member;
 import sebpre018.com.stackOverflowClone.member.repository.MemberRepository;
 import sebpre018.com.stackOverflowClone.util.CustomBeanUtils;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+import javax.transaction.Transactional;
+import java.awt.*;
 import java.util.List;
 import java.util.Optional;
 
+
+@Transactional
 @Service
 public class MemberService {
     private final MemberRepository memberRepository;
@@ -32,6 +38,19 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
+    //로그인된 유저 정보 조회
+    public Member getLoginMember() { // 로그인된 유저 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if(authentication == null || authentication.getName() == null || authentication.getName().equals("anonymousMEMBER"))
+            throw new BusinessLogicException(ExceptionCode.UNAUTHORIZED);
+
+        Optional<Member> optionalUser = memberRepository.findByEmail(authentication.getName());
+        Member member = optionalUser.orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+
+        return member;
+    }
+gg
     public Member updateMember(Member member) {
         Member findMember = findVerifiedMember(member.getId());
 
