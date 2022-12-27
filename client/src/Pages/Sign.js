@@ -27,7 +27,7 @@ const Sign_Text_Box = styled.div`
     font-weight: 500;
     font-size: 25px;
   }
-  .sign_icon1 {
+  .Sign_Up_Content_Icon {
     color: #0995fe;
     font-size: 22px;
   }
@@ -54,13 +54,13 @@ const Sign_Text_Content_Box = styled.div`
     align-items: center;
     flex-direction: column;
 
-    .sign_icon_up {
+    .Sign_Up_Icon_Up {
       color: #0995fe;
       font-size: 25px;
       position: relative;
       top: 6px;
     }
-    .sign_icon_down {
+    .Sign_up_Icon_Down {
       color: #0995fe;
       font-size: 20px;
       position: relative;
@@ -107,10 +107,10 @@ const Sign_Input_Container = styled.div`
   flex-direction: column;
   height: 90px;
   width: 250px;
-  .allow_text {
+  .Allow_Text {
     color: #3973b3;
   }
-  .error_text {
+  .Error_Text {
     color: #f78181;
   }
 `;
@@ -232,22 +232,22 @@ function Sign() {
       <Sign_Text_Box>
         <h3>Join the Stack Overflow community</h3>
         <Sign_Text_Content_Box>
-          <RiQuestionnaireFill className="sign_icon1" />
+          <RiQuestionnaireFill className="Sign_Up_Content_Icon" />
           <span>Get unstuck - ask a question</span>
         </Sign_Text_Content_Box>
         <Sign_Text_Content_Box>
           <div>
-            <BiCaretUp className="sign_icon_up" />
-            <BsCaretDown className="sign_icon_down" />
+            <BiCaretUp className="Sign_Up_Icon_Up" />
+            <BsCaretDown className="Sign_up_Icon_Down" />
           </div>
           <span>Unlock new privileges like voting and commenting</span>
         </Sign_Text_Content_Box>
         <Sign_Text_Content_Box>
-          <AiFillTags className="sign_icon1" />
+          <AiFillTags className="Sign_Up_Content_Icon" />
           <span>Save your favorite tags, filters, and jobs</span>
         </Sign_Text_Content_Box>
         <Sign_Text_Content_Box>
-          <AiFillTrophy className="sign_icon1" />
+          <AiFillTrophy className="Sign_Up_Content_Icon" />
           <span>Earn reputation and badges</span>
         </Sign_Text_Content_Box>
         <span>
@@ -269,15 +269,15 @@ function Sign() {
 
           {getValues('email') === '' ? null : verify.verifyEmailVerify
               .boolean === true && verify.emailVerify.boolean === true ? (
-            <Sign_Text className="allow_text">
+            <Sign_Text className="Allow_Text">
               사용가능한 이메일입니다.
             </Sign_Text>
           ) : verify.emailVerify.boolean === true ? (
-            <Sign_Text className="allow_text">
+            <Sign_Text className="Allow_Text">
               올바른 형식의 이메일입니다.
             </Sign_Text>
           ) : (
-            <Sign_Text className="error_text">
+            <Sign_Text className="Error_Text">
               올바른 형식의 이메일이 아닙니다.
             </Sign_Text>
           )}
@@ -287,11 +287,11 @@ function Sign() {
           <Sign_Input id="username" {...register('username')} required />
           {getValues('username') === '' ? null : verify.usernameVerify
               .boolean === true ? (
-            <Sign_Text className="allow_text">
+            <Sign_Text className="Allow_Text">
               올바른 형식의 이름입니다.
             </Sign_Text>
           ) : (
-            <Sign_Text className="error_text">
+            <Sign_Text className="Error_Text">
               올바른 형식의 이름이 아닙니다.
             </Sign_Text>
           )}
@@ -306,11 +306,11 @@ function Sign() {
           />
           {getValues('password') === '' ? null : verify.passwordVerify
               .boolean === true ? (
-            <Sign_Text className="allow_text">
+            <Sign_Text className="Allow_Text">
               사용가능한 비밀번호입니다.
             </Sign_Text>
           ) : (
-            <Sign_Text className="error_text">
+            <Sign_Text className="Error_Text">
               비밀번호는 영문,숫자,특수기호 포함하여 8자 이상 12자 이하로
               작성하셔야 합니다.
             </Sign_Text>
@@ -327,9 +327,9 @@ function Sign() {
           />
           {getValues('verifyPassword') === undefined ? null : verify
               .verifyPasswordVerify.boolean === true ? (
-            <Sign_Text className="allow_text">비밀번호가 일치합니다.</Sign_Text>
+            <Sign_Text className="Allow_Text">비밀번호가 일치합니다.</Sign_Text>
           ) : (
-            <Sign_Text className="error_text">
+            <Sign_Text className="Error_Text">
               비밀번호가 일치하지 않습니다.
             </Sign_Text>
           )}
