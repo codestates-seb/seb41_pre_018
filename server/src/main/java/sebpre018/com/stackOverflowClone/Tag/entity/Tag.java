@@ -25,4 +25,8 @@ public class Tag extends BaseEntity {
 
     @Column(nullable = false)
     private String hashTag;
+
+    public void addQuestion(Question question) {
+        this.question = question;
+    }
 }
