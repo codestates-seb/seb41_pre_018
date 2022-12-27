@@ -9,6 +9,8 @@ import Sign from './Pages/Sign';
 import MyPage from './Pages/MyPage';
 import Signup_Completed from './Pages/Signup_Completed';
 import Search from './Pages/Search';
+import EditQuestion from './Pages/EditQuestion';
+import EditAnswer from './Pages/EditAnswer';
 import Deleteuser_Completed from './Pages/Deleteuser_Completed';
 
 const GlobalStyle = createGlobalStyle`
