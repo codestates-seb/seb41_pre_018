@@ -16,5 +16,7 @@ public class AnswerResponseDto {
 
     private Long questionId;
 
+    private int voteResult;
+
     private String text;
 }
