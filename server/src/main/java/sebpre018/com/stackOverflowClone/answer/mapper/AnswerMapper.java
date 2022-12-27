@@ -20,6 +20,7 @@ public interface AnswerMapper {
         question.setId(answerPostDto.getQuestionId());
         Answer answer = new Answer();
         answer.setQuestion(question);
+        answer.setVoteResult(0);
         answer.setText(answerPostDto.getText());
 
         return answer;
@@ -43,6 +44,7 @@ public interface AnswerMapper {
                 .answerId(answer.getAnswerId())
 //                .memberId(member.getId())
                 .questionId(question.getId())
+                .voteResult(answer.getVoteResult())
                 .text(answer.getText())
                 .build();
     }

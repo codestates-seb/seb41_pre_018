@@ -63,25 +63,25 @@ public class CommentController {
 
         return new ResponseEntity<>(new SingleResponseDto<>(response), HttpStatus.OK);
     }
-    // 질문에 달린 댓글 조회하기
-    @GetMapping("/{question-id}/{comment-id}")
-    public ResponseEntity getComment(@PathVariable("question-id") Long questionId,
-                                     @PathVariable("comment-id") Long commentId) {
-        Comment comment = commentService.findComment(commentId);
-        CommentResponseDto response = mapper.commentToCommentResponse(comment);
-
-        return new ResponseEntity<>(new SingleResponseDto<>(response), HttpStatus.OK);
-    }
-    // 답변에 달린 댓글 조회하기
-    @GetMapping("/{question-id}/{answer-id}/{comment-id}")
-    public ResponseEntity getComment(@PathVariable("question-id") Long questionId,
-                                     @PathVariable("answer-id") Long answerId,
-                                     @PathVariable("comment-id") Long commentId) {
-        Comment comment = commentService.findComment(commentId);
-        CommentResponseDto response = mapper.commentToCommentResponse(comment);
-
-        return new ResponseEntity<>(new SingleResponseDto<>(response), HttpStatus.OK);
-    }
+//    // 질문에 달린 댓글 조회하기
+//    @GetMapping("/{question-id}/{comment-id}")
+//    public ResponseEntity getComment(@PathVariable("question-id") Long questionId,
+//                                     @PathVariable("comment-id") Long commentId) {
+//        Comment comment = commentService.findComment(commentId);
+//        CommentResponseDto response = mapper.commentToCommentResponse(comment);
+//
+//        return new ResponseEntity<>(new SingleResponseDto<>(response), HttpStatus.OK);
+//    }
+//    // 답변에 달린 댓글 조회하기
+//    @GetMapping("/{question-id}/{answer-id}/{comment-id}")
+//    public ResponseEntity getComment(@PathVariable("question-id") Long questionId,
+//                                     @PathVariable("answer-id") Long answerId,
+//                                     @PathVariable("comment-id") Long commentId) {
+//        Comment comment = commentService.findComment(commentId);
+//        CommentResponseDto response = mapper.commentToCommentResponse(comment);
+//
+//        return new ResponseEntity<>(new SingleResponseDto<>(response), HttpStatus.OK);
+//    }
     // 댓글 전체조회하기 -> 수정 요함
     @GetMapping
     public ResponseEntity getComments(@RequestParam int page,
@@ -93,16 +93,17 @@ public class CommentController {
                 pageComments), HttpStatus.OK);
     }
     // 질문에 달린 댓글 삭제하기
-    @DeleteMapping("{question-id}")
+    @DeleteMapping("{question-id}/{comment-id}")
     public ResponseEntity deleteComment(@PathVariable("question-id") Long questionId,
-                                        @PathVariable("answer-id") Long answerId) {
+                                        @PathVariable("comment-id") Long commentId) {
         commentService.deleteComment(commentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
     // 답변에 달린 댓글 삭제하기
-    @DeleteMapping("{question-id}/{answer-id}")
+    @DeleteMapping("{question-id}/{answer-id}/{comment-id}")
     public ResponseEntity deleteComment(@PathVariable("question-id") Long questionId,
-                                        @PathVariable("answer-id") Long answerId) {
+                                        @PathVariable("answer-id") Long answerId,
+                                        @PathVariable("comment-id") Long commentId) {
         commentService.deleteComment(commentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

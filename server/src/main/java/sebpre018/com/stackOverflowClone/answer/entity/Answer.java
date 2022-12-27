@@ -35,6 +35,9 @@ public class Answer extends BaseEntity {
     @JoinColumn(name = "question_id")
     private Question question;
 
+    @Column
+    private int voteResult = 0;
+
     @Column(nullable = false)
     private String text;
 
