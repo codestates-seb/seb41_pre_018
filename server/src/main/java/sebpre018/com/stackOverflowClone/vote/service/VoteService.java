@@ -2,6 +2,8 @@ package sebpre018.com.stackOverflowClone.vote.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import sebpre018.com.stackOverflowClone.answer.entity.Answer;
+import sebpre018.com.stackOverflowClone.answer.repository.AnswerRepository;
 import sebpre018.com.stackOverflowClone.exception.BusinessLogicException;
 import sebpre018.com.stackOverflowClone.exception.ExceptionCode;
 import sebpre018.com.stackOverflowClone.member.entity.Member;
@@ -25,7 +27,7 @@ public class VoteService {
 
     private final AnswerRepository answerRepository;
 
-    public boolean QuestionVote(Member member, Long questionId) {
+    public boolean addQuestionVote(Member member, Long questionId) {
         Question question = questionRepository.findById(questionId).orElseThrow();
 
         //question vote 중복 방지
@@ -41,17 +43,17 @@ public class VoteService {
         }
         return false;
     }
-    public boolean AnswerVote(Member member, Long answerId) {
+    public boolean addAnswerVote(Member member, Long answerId) {
         Answer answer = answerRepository.findById(answerId).orElseThrow();
 
         //answer vote 중복 방지
-        if (isNotAlreadyQuestionVote(member, answer)) {
+        if (isNotAlreadyAnswerVote(member, answer)) {
             Vote vote=voteRepository.save(new Vote(member, answer));
-            int voteCount= answer.getVoteResult();
+            int voteCount= 0;//answer.getVoteResult();
             if(vote.getStatus() == 1){
                 voteCount++;
             }else if(vote.getStatus() == -1)voteCount--;
-            answer.setVoteResult(voteCount);
+            //answer.setVoteResult(voteCount);
             answerRepository.save(answer);
             return true;
         }
