@@ -69,6 +69,7 @@ public interface QuestionMapper {
         return QuestionResponseDto.builder()
                 .id(question.getId())
                 .memberId(member.getId())
+                .username(member.getUsername())
                 .title(question.getTitle())
                 .text(question.getText())
                 .voteResult(question.getVoteResult())
@@ -113,6 +114,7 @@ public interface QuestionMapper {
     }
     default AllResponseDto questionToAllResponse(Question question, AnswerRepository answerRepository, CommentRepository commentRepository){
         Member member = question.getMember();
+        List<Answer> answers = answerRepository.findAllByQuestionId(question.getId());
 
         return AllResponseDto.builder()
                 .id(question.getId())
@@ -122,7 +124,8 @@ public interface QuestionMapper {
                 .voteResult(question.getVoteResult())
                 .views(question.getViews())
                 .tags(tagsToTagResponseDtos(question.getTags()))
-                .answers(answersToAnswerResponseDtos(answerRepository.findAllByQuestionId(question.getId())))
+                .answers(answersToAnswerResponseDtos(answers))
+                .answerCount(answers.size())
                 .comments(commentsToCommentResponseDtos(commentRepository.findAllByQuestionId(question.getId())))
                 .build();
     }

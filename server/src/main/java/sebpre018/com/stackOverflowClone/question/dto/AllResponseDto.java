@@ -25,6 +25,8 @@ public class AllResponseDto {
 
     private int views;
 
+    private int answerCount;
+
     private List<TagResponseDto> tags;
 
     private List<AnswerResponseDto> answers;

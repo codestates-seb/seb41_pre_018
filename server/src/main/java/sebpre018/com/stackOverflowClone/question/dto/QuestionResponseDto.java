@@ -20,6 +20,8 @@ public class QuestionResponseDto {
 
     private Long memberId;
 
+    private String username;
+
     private String title;
 
     private String text;
