@@ -2,6 +2,10 @@ import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { AiFillTrophy, AiFillTags } from 'react-icons/ai';
+import { RiQuestionnaireFill } from 'react-icons/ri';
+import { BiCaretUp } from 'react-icons/bi';
+import { BsCaretDown } from 'react-icons/bs';
 
 const Sign_Container = styled.div`
   display: flex;
@@ -9,6 +13,60 @@ const Sign_Container = styled.div`
   align-items: center;
   height: 100vh;
   width: 100vw;
+  & > * {
+    margin: 0px 50px;
+  }
+`;
+const Sign_Text_Box = styled.div`
+  height: 300px;
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+
+  & > h3 {
+    font-weight: 500;
+    font-size: 25px;
+  }
+  .sign_icon1 {
+    color: #0995fe;
+    font-size: 22px;
+  }
+
+  & > span {
+    margin-top: 10px;
+    font-size: 11px;
+    color: grey;
+  }
+`;
+const Sign_Text_Content_Box = styled.div`
+  margin: 10px 0px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+
+  & > span {
+    margin-left: 10px;
+    font-size: 15px;
+  }
+
+  & > div {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+    .sign_icon_up {
+      color: #0995fe;
+      font-size: 25px;
+      position: relative;
+      top: 6px;
+    }
+    .sign_icon_down {
+      color: #0995fe;
+      font-size: 20px;
+      position: relative;
+      bottom: 6px;
+    }
+  }
 `;
 const Sign_Form = styled.form`
   display: flex;
@@ -18,20 +76,77 @@ const Sign_Form = styled.form`
   background-color: white;
   width: 300px;
   height: 500px;
+  border-radius: 10px;
+  box-shadow: 1px 1px 20px 1px #b3d3ea;
 `;
 
 const Sign_Input = styled.input`
-  height: 30px;
+  height: 20px;
+  width: 244px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+
+  &:focus {
+    outline: 3px solid #b3d3ea;
+  }
 `;
-const Sign_Label = styled.label``;
-const Sign_Text = styled.span``;
+const Sign_Label = styled.label`
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  &:hover {
+    cursor: pointer;
+  }
+`;
+const Sign_Text = styled.span`
+  margin-top: 3px;
+  font-size: 12px;
+`;
 const Sign_Input_Container = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100px;
+  height: 90px;
+  width: 250px;
+  .allow_text {
+    color: #3973b3;
+  }
+  .error_text {
+    color: #f78181;
+  }
 `;
-const Sign_Submit = styled.input``;
-const Email_Verify_Button = styled.input``;
+const Sign_Submit = styled.input`
+  height: 40px;
+  width: 250px;
+  border: 1px solid #7aa7c7;
+  border-radius: 5px;
+  background-color: #e1ecf4;
+  color: #3973b3;
+  &:hover {
+    background-color: #b3d3ea;
+    cursor: pointer;
+  }
+  &:disabled {
+    background-color: #eeeeee;
+    cursor: auto;
+  }
+`;
+const Email_Verify_Button = styled.input`
+  margin-top: 5px;
+  height: 20px;
+  width: 250px;
+  border: 1px solid #7aa7c7;
+  border-radius: 5px;
+  background-color: #e1ecf4;
+  color: #3973b3;
+  &:hover {
+    background-color: #b3d3ea;
+    cursor: pointer;
+  }
+  &:disabled {
+    background-color: #eeeeee;
+    cursor: auto;
+  }
+`;
 
 function Sign() {
   const { register, handleSubmit, reset, watch, getValues } = useForm();
@@ -114,15 +229,36 @@ function Sign() {
   };
   return (
     <Sign_Container>
+      <Sign_Text_Box>
+        <h3>Join the Stack Overflow community</h3>
+        <Sign_Text_Content_Box>
+          <RiQuestionnaireFill className="sign_icon1" />
+          <span>Get unstuck - ask a question</span>
+        </Sign_Text_Content_Box>
+        <Sign_Text_Content_Box>
+          <div>
+            <BiCaretUp className="sign_icon_up" />
+            <BsCaretDown className="sign_icon_down" />
+          </div>
+          <span>Unlock new privileges like voting and commenting</span>
+        </Sign_Text_Content_Box>
+        <Sign_Text_Content_Box>
+          <AiFillTags className="sign_icon1" />
+          <span>Save your favorite tags, filters, and jobs</span>
+        </Sign_Text_Content_Box>
+        <Sign_Text_Content_Box>
+          <AiFillTrophy className="sign_icon1" />
+          <span>Earn reputation and badges</span>
+        </Sign_Text_Content_Box>
+        <span>
+          Collaborate and share knowledge with a private group for FREE. Get
+          Stack Overflow for Teams free for up to 50 users.
+        </span>
+      </Sign_Text_Box>
       <Sign_Form onSubmit={handleSubmit(onSubmit, onError)}>
         <Sign_Input_Container>
-          <Sign_Label htmlFor="email">E-MAIL</Sign_Label>
-          <Sign_Input
-            id="email"
-            {...register('email')}
-            placeholder="ex) abc123@aaaaaa.com"
-            required
-          />
+          <Sign_Label htmlFor="email">Email</Sign_Label>
+          <Sign_Input id="email" {...register('email')} required />
 
           <Email_Verify_Button
             type="button"
@@ -133,49 +269,55 @@ function Sign() {
 
           {getValues('email') === '' ? null : verify.verifyEmailVerify
               .boolean === true && verify.emailVerify.boolean === true ? (
-            <Sign_Text>사용가능한 이메일입니다.</Sign_Text>
+            <Sign_Text className="allow_text">
+              사용가능한 이메일입니다.
+            </Sign_Text>
           ) : verify.emailVerify.boolean === true ? (
-            <Sign_Text>올바른 형식의 이메일입니다.</Sign_Text>
+            <Sign_Text className="allow_text">
+              올바른 형식의 이메일입니다.
+            </Sign_Text>
           ) : (
-            <Sign_Text>올바른 형식의 이메일이 아닙니다.</Sign_Text>
+            <Sign_Text className="error_text">
+              올바른 형식의 이메일이 아닙니다.
+            </Sign_Text>
           )}
         </Sign_Input_Container>
         <Sign_Input_Container>
-          <Sign_Label htmlFor="username">이름</Sign_Label>
-          <Sign_Input
-            id="username"
-            {...register('username')}
-            placeholder="ex) 하수환"
-            required
-          />
+          <Sign_Label htmlFor="username">Display Name</Sign_Label>
+          <Sign_Input id="username" {...register('username')} required />
           {getValues('username') === '' ? null : verify.usernameVerify
               .boolean === true ? (
-            <Sign_Text>올바른 형식의 이름입니다.</Sign_Text>
+            <Sign_Text className="allow_text">
+              올바른 형식의 이름입니다.
+            </Sign_Text>
           ) : (
-            <Sign_Text>올바른 형식의 이름이 아닙니다.</Sign_Text>
+            <Sign_Text className="error_text">
+              올바른 형식의 이름이 아닙니다.
+            </Sign_Text>
           )}
         </Sign_Input_Container>
         <Sign_Input_Container>
-          <Sign_Label htmlFor="password">비밀번호</Sign_Label>
+          <Sign_Label htmlFor="password">Password</Sign_Label>
           <Sign_Input
             id="password"
             {...register('password')}
             type="password"
-            placeholder="ex) aaaa1234!!"
             required
           />
           {getValues('password') === '' ? null : verify.passwordVerify
               .boolean === true ? (
-            <Sign_Text>사용가능한 비밀번호입니다.</Sign_Text>
+            <Sign_Text className="allow_text">
+              사용가능한 비밀번호입니다.
+            </Sign_Text>
           ) : (
-            <Sign_Text>
+            <Sign_Text className="error_text">
               비밀번호는 영문,숫자,특수기호 포함하여 8자 이상 12자 이하로
               작성하셔야 합니다.
             </Sign_Text>
           )}
         </Sign_Input_Container>
         <Sign_Input_Container>
-          <Sign_Label htmlFor="verifyPassword">비밀번호 확인</Sign_Label>
+          <Sign_Label htmlFor="verifyPassword">Password Check</Sign_Label>
           <Sign_Input
             id="verifyPassword"
             {...register('verifyPassword')}
@@ -185,15 +327,18 @@ function Sign() {
           />
           {getValues('verifyPassword') === undefined ? null : verify
               .verifyPasswordVerify.boolean === true ? (
-            <Sign_Text>비밀번호가 일치합니다.</Sign_Text>
+            <Sign_Text className="allow_text">비밀번호가 일치합니다.</Sign_Text>
           ) : (
-            <Sign_Text>비밀번호가 일치하지 않습니다.</Sign_Text>
+            <Sign_Text className="error_text">
+              비밀번호가 일치하지 않습니다.
+            </Sign_Text>
           )}
         </Sign_Input_Container>
-        <Link to='/signup-completed'>
+        <Link to="/signup-completed">
           <Sign_Submit
             type="submit"
             disabled={!Object.values(verify).every((el) => el.boolean === true)}
+            value="Sign up"
           />
         </Link>
       </Sign_Form>
