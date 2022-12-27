@@ -1,25 +1,20 @@
 package sebpre018.com.stackOverflowClone.comment.controller;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import sebpre018.com.stackOverflowClone.comment.dto.CommentPatchDto;
 import sebpre018.com.stackOverflowClone.comment.dto.CommentPostDto;
-import sebpre018.com.stackOverflowClone.comment.dto.CommentResponseDto;
-import sebpre018.com.stackOverflowClone.comment.entity.Comment;
-import sebpre018.com.stackOverflowClone.comment.mapper.CommentMapper;
-import sebpre018.com.stackOverflowClone.comment.service.CommentService;
-import sebpre018.com.stackOverflowClone.response.SingleResponseDto;
+
 
 import javax.validation.Valid;
-import java.util.List;
+
 
 @RestController
 @RequestMapping("/comments")
 @Validated
+
 @Slf4j
 public class CommentController {
     private final CommentService commentService;
@@ -111,6 +106,5 @@ public class CommentController {
         commentService.deleteComment(commentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
 
 }
