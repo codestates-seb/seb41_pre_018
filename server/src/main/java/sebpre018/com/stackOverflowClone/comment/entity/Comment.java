@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import sebpre018.com.stackOverflowClone.answer.entity.Answer;
 import sebpre018.com.stackOverflowClone.audit.BaseEntity;
+import sebpre018.com.stackOverflowClone.member.entity.Member;
+import sebpre018.com.stackOverflowClone.question.entity.Question;
 
 import javax.persistence.*;
 
@@ -24,7 +26,6 @@ public class Comment extends BaseEntity {
     private Question question;
 
     @ManyToOne
-
     @JoinColumn(name = "answer_id")
     private Answer answer;
 
