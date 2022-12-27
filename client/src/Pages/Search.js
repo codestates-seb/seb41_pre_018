@@ -137,7 +137,7 @@ const Search = (props) => {
                 username={item.username}
                 createdAt={item.created_time}
                 isSearch={true}
-                tags={['tag sample', 'tag sample', 'tag sample']}
+                tags={item.tags}
               />
             ))}
             </div>)      

@@ -2,6 +2,7 @@ import { useState } from "react";
 import Comments from "../Components/Comments";
 import { MdKeyboardArrowUp, MdKeyboardArrowDown} from 'react-icons/md';
 import styled from 'styled-components';
+import { data } from '../dummydata';
 
 const Outer_Wrapper = styled.div`
     width: 100vw;
@@ -146,6 +147,26 @@ const Middle_Text_Wrapper = styled.div`
     justify-content: center;
     align-items: center;
 `
+const Tags = styled.div`
+  font-size: 12px;
+  background-color: #E1ECF4;
+  border-radius: 5px;
+  padding: 5px;
+  color: #39739D;
+  width: fit-content;
+  &:hover {
+    background-color: #D0E3F1;
+    cursor: pointer;
+  }
+`
+const Tag_Wrapper = styled.div`
+margin-bottom: 30px;
+margin-left: 10px;  
+display: flex;
+  *{
+    margin-right: 10px;
+  }
+`
 
 
 
@@ -205,6 +226,9 @@ const Question_Page = () => {
                         <Question_Image src="Question_Image.png"/>
                     </Text_Content>
                 </Content_Wrapper>
+                <Tag_Wrapper>
+                    {data.question[0].tags.map(item => <Tags>{item}</Tags>)}
+                </Tag_Wrapper>
                 <Comments/>
                 <Question_Title>내 답변</Question_Title>
                 <Userinfo_Wrapper>
