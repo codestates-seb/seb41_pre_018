@@ -491,14 +491,69 @@ export let data = {
         {
           answer_id: 0,
           answer_title: 'Sample Answer 1',
-          answer_content:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna...',
+          answer_content: `<p>The problem happens because in your source code, there are&nbsp;<strong>multiple divs with the class "video"</strong>. The code uses a div with the class "video" to transfer the video id from the button to the actual video player.</p><p>Because there are multiple divs with the class video this doesn't work.</p><p>One workaround would be to just delete your first div block with class "play2" and everything contained in that div. However, you are probably going to want to be able to have multiple independent instances of the video player setup on the same page, so we need to fix the code so that the correct div with class "Video" is used.</p><p>For that change the implementation of the click event handler for the buttons.</p><p>From:</p><pre class="ql-syntax" spellcheck="false">const myVideo = document.querySelector('.video');
+
+            document.querySelectorAll('button.cover').forEach(function(button) {
+              button.addEventListener('click', function(event) {
+                myVideo.dataset.id = event.currentTarget.dataset.id;
+              });
+            });
+            </pre><p>To:</p><pre class="ql-syntax" spellcheck="false">document.querySelectorAll('button.cover').forEach(function(button) {
+              button.addEventListener('click', function(event) {
+                let container=event.currentTarget.dataset.container;
+                let myVideo = document.querySelector('.' + container + ' .video');
+                myVideo.dataset.id = event.currentTarget.dataset.id;
+              });
+            });
+            </pre><p>We first get the "container" from the button that was clicked. Then we search for a div with class "video" that is inside another div with that container class.</p><p>Note that you don't need the global&nbsp;<code style="color: var(--black-800); background-color: var(--black-075);">myvideo</code>&nbsp;variable anymore.</p><p>Also change the code in&nbsp;<code style="color: var(--black-800); background-color: var(--black-075);">onYouTubeIframeAPIReady</code>&nbsp;to its original state:</p><pre class="ql-syntax" spellcheck="false">//to add the player to all the play buttons
+            let totalPlayButtons = document.querySelectorAll('[data-container="play1"]').length;
+            
+            //looping over all the play buttons and adding player to that
+            for (let i = 0; i &lt; totalPlayButtons; i++) {
+                    players.add(".playSingle" + i, (playerVarsList[i] || {}));
+            }
+            players.add(".playInitial", {});
+            Also, there is a bug with your exit button logic, but that is outside the scope of this question. Please ask another question if you are having problems there.
+            </pre>`,
         },
         {
           answer_id: 1,
           answer_title: 'Sample Answer 2',
-          answer_content:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna...',
+          answer_content: `<p>There are couple of places where array index is out of bound, that’s why it is not working.</p><p>Changes in&nbsp;<strong>onYouTubeIframeAPIReady()</strong>&nbsp;function:</p><pre class="ql-syntax" spellcheck="false">function onYouTubeIframeAPIReady() {
+            let playerVarsList = {
+              0: {
+                playerVars: {
+                  playlist: "0dgNc5S8cLI,mnfmQe8Mv1g,-Xgi_way56U,CHahce95B1g"
+                }
+              },
+              1: {
+                playerVars: {
+                  listType: "playlist",
+                  list: "PLYeOyMz9C9kYmnPHfw5-ItOxYBiMG4amq"
+                }
+              }
+            }
+           //to add the player to all the play buttons
+            let totalPlayButtons = document.querySelectorAll('[data-container="play1"]').length;
+          
+             //looping over all the play buttons and adding player to that
+            for (let i = 0; i &lt; totalPlayButtons; i++) {
+              players.add(".playSingle" + i, (playerVarsList[i%(Object.keys(playerVarsList).length)] || {}));
+            }
+            players.add(".playInitial", {});
+          }
+          </pre><p>Changes in&nbsp;<strong>findPlayers()</strong>&nbsp;function</p><pre class="ql-syntax" spellcheck="false">function findPlayers() {
+              const allCovers = document.querySelectorAll(".cover");
+              const allWrappers = document.querySelectorAll(".wrap");
+              allCovers.forEach(function addToPlayers(cover, index) {
+                players.push({
+                  "cover": cover,
+                  "wrapper": (index&lt;allWrappers.length)?allWrappers[index]:allWrappers[allWrappers.length-1]
+                });
+              });
+            }
+          
+          </pre>`,
         },
         {
           answer_id: 2,
@@ -531,16 +586,19 @@ export let data = {
   ],
   comments: [
     {
-    comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna...',
-    username: 'human_001'
+      comment:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna...',
+      username: 'human_001',
     },
     {
-    comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna...',
-    username: 'human_001'
+      comment:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna...',
+      username: 'human_001',
     },
     {
-    comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna...',
-    username: 'human_001'
+      comment:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna...',
+      username: 'human_001',
     },
-  ]
+  ],
 };

@@ -113,16 +113,18 @@ const Main = (props) => {
           <div className="posts">
             {data.question
               .slice((pageState - 1) * postPerPage, pageState * postPerPage)
-              .map((item) => (
-                <Question
-                  title={item.title}
-                  content={item.text}
-                  views={item.views}
-                  vote={item.vote_result}
-                  username={item.username}
-                  createdAt={item.created_time}
-                  tags={item.tags}
-                />
+              .map((item, idx) => (
+                <Link to={`question/${idx}`}>
+                  <Question
+                    title={item.title}
+                    content={item.text}
+                    views={item.views}
+                    vote={item.vote_result}
+                    username={item.username}
+                    createdAt={item.created_time}
+                    tags={item.tags}
+                  />
+                </Link>
               ))}
           </div>
         ) : null}

@@ -34,8 +34,11 @@ function App() {
         <Route path="/user/:name" element={<MyPage />} />
         <Route path="/signup-completed" element={<Signup_Completed />} />
         <Route path="/search" element={<Search />} />
-        <Route path="/deleteuser-completed" element={<Deleteuser_Completed />} />
-        <Route path="/question-page" element={<Question_Page />} />
+        <Route
+          path="/deleteuser-completed"
+          element={<Deleteuser_Completed />}
+        />
+        <Route path="/question/:id" element={<Question_Page />} />
       </Routes>
     </BrowserRouter>
   );

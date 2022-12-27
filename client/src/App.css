@@ -36,3 +36,9 @@
     transform: rotate(360deg);
   }
 }
+
+.ql-syntax {
+  padding: 10px;
+  background-color: black;
+  color: white;
+}
