@@ -1,22 +1,17 @@
 package sebpre018.com.stackOverflowClone.comment.dto;
 
-
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
-
+@Builder
 @Getter
-@Setter
-
-public class CommentPatchDto {
+@AllArgsConstructor
+public class CommentResponseDto {
     private Long commentId;
     private Long memberId;
     private Long questionId;
     private Long answerId;
-    @NotBlank
+
     private String text;
-
-    // time 가져와야함
-
 }

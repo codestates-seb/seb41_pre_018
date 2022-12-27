@@ -1,6 +1,5 @@
 package sebpre018.com.stackOverflowClone.comment.entity;
 
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,6 +24,7 @@ public class Comment extends BaseEntity {
     private Question question;
 
     @ManyToOne
+
     @JoinColumn(name = "answer_id")
     private Answer answer;
 
