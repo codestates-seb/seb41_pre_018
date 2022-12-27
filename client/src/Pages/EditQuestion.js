@@ -134,15 +134,19 @@ const Tag_Input_Field = styled.input`
 `;
 
 export default function NewQuestion() {
+  // 질문 상세 페이지에서 가져올 더미 데이터
+  // => 상태로 전달 받을 예정이며 정상 구현 이후 해당 변수는 삭제합니다.
+  const [currentQuestion, setCurrentQuestion] = useState(data.question[0]);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const [userTags, setUserTags] = useState(data.question[0].tags);
+  const [userTags, setUserTags] = useState(currentQuestion.tags);
   const [userInput, setUserInput] = useState('');
   const [tagInputXCord, setTagInputXCord] = useState(0);
-  const [textEditorValue, setTextEditorValue] = useState(data.question[7].text);
+  const [textEditorValue, setTextEditorValue] = useState(currentQuestion.text);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -218,7 +222,7 @@ export default function NewQuestion() {
             {...register('title', {
               required: '제목을 입력해주세요',
             })}
-            value={data.question[0].title}
+            value={currentQuestion.title}
             type="text"
           />
           {errors.title && (
