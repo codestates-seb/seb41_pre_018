@@ -11,6 +11,7 @@ export let data = {
       views: 0,
       created_time: '2022. 12. 22. 오전 11:30:23',
       modified_time: '2022. 12. 22. 오전 11:30:23',
+      tags: ['JavaScript', 'React', 'Redux'],
     },
     {
       question_id: 1,
@@ -23,6 +24,7 @@ export let data = {
       views: 0,
       created_time: '2022. 12. 22. 오전 11:30:23',
       modified_time: '2022. 12. 22. 오전 11:30:23',
+      tags: ['JavaScript', 'React', 'Boot-Strap'],
     },
     {
       question_id: 2,
@@ -35,6 +37,7 @@ export let data = {
       views: 0,
       created_time: '2022. 12. 22. 오전 11:30:23',
       modified_time: '2022. 12. 22. 오전 11:30:23',
+      tags: ['JavaScript', 'React', 'Boot-Strap'],
     },
     {
       question_id: 3,
@@ -47,6 +50,7 @@ export let data = {
       views: 0,
       created_time: '2022. 12. 22. 오전 11:30:23',
       modified_time: '2022. 12. 22. 오전 11:30:23',
+      tags: ['JavaScript', 'HTML', 'CSS'],
     },
     {
       question_id: 4,
@@ -59,6 +63,7 @@ export let data = {
       views: 0,
       created_time: '2022. 12. 22. 오전 11:30:23',
       modified_time: '2022. 12. 22. 오전 11:30:23',
+      tags: ['JavaScript', 'HTML', 'CSS'],
     },
     {
       question_id: 5,
@@ -71,6 +76,7 @@ export let data = {
       views: 0,
       created_time: '2022. 12. 22. 오전 11:30:23',
       modified_time: '2022. 12. 22. 오전 11:30:23',
+      tags: ['JavaScript', 'HTML', 'CSS'],
     },
     {
       question_id: 6,
@@ -83,6 +89,7 @@ export let data = {
       views: 0,
       created_time: '2022. 12. 22. 오전 11:30:23',
       modified_time: '2022. 12. 22. 오전 11:30:23',
+      tags: ['JavaScript', 'React', 'Redux'],
     },
     {
       question_id: 7,
@@ -95,6 +102,7 @@ export let data = {
       views: 0,
       created_time: '2022. 12. 22. 오전 11:30:23',
       modified_time: '2022. 12. 22. 오전 11:30:23',
+      tags: ['JavaScript', 'React', 'ReactQuill'],
     },
     {
       question_id: 8,
@@ -107,6 +115,7 @@ export let data = {
       views: 0,
       created_time: '2022. 12. 22. 오전 11:30:23',
       modified_time: '2022. 12. 22. 오전 11:30:23',
+      tags: ['JavaScript', 'React', 'Git', 'Github'],
     },
     {
       question_id: 9,
@@ -119,6 +128,7 @@ export let data = {
       views: 0,
       created_time: '2022. 12. 22. 오전 11:30:23',
       modified_time: '2022. 12. 22. 오전 11:30:23',
+      tags: ['JavaScript', 'React', 'Firebase'],
     },
     {
       question_id: 10,
@@ -131,6 +141,7 @@ export let data = {
       views: 0,
       created_time: '2022. 12. 22. 오전 11:30:23',
       modified_time: '2022. 12. 22. 오전 11:30:23',
+      tags: ['JavaScript', 'React', 'ReactQuill'],
     },
     {
       question_id: 11,
@@ -143,6 +154,7 @@ export let data = {
       views: 0,
       created_time: '2022. 12. 22. 오전 11:30:23',
       modified_time: '2022. 12. 22. 오전 11:30:23',
+      tags: ['JavaScript', 'React', 'Redux'],
     },
     {
       question_id: 12,
@@ -155,6 +167,7 @@ export let data = {
       views: 0,
       created_time: '2022. 12. 22. 오전 11:30:23',
       modified_time: '2022. 12. 22. 오전 11:30:23',
+      tags: ['JavaScript', 'React', 'Redux'],
     },
     {
       question_id: 13,
@@ -167,6 +180,7 @@ export let data = {
       views: 0,
       created_time: '2022. 12. 22. 오전 11:30:23',
       modified_time: '2022. 12. 22. 오전 11:30:23',
+      tags: ['Stackoverflow'],
     },
     {
       question_id: 14,
@@ -179,6 +193,7 @@ export let data = {
       views: 0,
       created_time: '2022. 12. 22. 오전 11:30:23',
       modified_time: '2022. 12. 22. 오전 11:30:23',
+      tags: ['Stackoverflow', 'Github'],
     },
   ],
   member: [

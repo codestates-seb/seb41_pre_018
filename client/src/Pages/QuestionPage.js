@@ -1,17 +1,17 @@
 import { useState } from "react";
 import Comments from "../Components/Comments";
-MdKeyboardArrowUp
 import { MdKeyboardArrowUp, MdKeyboardArrowDown} from 'react-icons/md';
+import styled from 'styled-components';
 
 const Outer_Wrapper = styled.div`
     width: 100vw;
-    height: 100vh;
+    height: 150vh;
     display: flex;
     justify-content: center;
     align-items: center;
     margin-top: 47px;
-    position: fixed;
-    overflow-y: scroll;
+    // position: fixed;
+    overflow: auto;
 `
 
 const Content_Wrapper =styled.div`
@@ -105,7 +105,7 @@ const Answer_Edit_Button = styled(Button)`
 `
 
 const Custom_Hr = styled.hr` 
-    width: 1400px;
+    width: 1200px;
     align-items: center;
     opacity: 70%;
 `
