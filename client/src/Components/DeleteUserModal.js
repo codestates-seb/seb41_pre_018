@@ -12,7 +12,7 @@ const Modal_Container = styled.div`
   justify-content: center;
   padding: 30px;
   border-radius: 20px;
-  border: 3px solid #f1f2f3;
+  box-shadow: 1px 1px 20px 1px #b3d3ea;
 `;
 const Modal_Head_Container = styled.div`
   display: flex;
