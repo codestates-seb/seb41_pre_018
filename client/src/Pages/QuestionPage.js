@@ -9,7 +9,6 @@ import { data } from '../dummydata';
 import { BiNoEntry } from 'react-icons/bi';
 
 const Outer_Wrapper = styled.div`
-  border: 1px solid red;
   width: 100%;
   height: auto;
   overflow: auto;
@@ -29,13 +28,15 @@ const Inner_Wrapper = styled.div`
   flex-direction: column;
   width: 60vw;
   height: auto;
-  padding: 30px;
+  padding: 50px;
   margin-top: 100px;
   margin-bottom: 100px;
   padding-bottom: 100px;
+  min-width: 800px;
 `;
 
 const Question_Title = styled.div`
+  margin: 20px;
   font-size: 38px;
 `;
 
@@ -61,15 +62,11 @@ const User_Wrapper = styled.div`
   * {
     margin: 10px;
   }
-  /* width: 1050px;
-    height: 200px;
-    display: flex;
-    flex-direction: column;
-    justify-content: start; */
 `;
 
 const Button_Wrapper = styled.div`
   display: flex;
+  align-items: center;
   * {
     margin: 5px;
   }
@@ -100,7 +97,7 @@ const Blue_Button = styled(Button)`
 const Red_Button = styled(Button)`
   background-color: #b55454;
   color: white;
-`;
+`; 
 const Answer_Delete_Button = styled(Button)`
   background-color: #3498db;
   color: white;
@@ -109,6 +106,9 @@ const Answer_Edit_Button = styled(Button)`
   background-color: #b55454;
   color: white;
 `;
+const Answer_Submit_Button = styled(Button)`
+  margin-left: 30px;
+`
 
 const Custom_Hr = styled.hr`
   width: 100%;
@@ -116,32 +116,44 @@ const Custom_Hr = styled.hr`
   opacity: 70%;
 `;
 const Vote_Wrapper = styled.div`
-  height: 90px;
-  width: 30px;
+  height: auto;
+  width: 40px;
   border-radius: 5px;
   background-color: none;
 `;
 const Vote_Count = styled.div`
-  height: 30px;
-  width: 30px;
+  height: 40px;
+  width: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
+  color: #4A4A4A;
 `;
 
 const Text_Content = styled.div`
-  height: 500px;
-  width: 70rem;
+  height: auto;
+  width: 90%;
   display: flex;
   flex-direction: column;
-  overflow: scroll;
+  align-items: center;
+  margin-left: 30px;
+  margin-bottom: 50px;
+
   * {
-    margin: 30px;
+    max-width: 100%;
   }
 
-  .ql-toolbar,
-  .ql-toolbar * {
-    margin: 0;
+  .Rich_Text_Editor {
+    .ql-toolbar{
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+    }
+    width: 100%;
+    .ql-container {
+      height: 250px;
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px;
+    }
   }
 `;
 
@@ -155,7 +167,7 @@ const Middle_Text_Wrapper = styled.div`
   align-items: center;
 `;
 const Tags = styled.div`
-  font-size: 12px;
+  font-size: 16px;
   background-color: #e1ecf4;
   border-radius: 5px;
   padding: 5px;
@@ -170,6 +182,7 @@ const Tag_Wrapper = styled.div`
   margin-bottom: 30px;
   margin-left: 10px;
   display: flex;
+  align-items: center;
   * {
     margin-right: 10px;
   }
@@ -189,7 +202,8 @@ const Question_Page = () => {
   const [currentUserAnswer, setCurrentUserAnswer] = useState(
     data.member[0].answers[0].answer_content
   );
-
+  const [newAnswer, setNewAnswer] = useState('')
+  
   const handleUserAnswer = (val) => {
     setCurrentUserAnswer(val);
   };
@@ -218,6 +232,7 @@ const Question_Page = () => {
     setAnswerVotes(answerVotes - 1);
   };
 
+
   return (
     <Outer_Wrapper>
       <Inner_Wrapper>
@@ -238,19 +253,18 @@ const Question_Page = () => {
             <span> 2 times</span>
           </Middle_Text_Wrapper>
           <Button_Wrapper>
-            <Link to="./edit">
+            <Link to="./edit" style={{display: 'flex', justifyContent: 'center', alignItems: 'center', textDecoration: 'none'}}>
               <Blue_Button>질문 수정하기</Blue_Button>
             </Link>
             <Red_Button>질문 삭제하기</Red_Button>
-            <Button>답변 등록하기</Button>
           </Button_Wrapper>
         </Userinfo_Wrapper>
         <Custom_Hr />
         <Content_Wrapper>
           <Vote_Wrapper>
-            <MdKeyboardArrowUp onClick={upVote_question} size="30" />
+            <MdKeyboardArrowUp onClick={upVote_question} size="40" color='#C0C0C0' cursor='pointer'/>
             <Vote_Count>{questionVotes}</Vote_Count>
-            <MdKeyboardArrowDown onClick={downVote_question} size="30" />
+            <MdKeyboardArrowDown onClick={downVote_question} size="40" color='#C0C0C0' cursor='pointer'/>
           </Vote_Wrapper>
           <Text_Content>
             <div dangerouslySetInnerHTML={{ __html: currentQuestion.text }} />
@@ -279,18 +293,18 @@ const Question_Page = () => {
             <span> 2 times</span>
           </Middle_Text_Wrapper>
           <Button_Wrapper>
-            <Answer_Delete_Button>답변 삭제하기</Answer_Delete_Button>
             <Answer_Edit_Button onClick={handleEditAnswer}>
               {isAnswerEditOn ? '수정 완료' : '답변 수정하기'}
             </Answer_Edit_Button>
+            <Answer_Delete_Button>답변 삭제하기</Answer_Delete_Button>
           </Button_Wrapper>
         </Userinfo_Wrapper>
         <Custom_Hr />
         <Content_Wrapper>
           <Vote_Wrapper>
-            <MdKeyboardArrowUp onClick={upVote_answer} size="30" />
+            <MdKeyboardArrowUp onClick={upVote_answer} size="40" color='#C0C0C0' cursor='pointer'/>
             <Vote_Count>{answerVotes}</Vote_Count>
-            <MdKeyboardArrowDown onClick={downVote_answer} size="30" />
+            <MdKeyboardArrowDown onClick={downVote_answer} size="40" color='#C0C0C0' cursor='pointer'/>
           </Vote_Wrapper>
           <Text_Content>
             {isAnswerEditOn ? (
@@ -308,6 +322,24 @@ const Question_Page = () => {
               />
             )}
           </Text_Content>
+        </Content_Wrapper>
+        <Content_Wrapper>
+          <Vote_Wrapper/>
+          <Text_Content>
+            <ReactQuill
+              theme="snow"
+              className="Rich_Text_Editor"
+              value={newAnswer}
+              onChange={() => setNewAnswer(newAnswer)}
+              placeholder= '답변을 작성하세요'
+            />
+          </Text_Content>
+        </Content_Wrapper>
+        <Content_Wrapper>
+          <Vote_Wrapper/>
+          <Button_Wrapper>
+            <Answer_Submit_Button>답변 등록하기</Answer_Submit_Button>
+          </Button_Wrapper>
         </Content_Wrapper>
       </Inner_Wrapper>
     </Outer_Wrapper>
