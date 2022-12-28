@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 const Title = styled.div`
   color: rgb(41, 128, 185);
   font-size: 20px;
+  text-decoration: none;
 `;
 const Content = styled.div`
   color: rgb(51, 51, 51);
@@ -41,7 +42,7 @@ const Content_Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 600px;
-  height: 80px;
+  height: 300px;
   justify-content: space-between;
   margin-left: 20px;
 `;
@@ -145,8 +146,7 @@ const Question = (props) => {
             </Title>
           </Link>
           <Content>
-            <div dangerouslySetInnerHTML={{ __html: props.content }} />
-            {/* {props.content} */}
+              {props.content.replace(/<[^>]*>?/g, '').slice(0,300)}
           </Content>
           <Tag_Wrapper>
             {props.tags.map((item) => (
