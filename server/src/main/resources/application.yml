@@ -8,10 +8,15 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-    properites:
+    properties:
       hibernate:
         show_sql: true
         format_sql: true
+
+  jwt:
+    key: ${JWT_SECRET_KEY}
+    access-token-expiration-minutes: 1440
+    refresh-token-expiration-minutes: 20160
 
 logging.level:
   org.hibernate.SQL: debug
