@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { HiCake } from 'react-icons/hi';
 import DeleteUserModal from '../Components/DeleteUserModal';
+import { Link } from 'react-router-dom';
 //username 파라미터와 user e-mail 토큰? 기반으로? 받아와야하지 않나?
 const My_page_Container = styled.div`
   display: flex;
@@ -159,12 +160,19 @@ const My_Page_Title_Span = styled.span`
   margin-bottom: 10px;
 `;
 const My_Page_Answer_Question_Title = styled.span`
+  margin: 5px 0px;
   font-size: 14px;
-  color: #0080ff;
+  color: black;
+  .Question_Link {
+    color: black;
+    text-decoration: none;
+    &:hover {
+      font-weight: 500;
+      color: #0080ff;
+    }
+  }
 `;
-const My_Page_Answer_Question_Text = styled.span`
-  font-size: 12px;
-`;
+
 export const My_Page_Delete_User_Button = styled.button`
   height: 30px;
   width: 300px;
@@ -218,12 +226,10 @@ function MyPage() {
   };
   const { username, created_time, modified_time, aboutMe, answers, questions } =
     response;
-
   useEffect(() => {
     const day = dateChange(created_time);
     setDayAgo(day);
   }, []);
-
   return (
     <My_page_Container
       onClick={(e) => {
@@ -273,11 +279,8 @@ function MyPage() {
                     return (
                       <div key={answer.answer_id}>
                         <My_Page_Answer_Question_Title>
-                          {answer.answer_title}
+                          My Answer About Question~~~~~~~
                         </My_Page_Answer_Question_Title>
-                        <My_Page_Answer_Question_Text>
-                          {answer.answer_content}
-                        </My_Page_Answer_Question_Text>
                       </div>
                     );
                   })}
@@ -288,15 +291,19 @@ function MyPage() {
             <My_Page_Answer_Question_Body>
               {questions.length === 0
                 ? null
-                : questions.map((question) => {
+                : questions.map((question, index) => {
                     return (
                       <div key={question.question_id}>
                         <My_Page_Answer_Question_Title>
-                          {question.question_title}
+                          {`${index + 1}.  `}
+
+                          <Link
+                            to={`/question/${question.question_id}`}
+                            className="Question_Link"
+                          >
+                            {question.title}
+                          </Link>
                         </My_Page_Answer_Question_Title>
-                        <My_Page_Answer_Question_Text>
-                          {question.question_content}
-                        </My_Page_Answer_Question_Text>
                       </div>
                     );
                   })}

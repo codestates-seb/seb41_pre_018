@@ -37,6 +37,7 @@ const Question_Wrapper = styled.div`
   align-items: center;
   border-bottom: none;
 `;
+
 const Content_Wrapper = styled.div`
   display: flex;
   flex-direction: column;
