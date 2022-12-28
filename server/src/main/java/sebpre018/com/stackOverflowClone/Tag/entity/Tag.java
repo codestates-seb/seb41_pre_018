@@ -28,5 +28,6 @@ public class Tag extends BaseEntity {
 
     public void addQuestion(Question question) {
         this.question = question;
+        question.getTags().add(this);
     }
 }

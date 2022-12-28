@@ -7,6 +7,7 @@ import sebpre018.com.stackOverflowClone.Tag.dto.TagResponseDto;
 import sebpre018.com.stackOverflowClone.answer.dto.AnswerResponseDto;
 import sebpre018.com.stackOverflowClone.comment.dto.CommentResponseDto;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
@@ -17,6 +18,8 @@ public class AllResponseDto {
 
     private Long memberId;
 
+    private String username;
+
     private String title;
 
     private String text;
@@ -26,6 +29,10 @@ public class AllResponseDto {
     private int views;
 
     private int answerCount;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime modifiedAt;
 
     private List<TagResponseDto> tags;
 

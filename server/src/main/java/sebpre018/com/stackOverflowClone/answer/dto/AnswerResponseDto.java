@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Builder
 @Getter
 @AllArgsConstructor
@@ -19,4 +21,8 @@ public class AnswerResponseDto {
     private int voteResult;
 
     private String text;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime modifiedAt;
 }
