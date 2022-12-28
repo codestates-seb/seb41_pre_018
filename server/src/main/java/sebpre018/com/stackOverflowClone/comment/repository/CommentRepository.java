@@ -9,8 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-    Optional<Comment> findByComment(Long commentId);
 
-    @Query(value = "SELECT t FROM Tag t WHERE t.questionId = :questionId")
+    @Query(value = "select * from comment where question_id = :questionId", nativeQuery = true)
     List<Comment> findAllByQuestionId(long questionId);
 }
