@@ -93,7 +93,7 @@ public class QuestionController {
     }
 
     //질문 검색
-    @GetMapping("search")
+    @GetMapping("/search")
     public ResponseEntity getQuestions(@RequestParam("search") String keyWord,
                                        @Positive @RequestParam("page") int page,
                                        @Positive @RequestParam("size") int size,

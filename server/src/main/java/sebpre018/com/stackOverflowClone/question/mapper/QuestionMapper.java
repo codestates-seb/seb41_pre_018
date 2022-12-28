@@ -74,6 +74,8 @@ public interface QuestionMapper {
                 .text(question.getText())
                 .voteResult(question.getVoteResult())
                 .views(question.getViews())
+                .createdAt(question.getCreatedTime())
+                .modifiedAt(question.getModifiedTime())
                 .tags(tagsToTagResponseDtos(question.getTags()))
                 .build();
     }
@@ -97,6 +99,8 @@ public interface QuestionMapper {
                         .answerId(answer.getAnswerId())
                         .questionId(answer.getQuestion().getId())
                         .memberId(answer.getMember().getId())
+                        .createdAt(answer.getCreatedTime())
+                        .modifiedAt(answer.getModifiedTime())
                         .text(answer.getText())
                         .build())
                 .collect(Collectors.toList());
@@ -108,6 +112,8 @@ public interface QuestionMapper {
                         .commentId(comment.getId())
                         .questionId(comment.getQuestion().getId())
                         .memberId(comment.getMember().getId())
+                        .createdAt(comment.getCreatedTime())
+                        .modifiedAt(comment.getModifiedTime())
                         .text(comment.getText())
                         .build())
                 .collect(Collectors.toList());
@@ -119,11 +125,14 @@ public interface QuestionMapper {
         return AllResponseDto.builder()
                 .id(question.getId())
                 .memberId(member.getId())
+                .username(member.getUsername())
                 .title(question.getTitle())
                 .text(question.getText())
                 .voteResult(question.getVoteResult())
                 .views(question.getViews())
                 .tags(tagsToTagResponseDtos(question.getTags()))
+                .createdAt(question.getCreatedTime())
+                .modifiedAt(question.getModifiedTime())
                 .answers(answersToAnswerResponseDtos(answers))
                 .answerCount(answers.size())
                 .comments(commentsToCommentResponseDtos(commentRepository.findAllByQuestionId(question.getId())))
