@@ -144,9 +144,7 @@ const Text_Content = styled.div`
     margin: 0;
   }
 `;
-const Question_Image = styled.img`
-  width: 500px;
-`;
+
 const Gray_Text = styled.span`
   color: #7f7f7f;
   white-space: pre;
