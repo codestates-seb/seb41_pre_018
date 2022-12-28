@@ -28,7 +28,8 @@ public enum ExceptionCode {
 
     TAG_NOT_FOUND(404, "Tag not found" ),
 
-    UNAUTHORIZED(401, "Unauthorized");
+    UNAUTHORIZED(401, "Unauthorized"),
+    TAG_EXISTS(409, "Tag exists" );
 
 
     @Getter
