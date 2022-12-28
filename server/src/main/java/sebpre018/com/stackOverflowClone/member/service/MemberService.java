@@ -50,7 +50,7 @@ public class MemberService {
 
         return member;
     }
-gg
+
     public Member updateMember(Member member) {
         Member findMember = findVerifiedMember(member.getId());
 
