@@ -12,7 +12,6 @@ import Search from './Pages/Search';
 import Deleteuser_Completed from './Pages/Deleteuser_Completed';
 import Question_Page from './Pages/QuestionPage';
 import EditQuestion from './Pages/EditQuestion';
-import EditAnswer from './Pages/EditAnswer';
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -31,7 +30,6 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/question/new" element={<NewQuestion />} />
         <Route path="/question/:id/edit" element={<EditQuestion />} />
-        <Route path="/question/:id/answer/:id/edit" element={<EditAnswer />} />
         <Route path="/signup" element={<Sign />} />
         <Route path="/user/:name" element={<MyPage />} />
         <Route path="/signup-completed" element={<Signup_Completed />} />
