@@ -3,6 +3,8 @@ import Comments from '../Components/Comments';
 import { Link, useParams } from 'react-router-dom';
 import { MdKeyboardArrowUp, MdKeyboardArrowDown } from 'react-icons/md';
 import styled from 'styled-components';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import { data } from '../dummydata';
 
 const Outer_Wrapper = styled.div`
@@ -136,10 +138,13 @@ const Text_Content = styled.div`
   * {
     margin: 30px;
   }
+
+  .ql-toolbar,
+  .ql-toolbar * {
+    margin: 0;
+  }
 `;
-const Question_Image = styled.img`
-  width: 500px;
-`;
+
 const Gray_Text = styled.span`
   color: #7f7f7f;
   white-space: pre;
@@ -180,6 +185,24 @@ const Question_Page = () => {
 
   const [questionVotes, setQuestionVotes] = useState(0);
   const [answerVotes, setAnswerVotes] = useState(0);
+  const [isAnswerEditOn, setIsAnswerEditOn] = useState(false);
+  const [currentUserAnswer, setCurrentUserAnswer] = useState(
+    data.member[0].answers[0].answer_content
+  );
+
+  const handleUserAnswer = (val) => {
+    setCurrentUserAnswer(val);
+  };
+
+  const handleEditAnswer = () => {
+    if (isAnswerEditOn === true) {
+      if (confirm('수정을 완료하시겠습니까?')) {
+        setIsAnswerEditOn(!isAnswerEditOn);
+      }
+    } else {
+      setIsAnswerEditOn(!isAnswerEditOn);
+    }
+  };
 
   const upVote_question = () => {
     setQuestionVotes(questionVotes + 1);
@@ -231,7 +254,6 @@ const Question_Page = () => {
           </Vote_Wrapper>
           <Text_Content>
             <div dangerouslySetInnerHTML={{ __html: currentQuestion.text }} />
-            {/* <Question_Image src="Question_Image.png" /> */}
           </Text_Content>
         </Content_Wrapper>
         <Tag_Wrapper>
@@ -258,7 +280,9 @@ const Question_Page = () => {
           </Middle_Text_Wrapper>
           <Button_Wrapper>
             <Answer_Delete_Button>답변 삭제하기</Answer_Delete_Button>
-            <Answer_Edit_Button>답변 수정하기</Answer_Edit_Button>
+            <Answer_Edit_Button onClick={handleEditAnswer}>
+              {isAnswerEditOn ? '수정 완료' : '답변 수정하기'}
+            </Answer_Edit_Button>
           </Button_Wrapper>
         </Userinfo_Wrapper>
         <Custom_Hr />
@@ -269,11 +293,20 @@ const Question_Page = () => {
             <MdKeyboardArrowDown onClick={downVote_answer} size="30" />
           </Vote_Wrapper>
           <Text_Content>
-            <div
-              dangerouslySetInnerHTML={{
-                __html: data.member[0].answers[1].answer_content,
-              }}
-            />
+            {isAnswerEditOn ? (
+              <ReactQuill
+                theme="snow"
+                className="Rich_Text_Editor"
+                value={currentUserAnswer}
+                onChange={handleUserAnswer}
+              />
+            ) : (
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: currentUserAnswer,
+                }}
+              />
+            )}
           </Text_Content>
         </Content_Wrapper>
       </Inner_Wrapper>
