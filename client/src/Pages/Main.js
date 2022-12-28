@@ -113,7 +113,7 @@ const Main = (props) => {
           <div className="posts">
             {data.question
               .slice((pageState - 1) * postPerPage, pageState * postPerPage)
-              .map((item) => (
+              .map((item, idx) => (
                 <Question
                   title={item.title}
                   content={item.text}
@@ -122,6 +122,7 @@ const Main = (props) => {
                   username={item.username}
                   createdAt={item.created_time}
                   tags={item.tags}
+                  idx={idx}
                 />
               ))}
           </div>

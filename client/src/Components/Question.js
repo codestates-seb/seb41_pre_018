@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { data } from '../dummydata';
 import { RiDiscussFill } from 'react-icons/ri';
+import { Link } from 'react-router-dom';
 
 const Title = styled.div`
   color: rgb(41, 128, 185);
@@ -11,6 +12,7 @@ const Content = styled.div`
   font-size: 12px;
   margin-top: 10px;
   margin-bottom: 10px;
+  overflow: hidden;
 `;
 const Count_Wrapper = styled.div`
   color: rgb(51, 51, 51);
@@ -24,13 +26,13 @@ const Count_Wrapper = styled.div`
     margin-top: 5px;
     margin-bottom: 5px;
   }
-`
+`;
 
 const Question_Wrapper = styled.div`
   display: flex;
   width: 1000px;
   height: 130px;
-  border: 1px solid #D9D9D9;
+  border: 1px solid #d9d9d9;
   justify-content: space-between;
   align-items: center;
   border-bottom: none;
@@ -54,16 +56,16 @@ const Userinfo_Wrapper = styled.div`
   * {
     margin-right: 5px;
   }
-`
+`;
 const Username = styled.span`
   font-weight: bold;
   font-size: 12px;
   color: #454545;
-`
+`;
 const Created_At = styled.span`
   font-size: 12px;
   color: #454545;
-`
+`;
 
 const Profile_Image = styled.img`
   cursor: pointer;
@@ -72,19 +74,16 @@ const Profile_Image = styled.img`
   border-radius: 5px;
 `;
 
-const Votes = styled.div`
-`
-const Answers = styled.div`
-`
-const Views = styled.div`
-`
+const Votes = styled.div``;
+const Answers = styled.div``;
+const Views = styled.div``;
 
 const Votes_Search = styled.p`
   color: black;
-`
+`;
 const Answers_Search = styled.div`
   color: white;
-  background-color: #2F6F44;
+  background-color: #2f6f44;
   padding: 3px;
   padding-left: 5px;
   padding-right: 5px;
@@ -93,54 +92,74 @@ const Answers_Search = styled.div`
   justify-content: center;
   align-items: center;
   font-size: 14px;
-`
+`;
 const Views_Search = styled.p`
-  color: #7D2121;
-`
+  color: #7d2121;
+`;
 
 const Tag_Wrapper = styled.div`
   display: flex;
-  *{
+  * {
     margin-right: 10px;
   }
-`
+`;
 const Tags = styled.div`
   font-size: 12px;
-  background-color: #E1ECF4;
+  background-color: #e1ecf4;
   border-radius: 5px;
   padding: 5px;
-  color: #39739D;
+  color: #39739d;
   width: fit-content;
   &:hover {
-    background-color: #D0E3F1;
+    background-color: #d0e3f1;
     cursor: pointer;
   }
-`
-
-
+`;
 
 const Question = (props) => {
   return (
-    <div>        
+    <div>
       <Question_Wrapper>
-          <Count_Wrapper>
-            {props.isSearch ? <Votes_Search>{`${props.vote} votes`}</Votes_Search> : <Votes>{`${props.vote} votes`}</Votes>}
-            {props.isSearch ? <Answers_Search>{`✓ ${data.question.length} answers`}</Answers_Search> : <Answers>{`${data.question.length} answers`}</Answers>}
-            {props.isSearch ? <Views_Search>{`${props.views} views`}</Views_Search> : <Views>{`${props.views} views`}</Views>}
-          </Count_Wrapper>
-          <Content_Wrapper>
-            <Title>{props.isSearch ? <RiDiscussFill color="black"/> : null} {props.title}</Title>
-            <Content>{props.content}</Content>
-            <Tag_Wrapper>
-              {props.tags.map((item)=><Tags>{item}</Tags>)}
-            </Tag_Wrapper>
-          </Content_Wrapper>
-          <Userinfo_Wrapper>
-            <Profile_Image src="Sample_Avatar.png"/>
-            <Username>{`${props.username} `}</Username>
-            <Created_At>{`${props.createdAt}`}</Created_At>
-          </Userinfo_Wrapper>
-        </Question_Wrapper>
+        <Count_Wrapper>
+          {props.isSearch ? (
+            <Votes_Search>{`${props.vote} votes`}</Votes_Search>
+          ) : (
+            <Votes>{`${props.vote} votes`}</Votes>
+          )}
+          {props.isSearch ? (
+            <Answers_Search>{`✓ ${data.question.length} answers`}</Answers_Search>
+          ) : (
+            <Answers>{`${data.question.length} answers`}</Answers>
+          )}
+          {props.isSearch ? (
+            <Views_Search>{`${props.views} views`}</Views_Search>
+          ) : (
+            <Views>{`${props.views} views`}</Views>
+          )}
+        </Count_Wrapper>
+        <Content_Wrapper>
+          <Link to={`question/${props.idx}`}>
+            <Title>
+              {props.isSearch ? <RiDiscussFill color="black" /> : null}{' '}
+              {props.title}
+            </Title>
+          </Link>
+          <Content>
+            <div dangerouslySetInnerHTML={{ __html: props.content }} />
+            {/* {props.content} */}
+          </Content>
+          <Tag_Wrapper>
+            {props.tags.map((item) => (
+              <Tags>{item}</Tags>
+            ))}
+          </Tag_Wrapper>
+        </Content_Wrapper>
+        <Userinfo_Wrapper>
+          <Profile_Image src="Sample_Avatar.png" />
+          <Username>{`${props.username} `}</Username>
+          <Created_At>{`${props.createdAt}`}</Created_At>
+        </Userinfo_Wrapper>
+      </Question_Wrapper>
     </div>
   );
 };
