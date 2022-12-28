@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { data } from '../dummydata';
 import { RiDiscussFill } from 'react-icons/ri';
+import { Link } from 'react-router-dom';
 
 const Title = styled.div`
   color: rgb(41, 128, 185);
@@ -137,10 +138,12 @@ const Question = (props) => {
           )}
         </Count_Wrapper>
         <Content_Wrapper>
-          <Title>
-            {props.isSearch ? <RiDiscussFill color="black" /> : null}{' '}
-            {props.title}
-          </Title>
+          <Link to={`question/${props.idx}`}>
+            <Title>
+              {props.isSearch ? <RiDiscussFill color="black" /> : null}{' '}
+              {props.title}
+            </Title>
+          </Link>
           <Content>
             <div dangerouslySetInnerHTML={{ __html: props.content }} />
             {/* {props.content} */}
