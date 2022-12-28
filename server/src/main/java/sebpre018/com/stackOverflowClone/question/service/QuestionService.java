@@ -2,6 +2,7 @@ package sebpre018.com.stackOverflowClone.question.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,8 @@ import sebpre018.com.stackOverflowClone.member.service.MemberService;
 import sebpre018.com.stackOverflowClone.question.entity.Question;
 import sebpre018.com.stackOverflowClone.question.repository.QuestionRepository;
 
+import javax.naming.directory.SearchResult;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -89,4 +92,14 @@ public class QuestionService {
         return findAllQuestion;
     }
 
+    public Page<Question> searchQuestions(String keyWord, int page, int size, String sort) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(sort).descending());
+        List<Question> searchResult = questionRepository.findAllByKeyWord(keyWord);
+
+        int start = (int)pageRequest.getOffset();
+        int end = Math.min((start + pageRequest.getPageSize()), searchResult.size());
+        Page<Question> questions = new PageImpl<>(searchResult.subList(start, end), pageRequest, searchResult.size());
+
+        return questions;
+    }
 }

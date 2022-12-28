@@ -78,19 +78,39 @@ public class QuestionController {
     }
 
     //전체 질문 페이지
-    @GetMapping("/question")
+    @GetMapping()
     public ResponseEntity getQuestions(@Positive @RequestParam("page") int page,
                                        @Positive @RequestParam("size") int size,
                                        @RequestParam("sort") String sort){
         Page<Question> pageQuestions = questionService.findQuestions(page-1, size, sort);
 
         List<Question> questions = pageQuestions.getContent();
-        questions.stream().forEach(question -> question.setTags(tagService.findTags()));
+        questions.stream().forEach(question -> question.setTags(tagService.findTagsByQuestinId(question.getId())));
 
         return new ResponseEntity<> (new MultiResponseDto<>(
                 mapper.questionsToQuestionResponseDtos(questions), pageQuestions)
                 , HttpStatus.OK);
     }
+
+    //질문 검색
+    @GetMapping("search")
+    public ResponseEntity getQuestions(@RequestParam("search") String keyWord,
+                                       @Positive @RequestParam("page") int page,
+                                       @Positive @RequestParam("size") int size,
+                                       @RequestParam("sort") String sort){
+
+
+        Page<Question> searchResult = questionService.searchQuestions(keyWord,page-1,size,sort);
+
+        List<Question> questions = searchResult.getContent();
+        questions.stream().forEach(question -> question.setTags(tagService.findTagsByQuestinId(question.getId())));
+
+        return new ResponseEntity<>(new MultiResponseDto<>(
+                mapper.questionsToQuestionResponseDtos(questions),
+                searchResult),HttpStatus.OK);
+
+    }
+
     //질문 삭제
     @DeleteMapping("/{id}")
     public ResponseEntity deleteQuestion(@PathVariable("id") @Positive Long id){
