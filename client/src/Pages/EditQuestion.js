@@ -183,7 +183,7 @@ export default function NewQuestion() {
 
   const cancelRegister = () => {
     if (confirm('정말 취소하시겠습니까?')) {
-      navigate('/');
+      navigate('./../');
     }
   };
 
@@ -201,8 +201,8 @@ export default function NewQuestion() {
       if (confirm('수정한 내용을 등록하시겠습니까?')) {
         data['text'] = textEditorValue;
         data['tags'] = userTags;
-        console.log(textEditorValue);
         console.log(data);
+        navigate('./../');
       }
     }
   };
