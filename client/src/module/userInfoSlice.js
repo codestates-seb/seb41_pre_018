@@ -1,11 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-const getUserInfo = createAsyncThunk(
-  'userInfoSlice/getUserInfo',
 
+export const getUserInfoThunk = createAsyncThunk(
+  'thunkModule/getUserInfoThunk',
   async (data) => {
-    const { email } = data;
-    await axios.get(`http://localhost:8080/members/${email}`);
+    await axios.get(`http://localhost:8080/members/${data.memberId}`);
   }
 );
 
@@ -24,7 +23,7 @@ const userInfoSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(getUserInfo.fulfilled, (state, action) => {
+    builder.addCase(getUserInfoThunk.fulfilled, (state, action) => {
       const {
         email,
         username,
@@ -67,4 +66,3 @@ const userInfoSlice = createSlice({
 });
 
 export default userInfoSlice;
-export { getUserInfo };

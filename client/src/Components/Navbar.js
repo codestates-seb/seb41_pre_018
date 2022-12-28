@@ -111,14 +111,20 @@ const Navbar = (props) => {
         </Link>
         <Search_Wrapper>
           <RxMagnifyingGlass color="gray" size={25} />
-          <Search_Input placeholder="Search..." onChange={(e)=>console.log(e.target.value)} onKeyUp={(e) => e.keyCode === 13 ? navigateToSearch() : null}/>
+          <Search_Input
+            placeholder="Search..."
+            onChange={(e) => console.log(e.target.value)}
+            onKeyUp={(e) => (e.keyCode === 13 ? navigateToSearch() : null)}
+          />
         </Search_Wrapper>
         {props.isLoggedIn ? (
           <>
-            <Link to="/user/human_001">
-              <Profile_Image src={process.env.PUBLIC_URL + '/Sample_Avatar.png'}/>
+            <Link to="/user/1">
+              <Profile_Image
+                src={process.env.PUBLIC_URL + '/Sample_Avatar.png'}
+              />
             </Link>
-              <Logout_Button>Log out</Logout_Button>
+            <Logout_Button>Log out</Logout_Button>
           </>
         ) : (
           <>

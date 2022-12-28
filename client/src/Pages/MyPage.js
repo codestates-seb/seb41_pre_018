@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { data } from '../dummydata';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { HiCake } from 'react-icons/hi';
 import DeleteUserModal from '../Components/DeleteUserModal';
@@ -210,19 +210,23 @@ function dateChange(UserBirthDay) {
 }
 
 function MyPage() {
-  const { name } = useParams();
+  const { memberId } = useParams();
   const [dayAgo, setDayAgo] = useState('');
   const [hiddenAction, setHiddenAction] = useState(false);
+  const navigate = useNavigate();
   //현재 더미데이터 조건부
   let response;
   for (let i = 0; i < data.member.length; i++) {
-    if (name === data.member[i].username) {
+    if (Number(memberId) === data.member[i].memberId) {
       response = data.member[i];
       break;
     }
   }
   const deleteUserHandle = (boolean) => {
     setHiddenAction(boolean);
+  };
+  const navigateToHandle = () => {
+    navigate(`/user/edit/${memberId}`);
   };
   const { username, created_time, modified_time, aboutMe, answers, questions } =
     response;
@@ -231,11 +235,7 @@ function MyPage() {
     setDayAgo(day);
   }, []);
   return (
-    <My_page_Container
-      onClick={(e) => {
-        console.log(e);
-      }}
-    >
+    <My_page_Container>
       <My_Page_Sub_Container
         className={hiddenAction === true ? 'opacityComponent' : null}
       >
@@ -254,7 +254,10 @@ function MyPage() {
         <My_Page_About>
           <div>
             <My_Page_Title_Span>About</My_Page_Title_Span>
-            <button disabled={hiddenAction === true ? true : false}>
+            <button
+              disabled={hiddenAction === true ? true : false}
+              onClick={navigateToHandle}
+            >
               Click to edit
             </button>
           </div>
