@@ -1,5 +1,6 @@
 package sebpre018.com.stackOverflowClone.question.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,12 +25,15 @@ public class Question extends BaseEntity {
     @Column(name = "question_id")
     private Long id;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
+
     @OneToMany(mappedBy = "question", cascade = CascadeType.PERSIST)
-    private List<Tag> Tags = new ArrayList<>();
+    @JsonManagedReference
+    private List<Tag> tags = new ArrayList<>();
 
 //    Post시 값을 넣어주지 않으므로 양방향 필요하지 않음
 //    @OneToMany(mappedBy = "question", cascade = CascadeType.PERSIST)

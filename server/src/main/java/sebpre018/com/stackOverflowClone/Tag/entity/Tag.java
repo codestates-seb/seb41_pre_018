@@ -1,5 +1,6 @@
 package sebpre018.com.stackOverflowClone.Tag.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,8 +20,10 @@ public class Tag extends BaseEntity {
     @Column(name = "tag_id")
     private Long id;
 
+
     @JoinColumn(name = "question_id")
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
     private Question question;
 
     @Column(nullable = false)

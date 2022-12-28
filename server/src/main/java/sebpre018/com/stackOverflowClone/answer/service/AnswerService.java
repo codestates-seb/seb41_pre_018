@@ -55,7 +55,7 @@ public class AnswerService {
     }
 
     private void verifyExistsAnswer(Long answerId) {
-        Optional<Answer> answer = answerRepository.findByAnswer(answerId);
+        Optional<Answer> answer = answerRepository.findById(answerId);
         if(answer.isPresent())
             throw new BusinessLogicException(ExceptionCode.ANSWER_EXISTS);
     }

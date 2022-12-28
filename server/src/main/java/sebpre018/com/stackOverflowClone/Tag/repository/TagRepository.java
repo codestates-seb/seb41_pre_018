@@ -11,8 +11,6 @@ import java.util.List;
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
 
-    @Query(value = "SELECT t FROM Tag t WHERE t.questionId = :questionId")
+    @Query(value = "select * from tag where question_id = :questionId", nativeQuery = true)
     List<Tag> findAllByQuestionId(long questionId);
-
-    Tag findVerifiedTag(Long id);
 }

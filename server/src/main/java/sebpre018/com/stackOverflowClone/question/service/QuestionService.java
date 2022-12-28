@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class QuestionService {
 
     private final QuestionRepository questionRepository;
@@ -27,6 +26,11 @@ public class QuestionService {
     private final MemberService memberService;
 
     private final TagService tagService;
+    public QuestionService(QuestionRepository questionRepository, MemberService memberService, TagService tagService) {
+        this.questionRepository = questionRepository;
+        this.memberService = memberService;
+        this.tagService = tagService;
+    }
 
     public Question createQuestion(Question question) {
 //        question.setMember(memberService.getLoginMember());

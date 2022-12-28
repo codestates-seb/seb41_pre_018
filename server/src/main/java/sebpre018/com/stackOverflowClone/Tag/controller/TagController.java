@@ -21,12 +21,16 @@ import java.util.List;
 @RestController
 @RequestMapping("/questions")
 @Validated
-@RequiredArgsConstructor
 public class TagController {
 
-    private final QuestionService questionService;
+//    private final QuestionService questionService;
     private final TagService tagService;
     private final TagMapper mapper;
+
+    public TagController(TagService tagService, TagMapper mapper) {
+        this.tagService = tagService;
+        this.mapper = mapper;
+    }
 
     //태그 등록
     @PostMapping("/{question-id}/tags")

@@ -9,8 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AnswerRepository extends JpaRepository<Answer, Long> {
-    Optional<Answer> findByAnswer(Long answerId);
 
-    @Query(value = "SELECT t FROM Tag t WHERE t.questionId = :questionId")
+    @Query(value = "select * from answer where question_id = :questionId", nativeQuery = true)
     List<Answer> findAllByQuestionId(long questionId);
 }

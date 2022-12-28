@@ -26,7 +26,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/questions")
 @Validated
-@RequiredArgsConstructor
 public class QuestionController {
 
     private final QuestionService questionService;
@@ -38,6 +37,14 @@ public class QuestionController {
     private final AnswerRepository answerRepository;
 
     private final CommentRepository commentRepository;
+    public QuestionController(QuestionService questionService, QuestionMapper mapper,
+                              TagService tagService, AnswerRepository answerRepository, CommentRepository commentRepository) {
+        this.questionService = questionService;
+        this.mapper = mapper;
+        this.tagService = tagService;
+        this.answerRepository = answerRepository;
+        this.commentRepository = commentRepository;
+    }
 
     //질문 등록
 //   @Secured("ROLE_USER") -> 로그인한 회원에게 권한 부여
@@ -85,7 +92,7 @@ public class QuestionController {
         Page<Question> pageQuestions = questionService.findQuestions(page-1, size, sort);
 
         List<Question> questions = pageQuestions.getContent();
-        questions.stream().forEach(question -> question.setTags(tagService.findTagsByQuestinId(question.getId())));
+        questions.stream().forEach(question -> question.setTags(tagService.findTagsByQuestionId(question.getId())));
 
         return new ResponseEntity<> (new MultiResponseDto<>(
                 mapper.questionsToQuestionResponseDtos(questions), pageQuestions)
@@ -103,7 +110,7 @@ public class QuestionController {
         Page<Question> searchResult = questionService.searchQuestions(keyWord,page-1,size,sort);
 
         List<Question> questions = searchResult.getContent();
-        questions.stream().forEach(question -> question.setTags(tagService.findTagsByQuestinId(question.getId())));
+        questions.stream().forEach(question -> question.setTags(tagService.findTagsByQuestionId(question.getId())));
 
         return new ResponseEntity<>(new MultiResponseDto<>(
                 mapper.questionsToQuestionResponseDtos(questions),

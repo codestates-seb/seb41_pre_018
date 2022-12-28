@@ -16,21 +16,19 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class TagService {
 
 
     private final TagRepository tagRepository;
 
-
-    public List<Tag> findTags() {
-        return tagRepository.findAll();
+    public TagService(TagRepository tagRepository) {
+        this.tagRepository = tagRepository;
     }
 
-    public List<Tag> findTagsByQuestinId(Long questionId){
-        return tagRepository.findAllByQuestionId(questionId);
+    public Tag createTag(Tag tag) {
+        verifyExistsTag(tag.getId());
+        return tagRepository.save(tag);
     }
-
 
     public void deleteTags(Question question) {
         long questionId = question.getId();
@@ -40,13 +38,20 @@ public class TagService {
         tags.stream().forEach(tag -> tagRepository.delete(tag)); //조회한 태그 삭제
     }
 
+    public List<Tag> findTags() {
+        return tagRepository.findAll();
+    }
+
+    public List<Tag> findTagsByQuestionId(Long questionId){
+        return tagRepository.findAllByQuestionId(questionId);
+    }
+
+
+
     public List<Tag> createTags(List<Tag> tags) {
         return tags.stream().map(tag -> tagRepository.save(tag)).collect(Collectors.toList());
     }
 
-    public Tag createTag(Tag tag) {
-        return tagRepository.save(tag);
-    }
 
     public void deleteTag(Long id) {
         Tag tag = findVerifiedTag(id);
@@ -54,10 +59,17 @@ public class TagService {
         tagRepository.delete(tag);
     }
 
-    private Tag findVerifiedTag(Long id) {
+    public Tag findVerifiedTag(long id){
         Optional<Tag> optionalTag = tagRepository.findById(id);
 
         return optionalTag.orElseThrow(() ->
                 new BusinessLogicException(ExceptionCode.TAG_NOT_FOUND));
+    }
+    private void verifyExistsTag(Long id) {
+        Optional<Tag> tag = tagRepository.findById(id);
+
+        if(tag.isPresent()){
+            throw new BusinessLogicException(ExceptionCode.TAG_EXISTS);
+        }
     }
 }
