@@ -13,7 +13,6 @@ import Deleteuser_Completed from './Pages/Deleteuser_Completed';
 import Question_Page from './Pages/QuestionPage';
 import EditQuestion from './Pages/EditQuestion';
 import EditAnswer from './Pages/EditAnswer';
-import Deleteuser_Completed from './Pages/Deleteuser_Completed';
 
 const GlobalStyle = createGlobalStyle`
   body {
