@@ -9,6 +9,8 @@ import Sign from './Pages/Sign';
 import MyPage from './Pages/MyPage';
 import Signup_Completed from './Pages/Signup_Completed';
 import Search from './Pages/Search';
+import Deleteuser_Completed from './Pages/Deleteuser_Completed';
+import Question_Page from './Pages/QuestionPage';
 import EditQuestion from './Pages/EditQuestion';
 import EditAnswer from './Pages/EditAnswer';
 import Deleteuser_Completed from './Pages/Deleteuser_Completed';
@@ -39,6 +41,7 @@ function App() {
           path="/deleteuser-completed"
           element={<Deleteuser_Completed />}
         />
+        <Route path="/question/:id" element={<Question_Page />} />
       </Routes>
     </BrowserRouter>
   );
