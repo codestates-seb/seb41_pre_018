@@ -5,6 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import sebpre018.com.stackOverflowClone.answer.entity.Answer;
+import sebpre018.com.stackOverflowClone.answer.service.AnswerService;
 import sebpre018.com.stackOverflowClone.comment.entity.Comment;
 import sebpre018.com.stackOverflowClone.comment.repository.CommentRepository;
 import sebpre018.com.stackOverflowClone.exception.BusinessLogicException;
@@ -33,7 +35,7 @@ public class CommentService {
 
 
     public Comment createComment(Comment comment) {
-        verifyExistsComment(comment.getCommentId());
+        verifyExistsComment(comment.getId());
         // questionId, memberId, answerId 정보를 얻어와야함
         // 여기서 if answerid==null question id만 가지고 ~~ updatComment도 마찬가지?
 //        comment.setMemberId(memberService.getLoginMember()); // 토큰을 이용해서 받아옴
@@ -43,10 +45,10 @@ public class CommentService {
     }
 
     public Comment updateComment(Comment comment) {
-        Comment findComment = findVerifiedComment(comment.getCommentId());
+        Comment findComment = findVerifiedComment(comment.getId());
         Member writer = memberService.findVerifiedMember(findComment.getMember().getId());
         Question question = questionService.findVerifiedQuestion(findComment.getQuestion().getId());
-        Answer answer = answerService.findVerifiedAnswer(findComment.getAnswer().getId());
+        Answer answer = answerService.findVerifiedAnswer(findComment.getAnswer().getAnswerId());
 
         return commentRepository.save(comment);
     }
@@ -63,7 +65,7 @@ public class CommentService {
         Comment findComment = findVerifiedComment(commentId);
         Member writer = memberService.findVerifiedMember(findComment.getMember().getId());
         Question question = questionService.findVerifiedQuestion(findComment.getQuestion().getId());
-        Answer answer = answerService.findVerifiedAnswer(findComment.getAnswer().getId());
+        Answer answer = answerService.findVerifiedAnswer(findComment.getAnswer().getAnswerId());
 
         commentRepository.delete(findComment);
     }
@@ -75,7 +77,7 @@ public class CommentService {
     }
 
     private void verifyExistsComment(Long commentId) {
-        Optional<Comment> comment = commentRepository.findByComment(commentId);
+        Optional<Comment> comment = commentRepository.findById(commentId);
         if(comment.isPresent())
             throw new BusinessLogicException(ExceptionCode.ANSWER_EXISTS);
     }
