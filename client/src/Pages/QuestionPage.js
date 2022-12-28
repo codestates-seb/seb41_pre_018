@@ -4,16 +4,17 @@ import { Link, useParams } from 'react-router-dom';
 import { MdKeyboardArrowUp, MdKeyboardArrowDown } from 'react-icons/md';
 import styled from 'styled-components';
 import { data } from '../dummydata';
+import { BiNoEntry } from 'react-icons/bi';
 
 const Outer_Wrapper = styled.div`
-  width: 100vw;
-  height: 150vh;
+  border: 1px solid red;
+  width: 100%;
+  height: auto;
+  overflow: auto;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 47px;
-  // position: fixed;
-  overflow: auto;
+
 `;
 
 const Content_Wrapper = styled.div`
@@ -28,8 +29,8 @@ const Inner_Wrapper = styled.div`
   height: auto;
   padding: 30px;
   margin-top: 100px;
+  margin-bottom: 100px;
   padding-bottom: 100px;
-  position: absolute;
 `;
 
 const Question_Title = styled.div`
@@ -108,14 +109,13 @@ const Answer_Edit_Button = styled(Button)`
 `;
 
 const Custom_Hr = styled.hr`
-  width: 1200px;
+  width: 100%;
   align-items: center;
   opacity: 70%;
 `;
 const Vote_Wrapper = styled.div`
   height: 90px;
   width: 30px;
-  /* border: 1px solid gray; */
   border-radius: 5px;
   background-color: none;
 `;
@@ -137,9 +137,7 @@ const Text_Content = styled.div`
     margin: 30px;
   }
 `;
-const Question_Image = styled.img`
-  width: 500px;
-`;
+
 const Gray_Text = styled.span`
   color: #7f7f7f;
   white-space: pre;

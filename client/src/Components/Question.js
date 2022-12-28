@@ -3,22 +3,27 @@ import { data } from '../dummydata';
 import { RiDiscussFill } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
 
-const Title = styled.div`
+const Title = styled.a`
   color: rgb(41, 128, 185);
   font-size: 20px;
   text-decoration: none;
 `;
+
+const Custom_Div = styled.div`
+  white-space: normal;
+  word-break: break-all;
+  overflow: auto;
+`
+
 const Content = styled.div`
   color: rgb(51, 51, 51);
   font-size: 12px;
   margin-top: 10px;
   margin-bottom: 10px;
-  overflow: hidden;
 `;
 const Count_Wrapper = styled.div`
   color: rgb(51, 51, 51);
-  width: 100px;
-  padding-left: 10px;
+  width: auto;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -28,32 +33,33 @@ const Count_Wrapper = styled.div`
     margin-bottom: 5px;
   }
 `;
-
 const Question_Wrapper = styled.div`
   display: flex;
   width: 1000px;
-  height: 130px;
+  height: 160px;
   border: 1px solid #d9d9d9;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   border-bottom: none;
+  
 `;
 const Content_Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  width: 600px;
-  height: 300px;
+  width: 800px;
+  height: 130px;
   justify-content: space-between;
-  margin-left: 20px;
+  overflow: auto;
+  margin-right: 10px;
 `;
 const Userinfo_Wrapper = styled.div`
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   height: 20px;
   font-size: 8px;
-  margin-right: 20px;
-  margin-top: 70px;
+  /* margin-right: 20px;
+  margin-top: 70px; */
   * {
     margin-right: 5px;
   }
@@ -117,6 +123,11 @@ const Tags = styled.div`
   }
 `;
 
+const Bottom_Wrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+`
+
 const Question = (props) => {
   return (
     <div>
@@ -139,26 +150,30 @@ const Question = (props) => {
           )}
         </Count_Wrapper>
         <Content_Wrapper>
-          <Link to={`question/${props.idx}`}>
+          <Link to={`question/${props.idx}`} style={{ textDecoration: 'none' }}>
             <Title>
               {props.isSearch ? <RiDiscussFill color="black" /> : null}{' '}
               {props.title}
             </Title>
           </Link>
           <Content>
-              {props.content.replace(/<[^>]*>?/g, '').slice(0,300)}
+            <Custom_Div>
+              {props.content.length <= 380 ? props.content.replace(/<[^>]*>?/g, '') : props.content.replace(/<[^>]*>?/g, '').slice(0,380) + '...'}
+            </Custom_Div>
           </Content>
-          <Tag_Wrapper>
-            {props.tags.map((item) => (
-              <Tags>{item}</Tags>
-            ))}
-          </Tag_Wrapper>
+          <Bottom_Wrapper>
+            <Tag_Wrapper>
+              {props.tags.map((item) => (
+                <Tags>{item}</Tags>
+              ))}
+            </Tag_Wrapper>
+            <Userinfo_Wrapper>
+                <Profile_Image src="Sample_Avatar.png" />
+                <Username>{`${props.username} `}</Username>
+                <Created_At>{`${props.createdAt}`}</Created_At>
+            </Userinfo_Wrapper>
+          </Bottom_Wrapper>
         </Content_Wrapper>
-        <Userinfo_Wrapper>
-          <Profile_Image src="Sample_Avatar.png" />
-          <Username>{`${props.username} `}</Username>
-          <Created_At>{`${props.createdAt}`}</Created_At>
-        </Userinfo_Wrapper>
       </Question_Wrapper>
     </div>
   );
