@@ -1,6 +1,7 @@
 package sebpre018.com.stackOverflowClone.comment.mapper;
 
 import org.mapstruct.Mapper;
+import sebpre018.com.stackOverflowClone.answer.entity.Answer;
 import sebpre018.com.stackOverflowClone.comment.dto.CommentDto;
 import sebpre018.com.stackOverflowClone.comment.dto.CommentPatchDto;
 import sebpre018.com.stackOverflowClone.comment.dto.CommentPostDto;
@@ -49,7 +50,7 @@ public interface CommentMapper {
         Answer answer = comment.getAnswer();
 
         return CommentResponseDto.builder()
-                .commentId(comment.getCommentId())
+                .commentId(comment.getId())
 //                .memberId(member.getId())
                 .questionId(question.getId())
                 .answerId(answer.getAnswerId())
@@ -58,6 +59,6 @@ public interface CommentMapper {
 
     }
     // 여기아래로 없애도 되는 것인지?
-    CommentDto.Response commentToCommentResponseDto(Comment comment);
-    List<CommentDto.Response> commentsToCommentResponseDto(List<Comment> comments);
+//    CommentDto.Response commentToCommentResponseDto(Comment comment);
+//    List<CommentDto.Response> commentsToCommentResponseDto(List<Comment> comments);
 }

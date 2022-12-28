@@ -9,6 +9,7 @@ import sebpre018.com.stackOverflowClone.exception.ExceptionCode;
 import sebpre018.com.stackOverflowClone.question.entity.Question;
 import sebpre018.com.stackOverflowClone.question.service.QuestionService;
 
+import javax.swing.text.html.Option;
 import javax.validation.constraints.Positive;
 import java.util.List;
 import java.util.Optional;
@@ -41,5 +42,22 @@ public class TagService {
 
     public List<Tag> createTags(List<Tag> tags) {
         return tags.stream().map(tag -> tagRepository.save(tag)).collect(Collectors.toList());
+    }
+
+    public Tag createTag(Tag tag) {
+        return tagRepository.save(tag);
+    }
+
+    public void deleteTag(Long id) {
+        Tag tag = findVerifiedTag(id);
+
+        tagRepository.delete(tag);
+    }
+
+    private Tag findVerifiedTag(Long id) {
+        Optional<Tag> optionalTag = tagRepository.findById(id);
+
+        return optionalTag.orElseThrow(() ->
+                new BusinessLogicException(ExceptionCode.TAG_NOT_FOUND));
     }
 }
