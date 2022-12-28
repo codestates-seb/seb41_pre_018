@@ -1,0 +1,533 @@
+postMember (회원 등록)
+/members
+{
+    "id": 1,
+    "username": "홍길동",
+    "email": "hgd123@gmail.com",
+    "password": "q1w2e3r4t5y6",
+    "aboutMe": "안녕하세요",
+    "createdTime": 2022-12-28T14:35:55.160531400,
+}
+
+getMember (회원 조회)
+/members/member-id
+{
+    "id" : 1,
+    "username": "홍길동",
+    "email":  "hgd123@gmail.com",
+    "password": "q1w2e3r4t5y6",
+    "aboutMe": "안녕하세요",
+    "createdTime": 2022-12-28T14:35:55.160531400
+}
+
+
+patchMember (회원 정보 수정)
+/members/member-id
+{
+    "id" : 1,
+    "username": "홍길동",
+    "email":  "hgd123@gmail.com",
+    "password": "q1w2e3r4t5y6",
+    "aboutMe": "안녕안녕",
+    "modifiedTime": 2022-12-28T14:35:55.160531400
+}
+
+questionVote (질문 투표)
+/question/questionId/vote/voteId
+{
+    "voteId": 1,
+    "member_id": 2,
+    "answer_id": 3,
+    "question_id": 4,
+    "status": 1
+}
+
+answerVote (답변 투표)
+/answer/answerId/vote/voteId
+{
+    "voteId" : 1,
+    "member_id": 2,
+    "answer_id": 3,
+    "question_id": 4,
+    "status": 1
+}
+
+postAnswer (답변 등록)
+/answers/question-id
+{
+    "answerId": 1,
+    "questionId": 1,
+    "voteResult": 0,
+    "text": `<p>I've got an xts df of the following format:</p><pre class="ql-syntax" spellcheck="false">structure(c("May 2022", "Jun 2022", "Jul 2022", "Aug 2022", "Sep 2022",
+"Oct 2022", "Nov 2022", "Dec 2022", " 3035.199", " 5500.000",
+"11568.750", " 2510.000", " 6999.999", "21792.149", " 9750.000",
+" 5624.999", " 2250.000", " 4136.975", " 6525.500", " 2771.875",
+" 4637.500", "16273.499", " 6000.000", " 4494.649", " 2500.000",
+"    0.000", " 3029.000", " 2803.500", "    0.000", "14481.250",
+" 4374.998", " 4062.498", "    0.000", " 3075.000", " 6939.249",
+" 1500.000", " 4183.157", " 5769.000", " 3559.500", " 3250.000"
+), class = c("xts", "zoo"), index = structure(c(1651363200, 1654041600,
+1656633600, 1659312000, 1661990400, 1664582400, 1667260800, 1669852800
+), tzone = "UTC", tclass = "yearmon"), .Dim = c(8L, 5L), .Dimnames = list(
+NULL, c("Month", "Cat 1", "Cat 2", "Cat 3", "Cat 4")))
+</pre><p>I'm trying to create a stacked bar chart using the dygraphs library.</p><pre class="ql-syntax" spellcheck="false">library(dygraphs)
+library(lubridate)
+today &lt;- as.Date(Sys.time())
+last_6 &lt;- today+months(-6)
+dygraph(df) %&gt;%
+dyAxis("y", label= "Total") %&gt;%
+dyRangeSelector(dateWindow = c(last_6, today)) %&gt;%
+dyMultiColumnGroup(c("Cat 1", "Cat 2", "Cat 3", "Cat 4"))
+</pre><p>This produce a bar chart that looks like this:<a href="https://i.stack.imgur.com/0M97H.png" rel="noopener noreferrer" target="_blank" style="color: var(--theme-link-color);"><img src="https://i.stack.imgur.com/0M97H.png" alt="Current bar chart"></a></p><p>I was wondering if anyone had any advice on how to make stacked bar chart? Many of the guides talk about bringing in plotters, but unfortunately they are not detailed enough for me to properly understand what is going on.</p><p>Adding this:</p><pre class="ql-syntax" spellcheck="false">dyStackedBarGroup(c("Cat 1", "Cat 2", "Cat 3", "Cat 4"))
+</pre><p>instead of the dyMultiColumnGroup line leads to a:</p><pre class="ql-syntax" spellcheck="false">Error in cumulativeYval + points : non-numeric argument to binary operator
+</pre><p><br></p>`,
+    "createdTime": 2022-12-28T14:35:55.160531400
+}
+
+patchAnswer (답변 수정)
+/answers/question-id/answer-id
+{
+    "answerId": 1,
+    "questionId": 1,
+    "voteResult": 0,
+    "text": `<p>I am using dio package to make a GET request to a server to retrieve a PDF file.</p><p>The request is working fine, I get the PDF in base64.</p><p><a href="https://i.stack.imgur.com/8OyLz.png" rel="noopener noreferrer" target="_blank" style="color: var(--theme-link-color);"><img src="https://i.stack.imgur.com/8OyLz.png" alt="base 64 retrieved ok"></a></p><p>I get the response.data, and I use base64Decode to get the Uint8List, I save the file in the storage.</p><pre class="ql-syntax" spellcheck="false">    class FileSaverHelper {
+
+Future&lt;String&gt; save({required String filename, required Uint8List bytes}) async {
+
+final String tempDir = (await getTemporaryDirectory()).path;
+final filePath = "$tempDir/$filename";
+await File(filePath).writeAsBytes(bytes);
+
+return filePath;
+
+}
+
+}
+
+class OpenFileHelper {
+
+final FileSaverHelper fileSaverHelper = Get.find();
+
+Future&lt;void&gt; open({
+required String filename,
+required Future&lt;Uint8List&gt; Function() onDownload
+}) async {
+
+final Uint8List bytes = await onDownload();
+final filePath = await fileSaverHelper.save(
+filename: filename,
+bytes: bytes
+);
+
+if(await File(filePath).exists()){
+OpenFilex.open(filePath);
+}
+
+}
+
+}
+</pre><p>When I open the PDF it has only the first page and when I test the base64 that the server sends in the site&nbsp;<a href="https://www.stackoverflow.com/" rel="noopener noreferrer" target="_blank" style="color: var(--theme-link-color);">Base64 to PDF</a>, the PDF decoded has the amount of pages correctly (which is two).</p><p><a href="https://i.stack.imgur.com/qgG16.png" rel="noopener noreferrer" target="_blank" style="color: var(--theme-link-color);"><img src="https://i.stack.imgur.com/qgG16.png" alt="the PDF has two pages after decoding"></a></p><p>Why after I use base64Decode(response.data), save the PDF to the storage, open it, it has only the first page but in the site the amount of pages is correct?</p>`,
+    "modifiedTime": 2022-12-28T14:35:55.160531400
+}
+
+getAnswer (답변 조회)
+/answers/question-id/answer-id
+{
+    "answerId": 1,
+    "questionId": 1,
+    "voteResult": 0,
+    "text": `<p>I created this function that takes in a&nbsp;<code style="color: var(--black-800); background-color: var(--black-075);">dataframe</code>&nbsp;to return an&nbsp;<code style="color: var(--black-800); background-color: var(--black-075);">ndarrays</code>&nbsp;of input and label.</p><pre class="ql-syntax" spellcheck="false">def transform_to_array(dataframe, chunk_size=100):
+
+grouped = dataframe.groupby('id')
+
+# initialize accumulators
+X, y = np.zeros([0, 1, chunk_size, 4]), np.zeros([0,]) # original inpt shape: [0, 1, chunk_size, 4]
+
+# loop over each group (df[df.id==1] and df[df.id==2])
+for _, group in grouped:
+
+inputs = group.loc[:, 'A':'D'].values
+label = group.loc[:, 'label'].values[0]
+
+# calculate number of splits
+N = (len(inputs)-1) // chunk_size
+
+if N &gt; 0:
+inputs = np.array_split(
+inputs, [chunk_size + (chunk_size*i) for i in range(N)])
+else:
+inputs = [inputs]
+
+# loop over splits
+for inpt in inputs:
+inpt = np.pad(
+inpt, [(0, chunk_size-len(inpt)),(0, 0)],
+mode='constant')
+# add each inputs split to accumulators
+X = np.concatenate([X, inpt[np.newaxis, np.newaxis]], axis=0)
+y = np.concatenate([y, label[np.newaxis]], axis=0)
+
+return X, y
+</pre><p>The function returned&nbsp;<code style="color: var(--black-800); background-color: var(--black-075);">X</code>&nbsp;of shape&nbsp;<code style="color: var(--black-800); background-color: var(--black-075);">(n_samples, 1, chunk_size, 4)</code>&nbsp;and&nbsp;<code style="color: var(--black-800); background-color: var(--black-075);">y</code>&nbsp;of shape&nbsp;<code style="color: var(--black-800); background-color: var(--black-075);">(n_samples, )</code>.</p><p>For examples:</p><pre class="ql-syntax" spellcheck="false">N = 10_000
+id = np.arange(N)
+labels = np.random.randint(5, size=N)
+df = pd.DataFrame(data = np.random.randn(N, 4),  columns=list('ABCD'))
+
+df['label'] = labels
+df.insert(0, 'id', id)
+df = df.loc[df.id.repeat(157)]
+
+df.head()
+id      A            B          C            D    label
+0   0   -0.571676   -0.337737   -0.019276   -1.377253   1
+0   0   -0.571676   -0.337737   -0.019276   -1.377253   1
+0   0   -0.571676   -0.337737   -0.019276   -1.377253   1
+0   0   -0.571676   -0.337737   -0.019276   -1.377253   1
+0   0   -0.571676   -0.337737   -0.019276   -1.377253   1
+</pre><p>To generate the followings:</p><pre class="ql-syntax" spellcheck="false">X, y = transform_to_array(df)
+
+X.shape   # shape of input
+(20000, 1, 100, 4)
+y.shape   # shape of label
+(20000,)
+</pre><p>This function works fine as intended, however, it takes long time to finish execution:</p><pre class="ql-syntax" spellcheck="false">start_time = time.time()
+X, y = transform_to_array(df)
+end_time = time.time()
+print(f'Time taken: {end_time - start_time} seconds.')
+Time taken: 227.83956217765808 seconds.
+</pre><p>In attempt to improve performance of the function (minimise exec. time), I created the following modified func:</p><pre class="ql-syntax" spellcheck="false">def modified_transform_to_array(dataframe, chunk_size=100):
+# group data by 'id'
+grouped = dataframe.groupby('id')
+# initialize lists to store transformed data
+X, y = [], []
+
+# loop over each group (df[df.id==1] and df[df.id==2])
+for _, group in grouped:
+# get input and label data for group
+inputs = group.loc[:, 'A':'D'].values
+label = group.loc[:, 'label'].values[0]
+
+# calculate number of splits
+N = (len(inputs)-1) // chunk_size
+
+if N &gt; 0:
+# split input data into chunks
+inputs = np.array_split(
+inputs, [chunk_size + (chunk_size*i) for i in range(N)])
+else:
+inputs = [inputs]
+
+# loop over splits
+for inpt in inputs:
+# pad input data to have a chunk size of chunk_size
+inpt = np.pad(
+inpt, [(0, chunk_size-len(inpt)),(0, 0)],
+mode='constant')
+# add each input split and corresponding label to lists
+X.append(inpt)
+y.append(label)
+
+# convert lists to numpy arrays
+X = np.array(X)
+y = np.array(y)
+
+return X, y
+</pre><p>At first, it seems like I succeeded reducing time taken:</p><pre class="ql-syntax" spellcheck="false">start_time = time.time()
+X2, y2 = modified_transform_to_array(df)
+end_time = time.time()
+print(f'Time taken: {end_time - start_time} seconds.')
+Time taken: 5.842168092727661 seconds.
+</pre><p>However, the result is that it changes the shape of the intended returned value.</p><pre class="ql-syntax" spellcheck="false">X2.shape  # this should be (20000, 1, 100, 4)
+(20000, 100, 4)
+
+y.shape  # this is fine
+(20000, )
+</pre><p><strong>Question</strong></p><p>How do I modify&nbsp;<code style="color: var(--black-800); background-color: var(--black-075);">modified_transform_to_array()</code>&nbsp;to return the intended array shape&nbsp;<code style="color: var(--black-800); background-color: var(--black-075);">(n_samples, 1, chunk_size, 4)</code>&nbsp;since it is much faster?</p><p><br></p><p><br></p>`,
+    "createdTime": 2022-12-28T14:35:55.160531400,
+    "modifiedTime": 2022-12-28T14:35:55.160531400
+}
+
+
+getAnswers (답변 전체 조회)
+/answers
+{
+"data":
+    {
+        "answerId": 1,
+        "questionId": 1,
+        "voteResult": 0,
+        "text": `<p>I created this function that takes in a&nbsp;<code style="color: var(--black-800); background-color: var(--black-075);">dataframe</code>&nbsp;to return an&nbsp;<code style="color: var(--black-800); background-color: var(--black-075);">ndarrays</code>&nbsp;of input and label.</p><pre class="ql-syntax" spellcheck="false">def transform_to_array(dataframe, chunk_size=100):
+
+grouped = dataframe.groupby('id')
+
+# initialize accumulators
+X, y = np.zeros([0, 1, chunk_size, 4]), np.zeros([0,]) # original inpt shape: [0, 1, chunk_size, 4]
+
+# loop over each group (df[df.id==1] and df[df.id==2])
+for _, group in grouped:
+
+inputs = group.loc[:, 'A':'D'].values
+label = group.loc[:, 'label'].values[0]
+
+# calculate number of splits
+N = (len(inputs)-1) // chunk_size
+
+if N &gt; 0:
+inputs = np.array_split(
+inputs, [chunk_size + (chunk_size*i) for i in range(N)])
+else:
+inputs = [inputs]
+
+# loop over splits
+for inpt in inputs:
+inpt = np.pad(
+inpt, [(0, chunk_size-len(inpt)),(0, 0)],
+mode='constant')
+# add each inputs split to accumulators
+X = np.concatenate([X, inpt[np.newaxis, np.newaxis]], axis=0)
+y = np.concatenate([y, label[np.newaxis]], axis=0)
+
+return X, y
+</pre><p>The function returned&nbsp;<code style="color: var(--black-800); background-color: var(--black-075);">X</code>&nbsp;of shape&nbsp;<code style="color: var(--black-800); background-color: var(--black-075);">(n_samples, 1, chunk_size, 4)</code>&nbsp;and&nbsp;<code style="color: var(--black-800); background-color: var(--black-075);">y</code>&nbsp;of shape&nbsp;<code style="color: var(--black-800); background-color: var(--black-075);">(n_samples, )</code>.</p><p>For examples:</p><pre class="ql-syntax" spellcheck="false">N = 10_000
+id = np.arange(N)
+labels = np.random.randint(5, size=N)
+df = pd.DataFrame(data = np.random.randn(N, 4),  columns=list('ABCD'))
+
+df['label'] = labels
+df.insert(0, 'id', id)
+df = df.loc[df.id.repeat(157)]
+
+df.head()
+id      A            B          C            D    label
+0   0   -0.571676   -0.337737   -0.019276   -1.377253   1
+0   0   -0.571676   -0.337737   -0.019276   -1.377253   1
+0   0   -0.571676   -0.337737   -0.019276   -1.377253   1
+0   0   -0.571676   -0.337737   -0.019276   -1.377253   1
+0   0   -0.571676   -0.337737   -0.019276   -1.377253   1
+</pre><p>To generate the followings:</p><pre class="ql-syntax" spellcheck="false">X, y = transform_to_array(df)
+
+X.shape   # shape of input
+(20000, 1, 100, 4)
+y.shape   # shape of label
+(20000,)
+</pre><p>This function works fine as intended, however, it takes long time to finish execution:</p><pre class="ql-syntax" spellcheck="false">start_time = time.time()
+X, y = transform_to_array(df)
+end_time = time.time()
+print(f'Time taken: {end_time - start_time} seconds.')
+Time taken: 227.83956217765808 seconds.
+</pre><p>In attempt to improve performance of the function (minimise exec. time), I created the following modified func:</p><pre class="ql-syntax" spellcheck="false">def modified_transform_to_array(dataframe, chunk_size=100):
+# group data by 'id'
+grouped = dataframe.groupby('id')
+# initialize lists to store transformed data
+X, y = [], []
+
+# loop over each group (df[df.id==1] and df[df.id==2])
+for _, group in grouped:
+# get input and label data for group
+inputs = group.loc[:, 'A':'D'].values
+label = group.loc[:, 'label'].values[0]
+
+# calculate number of splits
+N = (len(inputs)-1) // chunk_size
+
+if N &gt; 0:
+# split input data into chunks
+inputs = np.array_split(
+inputs, [chunk_size + (chunk_size*i) for i in range(N)])
+else:
+inputs = [inputs]
+
+# loop over splits
+for inpt in inputs:
+# pad input data to have a chunk size of chunk_size
+inpt = np.pad(
+inpt, [(0, chunk_size-len(inpt)),(0, 0)],
+mode='constant')
+# add each input split and corresponding label to lists
+X.append(inpt)
+y.append(label)
+
+# convert lists to numpy arrays
+X = np.array(X)
+y = np.array(y)
+
+return X, y
+</pre><p>At first, it seems like I succeeded reducing time taken:</p><pre class="ql-syntax" spellcheck="false">start_time = time.time()
+X2, y2 = modified_transform_to_array(df)
+end_time = time.time()
+print(f'Time taken: {end_time - start_time} seconds.')
+Time taken: 5.842168092727661 seconds.
+</pre><p>However, the result is that it changes the shape of the intended returned value.</p><pre class="ql-syntax" spellcheck="false">X2.shape  # this should be (20000, 1, 100, 4)
+(20000, 100, 4)
+
+y.shape  # this is fine
+(20000, )
+</pre><p><strong>Question</strong></p><p>How do I modify&nbsp;<code style="color: var(--black-800); background-color: var(--black-075);">modified_transform_to_array()</code>&nbsp;to return the intended array shape&nbsp;<code style="color: var(--black-800); background-color: var(--black-075);">(n_samples, 1, chunk_size, 4)</code>&nbsp;since it is much faster?</p><p><br></p><p><br></p>`,
+        "createdTime": 2022-12-28T14:35:55.160531400,
+        "modifiedTime": 2022-12-28T14:35:55.160531400
+    },
+    {
+        "answerId": 2,
+        "questionId": 2,
+        "voteResult": 1,
+        "text": `<p>I created this function that takes in a&nbsp;<code style="color: var(--black-800); background-color: var(--black-075);">dataframe</code>&nbsp;to return an&nbsp;<code style="color: var(--black-800); background-color: var(--black-075);">ndarrays</code>&nbsp;of input and label.</p><pre class="ql-syntax" spellcheck="false">def transform_to_array(dataframe, chunk_size=100):
+
+grouped = dataframe.groupby('id')
+
+# initialize accumulators
+X, y = np.zeros([0, 1, chunk_size, 4]), np.zeros([0,]) # original inpt shape: [0, 1, chunk_size, 4]
+
+# loop over each group (df[df.id==1] and df[df.id==2])
+for _, group in grouped:
+
+inputs = group.loc[:, 'A':'D'].values
+label = group.loc[:, 'label'].values[0]
+
+# calculate number of splits
+N = (len(inputs)-1) // chunk_size
+
+if N &gt; 0:
+inputs = np.array_split(
+inputs, [chunk_size + (chunk_size*i) for i in range(N)])
+else:
+inputs = [inputs]
+
+# loop over splits
+for inpt in inputs:
+inpt = np.pad(
+inpt, [(0, chunk_size-len(inpt)),(0, 0)],
+mode='constant')
+# add each inputs split to accumulators
+X = np.concatenate([X, inpt[np.newaxis, np.newaxis]], axis=0)
+y = np.concatenate([y, label[np.newaxis]], axis=0)
+
+return X, y
+</pre><p>The function returned&nbsp;<code style="color: var(--black-800); background-color: var(--black-075);">X</code>&nbsp;of shape&nbsp;<code style="color: var(--black-800); background-color: var(--black-075);">(n_samples, 1, chunk_size, 4)</code>&nbsp;and&nbsp;<code style="color: var(--black-800); background-color: var(--black-075);">y</code>&nbsp;of shape&nbsp;<code style="color: var(--black-800); background-color: var(--black-075);">(n_samples, )</code>.</p><p>For examples:</p><pre class="ql-syntax" spellcheck="false">N = 10_000
+id = np.arange(N)
+labels = np.random.randint(5, size=N)
+df = pd.DataFrame(data = np.random.randn(N, 4),  columns=list('ABCD'))
+
+df['label'] = labels
+df.insert(0, 'id', id)
+df = df.loc[df.id.repeat(157)]
+
+df.head()
+id      A            B          C            D    label
+0   0   -0.571676   -0.337737   -0.019276   -1.377253   1
+0   0   -0.571676   -0.337737   -0.019276   -1.377253   1
+0   0   -0.571676   -0.337737   -0.019276   -1.377253   1
+0   0   -0.571676   -0.337737   -0.019276   -1.377253   1
+0   0   -0.571676   -0.337737   -0.019276   -1.377253   1
+</pre><p>To generate the followings:</p><pre class="ql-syntax" spellcheck="false">X, y = transform_to_array(df)
+
+X.shape   # shape of input
+(20000, 1, 100, 4)
+y.shape   # shape of label
+(20000,)
+</pre><p>This function works fine as intended, however, it takes long time to finish execution:</p><pre class="ql-syntax" spellcheck="false">start_time = time.time()
+X, y = transform_to_array(df)
+end_time = time.time()
+print(f'Time taken: {end_time - start_time} seconds.')
+Time taken: 227.83956217765808 seconds.
+</pre><p>In attempt to improve performance of the function (minimise exec. time), I created the following modified func:</p><pre class="ql-syntax" spellcheck="false">def modified_transform_to_array(dataframe, chunk_size=100):
+# group data by 'id'
+grouped = dataframe.groupby('id')
+# initialize lists to store transformed data
+X, y = [], []
+
+# loop over each group (df[df.id==1] and df[df.id==2])
+for _, group in grouped:
+# get input and label data for group
+inputs = group.loc[:, 'A':'D'].values
+label = group.loc[:, 'label'].values[0]
+
+# calculate number of splits
+N = (len(inputs)-1) // chunk_size
+
+if N &gt; 0:
+# split input data into chunks
+inputs = np.array_split(
+inputs, [chunk_size + (chunk_size*i) for i in range(N)])
+else:
+inputs = [inputs]
+
+# loop over splits
+for inpt in inputs:
+# pad input data to have a chunk size of chunk_size
+inpt = np.pad(
+inpt, [(0, chunk_size-len(inpt)),(0, 0)],
+mode='constant')
+# add each input split and corresponding label to lists
+X.append(inpt)
+y.append(label)
+
+# convert lists to numpy arrays
+X = np.array(X)
+y = np.array(y)
+
+return X, y
+</pre><p>At first, it seems like I succeeded reducing time taken:</p><pre class="ql-syntax" spellcheck="false">start_time = time.time()
+X2, y2 = modified_transform_to_array(df)
+end_time = time.time()
+print(f'Time taken: {end_time - start_time} seconds.')
+Time taken: 5.842168092727661 seconds.
+</pre><p>However, the result is that it changes the shape of the intended returned value.</p><pre class="ql-syntax" spellcheck="false">X2.shape  # this should be (20000, 1, 100, 4)
+(20000, 100, 4)
+
+y.shape  # this is fine
+(20000, )
+</pre><p><strong>Question</strong></p><p>How do I modify&nbsp;<code style="color: var(--black-800); background-color: var(--black-075);">modified_transform_to_array()</code>&nbsp;to return the intended array shape&nbsp;<code style="color: var(--black-800); background-color: var(--black-075);">(n_samples, 1, chunk_size, 4)</code>&nbsp;since it is much faster?</p><p><br></p><p><br></p>`,
+        "createdTime": 2022-12-28T14:35:55.160531400,
+        "modifiedTime": 2022-12-28T14:35:55.160531400
+    }
+}
+
+postComment(질문 댓글)
+/comments/question-id
+{
+    "questionId": 1,
+    "text": "1번 질문에 댓글 작성"
+}
+
+postComment(답변 댓글)
+/comments/question-id/answer-id
+{
+    "questionId": 1,
+    "answerId": 1,
+    "text": "1번 질문의 1번 답변에 댓글 작성"
+}
+
+patchComment(질문 댓글 수정)
+/comments/question-id/comment-id
+{
+    "questionId": 1,
+    "commentId": 1,
+    "text": "1번 질문의 1번 댓글 수정"
+}
+
+patchComment(답변 댓글 수정)
+/comments/question-id/answer-id/comment-id
+{
+    "questionId": 1,
+    "answerId": 1,
+    "commentId": 1,
+    "text": "1번 질문의 1번 답변의 댓글 수정"
+}
+
+getComments(댓글 전체 조회)
+/comments
+{
+    "data":
+        {
+            "questionId": 2,
+            "answerId": 1,
+            "commentId": 1,
+            "text": "2번 질문의 1번 답변의 1번 댓글"
+        },
+        {
+        "questionId": 2,
+        "answerId": 1,
+        "commentId": 2,
+        "text": "2번 질문의 1번 답변의 2번 댓글"
+        }
+}
