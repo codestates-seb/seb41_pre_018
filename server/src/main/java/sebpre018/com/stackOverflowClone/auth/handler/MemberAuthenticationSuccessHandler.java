@@ -22,7 +22,7 @@ public class MemberAuthenticationSuccessHandler implements AuthenticationSuccess
 
     private MemberRepository memberRepository;
 
-    public MemberAuthenticationSuccessHandler(MemberRepository userRepository) {
+    public MemberAuthenticationSuccessHandler(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 
