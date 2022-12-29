@@ -30,10 +30,13 @@ public class CustomAuthorityUtils {
 
     // DB Role 기반 권한 정보 생성
     public List<GrantedAuthority> createAuthorities(List<String> roles) {
-        List<GrantedAuthority> authorities = roles.stream()
+//        List<GrantedAuthority> authorities = roles.stream()
+//                .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+//                .collect(Collectors.toList());
+//        return authorities;
+        return roles.stream()
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                 .collect(Collectors.toList());
-        return authorities;
     }
 
     // DB 저장용

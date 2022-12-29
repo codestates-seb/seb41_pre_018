@@ -3,6 +3,7 @@ package sebpre018.com.stackOverflowClone.question.controller;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import sebpre018.com.stackOverflowClone.Tag.service.TagService;
@@ -46,7 +47,7 @@ public class QuestionController {
     }
 
     //질문 등록
-//   @Secured("ROLE_USER") -> 로그인한 회원에게 권한 부여
+    @Secured("ROLE_USER")
     @PostMapping
     public ResponseEntity postQuestion(@Valid @RequestBody QuestionPostDto questionPostDto){
         Question question = questionService.createQuestion(mapper.questionPostDtoToQuestion(questionPostDto));
@@ -57,7 +58,7 @@ public class QuestionController {
     }
 
     //질문 수정
-    //@Secured("ROLE_USER")
+@Secured("ROLE_USER")
     @PatchMapping("/{id}")
     public ResponseEntity patchQuestion(@PathVariable("id") @Positive Long id,
                                         @Valid @RequestBody QuestionPatchDto questionPatchDto){
