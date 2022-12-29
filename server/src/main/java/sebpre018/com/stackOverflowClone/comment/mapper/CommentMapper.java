@@ -51,6 +51,8 @@ public interface CommentMapper {
                 .memberId(member.getId())
                 .questionId(question.getQuestionId())
                 .answerId(answer.getAnswerId())
+                .createdAt(comment.getCreatedTime())
+                .modifiedAt(comment.getModifiedTime())
                 .text(comment.getText())
                 .build();
 

@@ -23,7 +23,8 @@ public class AnswerService {
         this.memberService = memberService;
     }
     public Answer createAnswer(Answer answer) {
-        verifyExistsAnswer(answer.getAnswerId());
+        answer.setMember(memberService.getLoginMember());
+//        verifyExistsAnswer(answer.getAnswerId());
         return answerRepository.save(answer);
     }
 

@@ -6,6 +6,7 @@ import sebpre018.com.stackOverflowClone.answer.dto.AnswerPatchDto;
 import sebpre018.com.stackOverflowClone.answer.dto.AnswerPostDto;
 import sebpre018.com.stackOverflowClone.answer.dto.AnswerResponseDto;
 import sebpre018.com.stackOverflowClone.answer.entity.Answer;
+import sebpre018.com.stackOverflowClone.member.entity.Member;
 import sebpre018.com.stackOverflowClone.question.entity.Question;
 
 import java.util.List;
@@ -34,16 +35,18 @@ public interface AnswerMapper {
     }
 
     default AnswerResponseDto answerToAnswerResponse(Answer answer) {
-//        Member member = answer.getMemberId();  // 토큰으로 받아오는 정보라면 빼야함
+        Member member = answer.getMember();  // 토큰으로 받아오는 정보라면 빼야함
         Question question = answer.getQuestion();
 //         Question Id 를 받아와야함
 
         return AnswerResponseDto.builder()
                 .answerId(answer.getAnswerId())
-//                .memberId(member.getId())
+                .memberId(member.getId())
                 .questionId(question.getQuestionId())
                 .voteResult(answer.getVoteResult())
                 .text(answer.getText())
+                .createdAt(answer.getCreatedTime())
+                .modifiedAt(answer.getModifiedTime())
                 .build();
     }
     AnswerDto.Response answerToAnswerResponseDto(Answer answer);
