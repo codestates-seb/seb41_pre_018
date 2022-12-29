@@ -6,6 +6,7 @@ import sebpre018.com.stackOverflowClone.comment.dto.CommentPatchDto;
 import sebpre018.com.stackOverflowClone.comment.dto.CommentPostDto;
 import sebpre018.com.stackOverflowClone.comment.dto.CommentResponseDto;
 import sebpre018.com.stackOverflowClone.comment.entity.Comment;
+import sebpre018.com.stackOverflowClone.member.entity.Member;
 import sebpre018.com.stackOverflowClone.question.entity.Question;
 
 @Mapper(componentModel = "spring")
@@ -41,13 +42,13 @@ public interface CommentMapper {
     }
 
     default CommentResponseDto commentToCommentResponse(Comment comment) {
-//        Member member = comment.getMember();
+        Member member = comment.getMember();
         Question question = comment.getQuestion();
         Answer answer = comment.getAnswer();
 
         return CommentResponseDto.builder()
                 .commentId(comment.getId())
-//                .memberId(member.getId())
+                .memberId(member.getId())
                 .questionId(question.getQuestionId())
                 .answerId(answer.getAnswerId())
                 .text(comment.getText())

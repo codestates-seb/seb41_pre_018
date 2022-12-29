@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import sebpre018.com.stackOverflowClone.Tag.service.TagService;
 import sebpre018.com.stackOverflowClone.exception.BusinessLogicException;
 import sebpre018.com.stackOverflowClone.exception.ExceptionCode;
+import sebpre018.com.stackOverflowClone.member.entity.Member;
 import sebpre018.com.stackOverflowClone.member.service.MemberService;
 import sebpre018.com.stackOverflowClone.question.entity.Question;
 import sebpre018.com.stackOverflowClone.question.repository.QuestionRepository;
@@ -30,7 +31,7 @@ public class QuestionService {
     }
 
     public Question createQuestion(Question question) {
-//        question.setMember(memberService.getLoginMember());
+        question.setMember(memberService.getLoginMember());
         //로그인한 Member 정보 얻어옴
 
         verifyExistsQuestion(question.getQuestionId()); //존재하는 questionId인지 확인
@@ -41,9 +42,9 @@ public class QuestionService {
         // 로그인한 member와 작성한 member Id를 비교해서 아니라면 예외 발생
         Question preQuestion = findVerifiedQuestion(question.getQuestionId()); // id를 통해 기존 질문 찾기
 //
-//        Member writer = memberService.findVerifiedMember(preQuestion.getMember().getId()); // 작성자 찾기
-//        if(memberService.getLoginMember().getId() != writer.getId()) // 작성자와 로그인한 사람이 다를 경우
-//            throw new BusinessLogicException(ExceptionCode.UNAUTHORIZED); //예외 발생(권한 없음)
+        Member writer = memberService.findVerifiedMember(preQuestion.getMember().getId()); // 작성자 찾기
+        if(memberService.getLoginMember().getId() != writer.getId()) // 작성자와 로그인한 사람이 다를 경우
+            throw new BusinessLogicException(ExceptionCode.UNAUTHORIZED); //예외 발생(권한 없음)
 
         Optional.ofNullable(question.getTitle())
                 .ifPresent(title -> preQuestion.setTitle(title));
@@ -61,9 +62,9 @@ public class QuestionService {
     public void deleteQuestion(Long id) {
         Question question = findVerifiedQuestion(id);
 //
-//        Member writer = memberService.findVerifiedMember(preQuestion.getMember().getId()); // 작성자 찾기
-//        if(memberService.getLoginMember().getId() != writer.getId()) // 작성자와 로그인한 사람이 다를 경우
-//            throw new BusinessLogicException(ExceptionCode.UNAUTHORIZED); //예외 발생(권한 없음)
+        Member writer = memberService.findVerifiedMember(question.getMember().getId()); // 작성자 찾기
+        if(memberService.getLoginMember().getId() != writer.getId()) // 작성자와 로그인한 사람이 다를 경우
+            throw new BusinessLogicException(ExceptionCode.UNAUTHORIZED); //예외 발생(권한 없음)
 
         questionRepository.delete(question);
     }
