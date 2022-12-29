@@ -36,6 +36,7 @@ public class CommentController {
     @PostMapping("/{question-id}")
     public ResponseEntity postComment(@PathVariable("question-id") Long questionId,
                                       @Valid @RequestBody CommentPostDto commentPostDto) {
+        commentPostDto.setQuestionId(questionId);
         Comment comment = commentService.createComment(mapper.commentPostDtoToComment(commentPostDto));
         CommentResponseDto response = mapper.commentToCommentResponse(comment);
 
