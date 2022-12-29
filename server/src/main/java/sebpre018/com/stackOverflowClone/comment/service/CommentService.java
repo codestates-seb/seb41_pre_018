@@ -4,7 +4,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import sebpre018.com.stackOverflowClone.answer.entity.Answer;
 import sebpre018.com.stackOverflowClone.answer.service.AnswerService;
 import sebpre018.com.stackOverflowClone.comment.entity.Comment;
 import sebpre018.com.stackOverflowClone.comment.repository.CommentRepository;
@@ -41,9 +40,14 @@ public class CommentService {
     }
 
     public Comment updateComment(Comment comment) {
-        Comment findComment = findVerifiedComment(comment.getId());
-        Member writer = memberService.findVerifiedMember(findComment.getMember().getId());
-        Question question = questionService.findVerifiedQuestion(findComment.getQuestion().getQuestionId());
+        Comment findComment = findVerifiedComment(comment.getCommentId()); //기존 댓글 찾기
+        Member writer = memberService.findVerifiedMember(findComment.getMember().getId()); //기존 댓글 작성자 찾기
+        comment.setMember(writer); //MemberId responseDto에서 사용해주기 위해 세팅
+        if(memberService.getLoginMember().getId() != writer.getId()) // 작성자와 로그인한 사람 다를 경우
+            throw new BusinessLogicException(ExceptionCode.UNAUTHORIZED); //예외 발생
+
+        Optional.ofNullable(comment.getText())
+                .ifPresent(text -> findComment.setText(text));
 
         return commentRepository.save(comment);
     }

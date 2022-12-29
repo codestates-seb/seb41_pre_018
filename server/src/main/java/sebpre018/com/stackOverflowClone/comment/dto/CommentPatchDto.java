@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
 
 public class CommentPatchDto {
     private Long commentId;
-    private Long memberId;
+
     private Long questionId;
 
     @NotBlank

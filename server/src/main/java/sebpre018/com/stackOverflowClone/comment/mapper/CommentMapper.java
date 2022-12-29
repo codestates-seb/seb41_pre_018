@@ -1,7 +1,6 @@
 package sebpre018.com.stackOverflowClone.comment.mapper;
 
 import org.mapstruct.Mapper;
-import sebpre018.com.stackOverflowClone.answer.entity.Answer;
 import sebpre018.com.stackOverflowClone.comment.dto.CommentPatchDto;
 import sebpre018.com.stackOverflowClone.comment.dto.CommentPostDto;
 import sebpre018.com.stackOverflowClone.comment.dto.CommentResponseDto;
@@ -28,6 +27,7 @@ public interface CommentMapper {
 
 
         Comment comment = new Comment();
+        comment.setCommentId(commentPatchDto.getCommentId());
         comment.setQuestion(question);
         comment.setText(commentPatchDto.getText());
 
@@ -39,7 +39,7 @@ public interface CommentMapper {
         Question question = comment.getQuestion();
 
         return CommentResponseDto.builder()
-                .commentId(comment.getId())
+                .commentId(comment.getCommentId())
                 .memberId(member.getId())
                 .questionId(question.getQuestionId())
                 .createdAt(comment.getCreatedTime())

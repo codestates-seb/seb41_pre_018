@@ -109,7 +109,7 @@ public interface QuestionMapper {
     default List<CommentResponseDto> commentsToCommentResponseDtos(List<Comment> comments){
         return comments.stream()
                 .map(comment -> CommentResponseDto.builder()
-                        .commentId(comment.getId())
+                        .commentId(comment.getCommentId())
                         .questionId(comment.getQuestion().getQuestionId())
                         .memberId(comment.getMember().getId())
                         .createdAt(comment.getCreatedTime())

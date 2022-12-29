@@ -57,6 +57,9 @@ public class CommentController {
     public ResponseEntity patchComment(@PathVariable("question-id") Long questionId,
                                        @PathVariable("comment-id") Long commentId,
                                        @Valid @RequestBody CommentPatchDto commentPatchDto) {
+        commentPatchDto.setCommentId(commentId);
+        commentPatchDto.setQuestionId(questionId);
+
         Comment comment = commentService.updateComment(mapper.commentPatchDtoToComment(commentPatchDto));
         CommentResponseDto response = mapper.commentToCommentResponse(comment);
 
