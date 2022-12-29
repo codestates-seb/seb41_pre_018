@@ -3,13 +3,13 @@ import styled from "styled-components";
 import { data } from "../dummydata";
 
 const Custom_Hr = styled.hr` 
-    width: 75rem;
+    width: 99%;
     align-items: center;
     opacity: 70%;
 `
 
 const Comment_Wrapper = styled.div`
-    width: 75rem;
+    width: 100%;
     display: flex;
     flex-direction: column;
     * {
@@ -18,12 +18,32 @@ const Comment_Wrapper = styled.div`
 `
 
 const Comment_Button = styled.button`
-    width: 100px;
+    margin-bottom: 50px;
+    height: 30px;
+    width: 85px;
+    font-size: 10px;
+    font-weight: bold;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    &:hover {
+        background-color: #C3C3C3;
+        cursor: pointer;
+    }
 `
 
 const New_Comment = styled.textarea`
-    width: 75rem;
-    height: 70px;
+    padding:10px;
+    resize: none;
+    width: auto;
+    height: 50px;
+    border: 1px solid #C3C3C3;
+    &:focus {
+        outline: none;
+        border: 1.5px solid lightblue;
+        box-shadow: 0px 0px 5px 0px rgba(126, 202, 230, 1);
+    }
+
 `
 
 const Comments = () => {

@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 const Title = styled.a`
   color: rgb(41, 128, 185);
   font-size: 20px;
+  text-decoration: none;
 `;
 
 const Custom_Div = styled.div`
