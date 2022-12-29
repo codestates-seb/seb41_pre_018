@@ -1,11 +1,13 @@
 package sebpre018.com.stackOverflowClone.member.service;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import sebpre018.com.stackOverflowClone.auth.utils.CustomAuthorityUtils;
+import sebpre018.com.stackOverflowClone.auth.utils.MemberRegistrationApplicationEvent;
 import sebpre018.com.stackOverflowClone.exception.BusinessLogicException;
 import sebpre018.com.stackOverflowClone.exception.ExceptionCode;
 import sebpre018.com.stackOverflowClone.member.entity.Member;
@@ -16,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import org.springframework.transaction.annotation.Transactional;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,29 +30,33 @@ public class MemberService {
     private final CustomBeanUtils<Member> beanUtils;
     private final PasswordEncoder passwordEncoder;
     private final CustomAuthorityUtils authorityUtils;
+    private final ApplicationEventPublisher publisher;
 
 
-    public MemberService(MemberRepository memberRepository, CustomBeanUtils<Member> beanUtils, PasswordEncoder passwordEncoder, CustomAuthorityUtils authorityUtils) {
+    public MemberService(MemberRepository memberRepository, CustomBeanUtils<Member> beanUtils, PasswordEncoder passwordEncoder, CustomAuthorityUtils authorityUtils, ApplicationEventPublisher publisher) {
         this.memberRepository = memberRepository;
         this.beanUtils = beanUtils;
         this.passwordEncoder = passwordEncoder;
         this.authorityUtils = authorityUtils;
+        this.publisher = publisher;
     }
 
     //회원가입,  회원정보 조회, 회원 정보 수정, 탈퇴
     //아이디 찾기
     public Member createMember(Member member) {
-        // 이미 등록된 이메일인지 확인
-        verifyExistsEmail(member.getEmail());
+        Optional<Member> verifiedUser = memberRepository.findByEmail(member.getEmail());
+        if (verifiedUser.isPresent())
+            throw new BusinessLogicException(ExceptionCode.EMAIL_EXISTS);
 
-        //password 암호화
         String encryptedPassword = passwordEncoder.encode(member.getPassword());
         member.setPassword(encryptedPassword);
 
         List<String> roles = authorityUtils.createRoles(member.getEmail());
         member.setRoles(roles);
+        Member savedMember = memberRepository.save(member);
 
-        return memberRepository.save(member);
+        publisher.publishEvent(new MemberRegistrationApplicationEvent(savedMember));
+        return savedMember;
     }
 
     //로그인된 유저 정보 조회
@@ -62,15 +69,20 @@ public class MemberService {
         Optional<Member> optionalUser = memberRepository.findByEmail(authentication.getName());
         Member member = optionalUser.orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
 
+        System.out.println("HERE:"+member.getId());
+
         return member;
     }
 
-    public Member updateMember(Member member) {
-        Member findMember = findVerifiedMember(member.getId());
+    public List<Member> findAll() {
+        return new ArrayList<>(memberRepository.findAll());
+    }
 
-        beanUtils.copyNonNullProperties(member, findMember);
-
-        return memberRepository.save(findMember);
+    public Member updateMember(Member member,long id) {
+        Member verifiedUser = findVerifiedMember(id);
+        verifiedUser.setEmail(member.getEmail());
+        verifiedUser.setUsername(member.getUsername());
+        return memberRepository.save(verifiedUser);
     }
     public Member findMember(long id) {
         return findVerifiedMember(id);
