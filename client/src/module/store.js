@@ -5,7 +5,7 @@ import loginBooleanSlice from './loginBooleanSlice';
 const store = configureStore({
   reducer: {
     questions: questionsSlice.reducer,
-    userInfo: userInfoSlice.reducer,
+    currentUserInfo: userInfoSlice.reducer,
     loginBoolean: loginBooleanSlice.reducer,
   },
 });

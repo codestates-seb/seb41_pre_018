@@ -1,10 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-
-const isLoginCheck = createAsyncThunk('loginBoolean/isLoginCheck', async () => {
-  await axios.get('http://localhost:8080/????');
-});
-
+export const isLoginThunk = createAsyncThunk(
+  'thunkModule/inLoginThunk',
+  async () => {
+    await axios.get('http://localhost:8080/questions');
+  }
+);
 const initialState = {
   isLogin: false,
 };
@@ -12,15 +13,10 @@ const initialState = {
 const loginBooleanSlice = createSlice({
   name: 'loginBooleanSlice',
   initialState,
-  reducers: {
-    isLogin: (state, action) => {
-      const { boolean } = action.payload;
-      state.isLogin = boolean;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(
-      isLoginCheck.fulfilled,
+      isLoginThunk.fulfilled,
       (state, action) => (state.isLogin = action.payload)
     );
   },

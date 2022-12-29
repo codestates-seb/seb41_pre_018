@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 import { data } from '../dummydata';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { HiCake } from 'react-icons/hi';
 import DeleteUserModal from '../Components/DeleteUserModal';
+import { Link } from 'react-router-dom';
 //username 파라미터와 user e-mail 토큰? 기반으로? 받아와야하지 않나?
 const My_page_Container = styled.div`
   display: flex;
@@ -159,12 +160,19 @@ const My_Page_Title_Span = styled.span`
   margin-bottom: 10px;
 `;
 const My_Page_Answer_Question_Title = styled.span`
+  margin: 5px 0px;
   font-size: 14px;
-  color: #0080ff;
+  color: black;
+  .Question_Link {
+    color: black;
+    text-decoration: none;
+    &:hover {
+      font-weight: 500;
+      color: #0080ff;
+    }
+  }
 `;
-const My_Page_Answer_Question_Text = styled.span`
-  font-size: 12px;
-`;
+
 export const My_Page_Delete_User_Button = styled.button`
   height: 30px;
   width: 300px;
@@ -202,13 +210,14 @@ function dateChange(UserBirthDay) {
 }
 
 function MyPage() {
-  const { name } = useParams();
+  const { memberId } = useParams();
   const [dayAgo, setDayAgo] = useState('');
   const [hiddenAction, setHiddenAction] = useState(false);
+  const navigate = useNavigate();
   //현재 더미데이터 조건부
   let response;
   for (let i = 0; i < data.member.length; i++) {
-    if (name === data.member[i].username) {
+    if (Number(memberId) === data.member[i].memberId) {
       response = data.member[i];
       break;
     }
@@ -216,20 +225,17 @@ function MyPage() {
   const deleteUserHandle = (boolean) => {
     setHiddenAction(boolean);
   };
+  const navigateToHandle = () => {
+    navigate(`/user/edit/${memberId}`);
+  };
   const { username, created_time, modified_time, aboutMe, answers, questions } =
     response;
-
   useEffect(() => {
     const day = dateChange(created_time);
     setDayAgo(day);
   }, []);
-
   return (
-    <My_page_Container
-      onClick={(e) => {
-        console.log(e);
-      }}
-    >
+    <My_page_Container>
       <My_Page_Sub_Container
         className={hiddenAction === true ? 'opacityComponent' : null}
       >
@@ -248,7 +254,10 @@ function MyPage() {
         <My_Page_About>
           <div>
             <My_Page_Title_Span>About</My_Page_Title_Span>
-            <button disabled={hiddenAction === true ? true : false}>
+            <button
+              disabled={hiddenAction === true ? true : false}
+              onClick={navigateToHandle}
+            >
               Click to edit
             </button>
           </div>
@@ -273,11 +282,8 @@ function MyPage() {
                     return (
                       <div key={answer.answer_id}>
                         <My_Page_Answer_Question_Title>
-                          {answer.answer_title}
+                          My Answer About Question~~~~~~~
                         </My_Page_Answer_Question_Title>
-                        <My_Page_Answer_Question_Text>
-                          {answer.answer_content}
-                        </My_Page_Answer_Question_Text>
                       </div>
                     );
                   })}
@@ -288,15 +294,19 @@ function MyPage() {
             <My_Page_Answer_Question_Body>
               {questions.length === 0
                 ? null
-                : questions.map((question) => {
+                : questions.map((question, index) => {
                     return (
                       <div key={question.question_id}>
                         <My_Page_Answer_Question_Title>
-                          {question.question_title}
+                          {`${index + 1}.  `}
+
+                          <Link
+                            to={`/question/${question.question_id}`}
+                            className="Question_Link"
+                          >
+                            {question.title}
+                          </Link>
                         </My_Page_Answer_Question_Title>
-                        <My_Page_Answer_Question_Text>
-                          {question.question_content}
-                        </My_Page_Answer_Question_Text>
                       </div>
                     );
                   })}
