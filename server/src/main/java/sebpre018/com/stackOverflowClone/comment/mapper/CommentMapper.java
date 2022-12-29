@@ -16,12 +16,8 @@ public interface CommentMapper {
         Question question = new Question();
         question.setQuestionId(commentPostDto.getQuestionId());
 
-        Answer answer = new Answer();
-        answer.setAnswerId(commentPostDto.getAnswerId());
-
         Comment comment = new Comment();
         comment.setQuestion(question);
-        comment.setAnswer(answer);
         comment.setText(commentPostDto.getText());
 
         return comment;
@@ -30,12 +26,9 @@ public interface CommentMapper {
         Question question = new Question();
         question.setQuestionId(commentPatchDto.getQuestionId());
 
-        Answer answer = new Answer();
-        answer.setAnswerId(commentPatchDto.getAnswerId());
 
         Comment comment = new Comment();
         comment.setQuestion(question);
-        comment.setAnswer(answer);
         comment.setText(commentPatchDto.getText());
 
         return comment;
@@ -44,13 +37,11 @@ public interface CommentMapper {
     default CommentResponseDto commentToCommentResponse(Comment comment) {
         Member member = comment.getMember();
         Question question = comment.getQuestion();
-        Answer answer = comment.getAnswer();
 
         return CommentResponseDto.builder()
                 .commentId(comment.getId())
                 .memberId(member.getId())
                 .questionId(question.getQuestionId())
-                .answerId(answer.getAnswerId())
                 .createdAt(comment.getCreatedTime())
                 .modifiedAt(comment.getModifiedTime())
                 .text(comment.getText())

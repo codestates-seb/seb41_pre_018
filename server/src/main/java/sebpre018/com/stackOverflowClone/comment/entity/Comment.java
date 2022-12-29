@@ -26,10 +26,6 @@ public class Comment extends BaseEntity {
     private Question question;
 
     @ManyToOne
-    @JoinColumn(name = "answer_id")
-    private Answer answer;
-
-    @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
 

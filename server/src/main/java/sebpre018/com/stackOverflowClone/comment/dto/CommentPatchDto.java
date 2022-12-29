@@ -13,7 +13,7 @@ public class CommentPatchDto {
     private Long commentId;
     private Long memberId;
     private Long questionId;
-    private Long answerId;
+
     @NotBlank
     private String text;
 

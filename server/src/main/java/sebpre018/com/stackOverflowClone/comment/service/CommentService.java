@@ -23,13 +23,11 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final MemberService memberService;
     private final QuestionService questionService;
-    private final AnswerService answerService;
     public CommentService(CommentRepository commentRepository, MemberService memberService,
                           QuestionService questionService, AnswerService answerService) {
         this.commentRepository = commentRepository;
         this.memberService = memberService;
         this.questionService = questionService;
-        this.answerService = answerService;
     }
 
 
@@ -47,7 +45,6 @@ public class CommentService {
         Comment findComment = findVerifiedComment(comment.getId());
         Member writer = memberService.findVerifiedMember(findComment.getMember().getId());
         Question question = questionService.findVerifiedQuestion(findComment.getQuestion().getQuestionId());
-        Answer answer = answerService.findVerifiedAnswer(findComment.getAnswer().getAnswerId());
 
         return commentRepository.save(comment);
     }
@@ -64,7 +61,6 @@ public class CommentService {
         Comment findComment = findVerifiedComment(commentId);
         Member writer = memberService.findVerifiedMember(findComment.getMember().getId());
         Question question = questionService.findVerifiedQuestion(findComment.getQuestion().getQuestionId());
-        Answer answer = answerService.findVerifiedAnswer(findComment.getAnswer().getAnswerId());
 
         commentRepository.delete(findComment);
     }

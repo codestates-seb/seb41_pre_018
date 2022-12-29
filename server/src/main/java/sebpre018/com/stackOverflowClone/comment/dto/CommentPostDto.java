@@ -11,8 +11,6 @@ public class CommentPostDto {
 
     private Long questionId;
 
-    private Long answerId;
-
     @NotBlank(message = "내용을 입력해야 합니다.")
     private String text;
 }

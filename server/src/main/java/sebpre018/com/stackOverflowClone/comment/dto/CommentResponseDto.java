@@ -13,7 +13,6 @@ public class CommentResponseDto {
     private Long commentId;
     private Long memberId;
     private Long questionId;
-    private Long answerId;
 
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
