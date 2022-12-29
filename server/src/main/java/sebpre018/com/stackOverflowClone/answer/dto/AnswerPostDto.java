@@ -2,6 +2,7 @@ package sebpre018.com.stackOverflowClone.answer.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import org.w3c.dom.Text;
 
 import javax.validation.constraints.NotBlank;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
+@Setter
 public class AnswerPostDto {
 
 //    private Long answerId;

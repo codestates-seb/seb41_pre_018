@@ -8,7 +8,7 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor
 public class TagResponseDto {
-    private Long id;
+    private Long tagId;
 
     private Long questionId;
 

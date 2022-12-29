@@ -1,6 +1,5 @@
 package sebpre018.com.stackOverflowClone.question.controller;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -92,7 +91,7 @@ public class QuestionController {
         Page<Question> pageQuestions = questionService.findQuestions(page-1, size, sort);
 
         List<Question> questions = pageQuestions.getContent();
-        questions.stream().forEach(question -> question.setTags(tagService.findTagsByQuestionId(question.getId())));
+        questions.stream().forEach(question -> question.setTags(tagService.findTagsByQuestionId(question.getQuestionId())));
 
         return new ResponseEntity<> (new MultiResponseDto<>(
                 mapper.questionsToQuestionResponseDtos(questions), pageQuestions)
@@ -110,7 +109,7 @@ public class QuestionController {
         Page<Question> searchResult = questionService.searchQuestions(keyWord,page-1,size,sort);
 
         List<Question> questions = searchResult.getContent();
-        questions.stream().forEach(question -> question.setTags(tagService.findTagsByQuestionId(question.getId())));
+        questions.stream().forEach(question -> question.setTags(tagService.findTagsByQuestionId(question.getQuestionId())));
 
         return new ResponseEntity<>(new MultiResponseDto<>(
                 mapper.questionsToQuestionResponseDtos(questions),

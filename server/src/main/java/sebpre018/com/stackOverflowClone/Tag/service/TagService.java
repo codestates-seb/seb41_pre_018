@@ -1,16 +1,12 @@
 package sebpre018.com.stackOverflowClone.Tag.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import sebpre018.com.stackOverflowClone.Tag.entity.Tag;
 import sebpre018.com.stackOverflowClone.Tag.repository.TagRepository;
 import sebpre018.com.stackOverflowClone.exception.BusinessLogicException;
 import sebpre018.com.stackOverflowClone.exception.ExceptionCode;
 import sebpre018.com.stackOverflowClone.question.entity.Question;
-import sebpre018.com.stackOverflowClone.question.service.QuestionService;
 
-import javax.swing.text.html.Option;
-import javax.validation.constraints.Positive;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,12 +22,12 @@ public class TagService {
     }
 
     public Tag createTag(Tag tag) {
-        verifyExistsTag(tag.getId());
+        verifyExistsTag(tag.getTagId());
         return tagRepository.save(tag);
     }
 
     public void deleteTags(Question question) {
-        long questionId = question.getId();
+        long questionId = question.getQuestionId();
 
         List<Tag> tags = tagRepository.findAllByQuestionId(questionId); // Id를 통해 태그 리스트 조회
 

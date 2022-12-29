@@ -1,13 +1,11 @@
 package sebpre018.com.stackOverflowClone.answer.mapper;
 
 import org.mapstruct.Mapper;
-import org.springframework.stereotype.Component;
 import sebpre018.com.stackOverflowClone.answer.dto.AnswerDto;
 import sebpre018.com.stackOverflowClone.answer.dto.AnswerPatchDto;
 import sebpre018.com.stackOverflowClone.answer.dto.AnswerPostDto;
 import sebpre018.com.stackOverflowClone.answer.dto.AnswerResponseDto;
 import sebpre018.com.stackOverflowClone.answer.entity.Answer;
-import sebpre018.com.stackOverflowClone.member.entity.Member;
 import sebpre018.com.stackOverflowClone.question.entity.Question;
 
 import java.util.List;
@@ -17,7 +15,7 @@ public interface AnswerMapper {
     default Answer answerPostDtoToAnswer(AnswerPostDto answerPostDto) {
         // Question Id 받아오기 + Text 받아오기
         Question question = new Question();
-        question.setId(answerPostDto.getQuestionId());
+        question.setQuestionId(answerPostDto.getQuestionId());
         Answer answer = new Answer();
         answer.setQuestion(question);
         answer.setVoteResult(0);
@@ -27,7 +25,7 @@ public interface AnswerMapper {
     }
     default Answer answerPatchDtoToAnswer(AnswerPatchDto answerPatchDto) {
         Question question = new Question();
-        question.setId(answerPatchDto.getQuestionId());
+        question.setQuestionId(answerPatchDto.getQuestionId());
         Answer answer = new Answer();
         answer.setQuestion(question);
         answer.setText(answerPatchDto.getText());
@@ -43,7 +41,7 @@ public interface AnswerMapper {
         return AnswerResponseDto.builder()
                 .answerId(answer.getAnswerId())
 //                .memberId(member.getId())
-                .questionId(question.getId())
+                .questionId(question.getQuestionId())
                 .voteResult(answer.getVoteResult())
                 .text(answer.getText())
                 .build();

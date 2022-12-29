@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class AllResponseDto {
-    private Long id;
+    private Long questionId;
 
     private Long memberId;
 
