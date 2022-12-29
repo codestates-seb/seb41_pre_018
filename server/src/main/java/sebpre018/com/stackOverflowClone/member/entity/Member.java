@@ -1,6 +1,7 @@
 package sebpre018.com.stackOverflowClone.member.entity;
 
 import lombok.*;
+import sebpre018.com.stackOverflowClone.answer.entity.Answer;
 import sebpre018.com.stackOverflowClone.audit.BaseEntity;
 
 import javax.persistence.*;
@@ -32,13 +33,14 @@ public class Member extends BaseEntity {
     @Column(length = 20, nullable = false)
     private UserStatus userStatus = UserStatus.USER_ACTIVE;
 
-    public enum UserStatus{
-        USER_ACTIVE("활동중"),
-        USER_SLEEP("휴면 상태"),
-        USER_QUIT("탈퇴 상태");
+    public enum UserStatus {
+
+        USER_ACTIVE("Active account"),
+        USER_INACTIVE("Inactive account"),
+        USER_QUIT("Deleted account");
 
         @Getter
-        public String status;
+        private final String status;
 
         UserStatus(String status) {
             this.status = status;
@@ -53,5 +55,19 @@ public class Member extends BaseEntity {
         this.email = email;
         this.password = password;
         this.aboutMe = aboutMe;
+    }
+    public Member(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
+
+    public Member(Long id, String username, String email, String password,
+                UserStatus userStatus, List<String> roles) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.userStatus = userStatus;
+        this.roles = roles;
     }
 }

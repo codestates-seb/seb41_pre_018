@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import sebpre018.com.stackOverflowClone.Tag.repository.TagRepository;
 import sebpre018.com.stackOverflowClone.Tag.service.TagService;
 import sebpre018.com.stackOverflowClone.exception.BusinessLogicException;
 import sebpre018.com.stackOverflowClone.exception.ExceptionCode;
@@ -24,17 +25,21 @@ public class QuestionService {
     private final MemberService memberService;
 
     private final TagService tagService;
-    public QuestionService(QuestionRepository questionRepository, MemberService memberService, TagService tagService) {
+    private final TagRepository tagRepository;
+
+    public QuestionService(QuestionRepository questionRepository, MemberService memberService, TagService tagService,
+                           TagRepository tagRepository) {
         this.questionRepository = questionRepository;
         this.memberService = memberService;
         this.tagService = tagService;
+        this.tagRepository = tagRepository;
     }
 
     public Question createQuestion(Question question) {
         question.setMember(memberService.getLoginMember());
         //로그인한 Member 정보 얻어옴
 
-        verifyExistsQuestion(question.getQuestionId()); //존재하는 questionId인지 확인
+        //verifyExistsQuestion(question.getQuestionId()); //존재하는 questionId인지 확인
         return questionRepository.save(question);
     }
 
