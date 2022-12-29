@@ -14,11 +14,11 @@ public interface TagMapper {
     default Tag tagPostDtoToTag(TagPostDto tagPostDto){
 
         Question question = new Question();
-        question.setId(tagPostDto.getQuestionId());
+        question.setQuestionId(tagPostDto.getQuestionId());
         Tag tag = new Tag();
 
         tag.setQuestion(question);
-        tag.setHashTag(tagPostDto.getHashtag());
+        tag.setHashTag(tagPostDto.getHashTag());
 
         return tag;
     }
@@ -26,8 +26,8 @@ public interface TagMapper {
     default TagResponseDto tagToTagResponseDto(Tag tag){
         return TagResponseDto.builder()
                 .hashTag(tag.getHashTag())
-                .id(tag.getId())
-                .questionId(tag.getQuestion().getId())
+                .tagId(tag.getTagId())
+                .questionId(tag.getQuestion().getQuestionId())
                 .build();
     }
 

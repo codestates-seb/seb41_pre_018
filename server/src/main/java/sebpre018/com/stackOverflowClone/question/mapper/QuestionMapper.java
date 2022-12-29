@@ -26,7 +26,7 @@ public interface QuestionMapper {
     default Question questionPatchDtoToQuestion(QuestionPatchDto questionPatchDto){
         Question question = new Question();
 
-        question.setId(questionPatchDto.getId());
+        question.setQuestionId(questionPatchDto.getQuestionId());
         List<Tag> tags = tagsDtosToTags(questionPatchDto.getTags(), question);
 
         question.setTags(tags);
@@ -57,7 +57,7 @@ public interface QuestionMapper {
         return tagPostDtos.stream().map(tagPostDto -> {
             Tag tag = new Tag();
             tag.addQuestion(question);
-            tag.setHashTag(tagPostDto.getHashtag());
+            tag.setHashTag(tagPostDto.getHashTag());
             return tag;
         }).collect(Collectors.toList());
     }
@@ -67,7 +67,7 @@ public interface QuestionMapper {
         Member member = question.getMember();
 
         return QuestionResponseDto.builder()
-                .id(question.getId())
+                .questionId(question.getQuestionId())
                 .memberId(member.getId())
                 .username(member.getUsername())
                 .title(question.getTitle())
@@ -85,8 +85,8 @@ public interface QuestionMapper {
         return tags.stream()
                 .map(tag -> TagResponseDto.builder()
                         .hashTag(tag.getHashTag())
-                        .id(tag.getId())
-                        .questionId(tag.getQuestion().getId())
+                        .tagId(tag.getTagId())
+                        .questionId(tag.getQuestion().getQuestionId())
                         .build())
                 .collect(Collectors.toList());
     }
@@ -97,7 +97,7 @@ public interface QuestionMapper {
         return answers.stream()
                 .map(answer -> AnswerResponseDto.builder()
                         .answerId(answer.getAnswerId())
-                        .questionId(answer.getQuestion().getId())
+                        .questionId(answer.getQuestion().getQuestionId())
                         .memberId(answer.getMember().getId())
                         .createdAt(answer.getCreatedTime())
                         .modifiedAt(answer.getModifiedTime())
@@ -110,7 +110,7 @@ public interface QuestionMapper {
         return comments.stream()
                 .map(comment -> CommentResponseDto.builder()
                         .commentId(comment.getId())
-                        .questionId(comment.getQuestion().getId())
+                        .questionId(comment.getQuestion().getQuestionId())
                         .memberId(comment.getMember().getId())
                         .createdAt(comment.getCreatedTime())
                         .modifiedAt(comment.getModifiedTime())
@@ -120,10 +120,10 @@ public interface QuestionMapper {
     }
     default AllResponseDto questionToAllResponse(Question question, AnswerRepository answerRepository, CommentRepository commentRepository){
         Member member = question.getMember();
-        List<Answer> answers = answerRepository.findAllByQuestionId(question.getId());
+        List<Answer> answers = answerRepository.findAllByQuestionId(question.getQuestionId());
 
         return AllResponseDto.builder()
-                .id(question.getId())
+                .questionId(question.getQuestionId())
                 .memberId(member.getId())
                 .username(member.getUsername())
                 .title(question.getTitle())
@@ -135,7 +135,7 @@ public interface QuestionMapper {
                 .modifiedAt(question.getModifiedTime())
                 .answers(answersToAnswerResponseDtos(answers))
                 .answerCount(answers.size())
-                .comments(commentsToCommentResponseDtos(commentRepository.findAllByQuestionId(question.getId())))
+                .comments(commentsToCommentResponseDtos(commentRepository.findAllByQuestionId(question.getQuestionId())))
                 .build();
     }
 }

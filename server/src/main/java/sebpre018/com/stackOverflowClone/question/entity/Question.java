@@ -5,10 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import sebpre018.com.stackOverflowClone.Tag.entity.Tag;
-import sebpre018.com.stackOverflowClone.answer.entity.Answer;
 import sebpre018.com.stackOverflowClone.audit.BaseEntity;
 import sebpre018.com.stackOverflowClone.member.entity.Member;
-import sebpre018.com.stackOverflowClone.comment.entity.Comment;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -23,7 +21,7 @@ public class Question extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "question_id")
-    private Long id;
+    private Long questionId;
 
 
     @ManyToOne(fetch = FetchType.LAZY)

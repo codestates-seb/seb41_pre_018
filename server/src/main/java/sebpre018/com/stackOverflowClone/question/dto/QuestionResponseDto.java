@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class QuestionResponseDto {
-    private Long id;
+    private Long questionId;
 
     private Long memberId;
 

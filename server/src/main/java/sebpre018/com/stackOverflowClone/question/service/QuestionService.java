@@ -1,6 +1,5 @@
 package sebpre018.com.stackOverflowClone.question.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -9,12 +8,10 @@ import org.springframework.stereotype.Service;
 import sebpre018.com.stackOverflowClone.Tag.service.TagService;
 import sebpre018.com.stackOverflowClone.exception.BusinessLogicException;
 import sebpre018.com.stackOverflowClone.exception.ExceptionCode;
-import sebpre018.com.stackOverflowClone.member.entity.Member;
 import sebpre018.com.stackOverflowClone.member.service.MemberService;
 import sebpre018.com.stackOverflowClone.question.entity.Question;
 import sebpre018.com.stackOverflowClone.question.repository.QuestionRepository;
 
-import javax.naming.directory.SearchResult;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,13 +33,13 @@ public class QuestionService {
 //        question.setMember(memberService.getLoginMember());
         //로그인한 Member 정보 얻어옴
 
-        verifyExistsQuestion(question.getId()); //존재하는 questionId인지 확인
+        verifyExistsQuestion(question.getQuestionId()); //존재하는 questionId인지 확인
         return questionRepository.save(question);
     }
 
     public Question updateQuestion(Question question){
         // 로그인한 member와 작성한 member Id를 비교해서 아니라면 예외 발생
-        Question preQuestion = findVerifiedQuestion(question.getId()); // id를 통해 기존 질문 찾기
+        Question preQuestion = findVerifiedQuestion(question.getQuestionId()); // id를 통해 기존 질문 찾기
 //
 //        Member writer = memberService.findVerifiedMember(preQuestion.getMember().getId()); // 작성자 찾기
 //        if(memberService.getLoginMember().getId() != writer.getId()) // 작성자와 로그인한 사람이 다를 경우

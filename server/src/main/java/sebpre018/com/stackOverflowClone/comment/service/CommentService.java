@@ -1,6 +1,5 @@
 package sebpre018.com.stackOverflowClone.comment.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -47,7 +46,7 @@ public class CommentService {
     public Comment updateComment(Comment comment) {
         Comment findComment = findVerifiedComment(comment.getId());
         Member writer = memberService.findVerifiedMember(findComment.getMember().getId());
-        Question question = questionService.findVerifiedQuestion(findComment.getQuestion().getId());
+        Question question = questionService.findVerifiedQuestion(findComment.getQuestion().getQuestionId());
         Answer answer = answerService.findVerifiedAnswer(findComment.getAnswer().getAnswerId());
 
         return commentRepository.save(comment);
@@ -64,7 +63,7 @@ public class CommentService {
     public void deleteComment(Long commentId) {
         Comment findComment = findVerifiedComment(commentId);
         Member writer = memberService.findVerifiedMember(findComment.getMember().getId());
-        Question question = questionService.findVerifiedQuestion(findComment.getQuestion().getId());
+        Question question = questionService.findVerifiedQuestion(findComment.getQuestion().getQuestionId());
         Answer answer = answerService.findVerifiedAnswer(findComment.getAnswer().getAnswerId());
 
         commentRepository.delete(findComment);
