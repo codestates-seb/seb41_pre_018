@@ -13,10 +13,14 @@ spring:
         show_sql: true
         format_sql: true
 
-  jwt:
-    key: ${JWT_SECRET_KEY}
-    access-token-expiration-minutes: 1440
-    refresh-token-expiration-minutes: 20160
+jwt:
+  key: ${JWT_SECRET_KEY}
+  access-token-expiration-minutes: 1440
+  refresh-token-expiration-minutes: 20160
+
+mail:
+  address:
+    admin: admin@email.com
 
 logging.level:
   org.hibernate.SQL: debug
