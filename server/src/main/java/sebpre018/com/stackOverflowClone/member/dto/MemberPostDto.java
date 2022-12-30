@@ -17,6 +17,4 @@ public class MemberPostDto {
     @NotBlank
     @Pattern(regexp = "^(?=.[A-Za-z])(?=.\\d)(?=.[$@$!%#?&])[A-Za-z\\d$@$!%#?&]{8,12}$")
     private String password;
-    @NotBlank
-    private String aboutMe;
 }

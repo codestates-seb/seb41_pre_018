@@ -20,8 +20,8 @@ public class MemberDto {
         @NotBlank
         @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@!%*#?&])[A-Za-z\\d@!%*#?&]{8,}$")
         private String password;
-        @NotBlank
-        private String aboutMe;
+//        @NotBlank
+//        private String aboutMe;
     }
     @Getter
     @AllArgsConstructor
