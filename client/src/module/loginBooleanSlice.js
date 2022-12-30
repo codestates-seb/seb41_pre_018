@@ -44,5 +44,5 @@ const loginBooleanSlice = createSlice({
     });
   },
 });
-export { boolean, setMemberId };
+export const { boolean, setMemberId } = loginBooleanSlice.reducer;
 export default loginBooleanSlice;
