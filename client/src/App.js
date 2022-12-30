@@ -19,15 +19,14 @@ const GlobalStyle = createGlobalStyle`
     background-color: #f1f2f3;
   }
 `;
-let isLoggedIn = true;
 
 function App() {
   return (
     <BrowserRouter>
       <GlobalStyle />
-      <Navbar isLoggedIn={isLoggedIn} />
+      <Navbar />
       <Routes>
-        <Route path="/" element={<Main isLoggedIn={isLoggedIn} />} />
+        <Route path="/" element={<Main />} />
         <Route path="/login" element={<Login />} />
         <Route path="/question/new" element={<NewQuestion />} />
         <Route path="/question/:id/edit" element={<EditQuestion />} />

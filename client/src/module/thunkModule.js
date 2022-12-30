@@ -1,6 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { useCallback } from 'react';
 
 //질문 투표 및 답변 투표는 보류 상태
 
@@ -77,16 +76,19 @@ export const getAllQuestionsThunk = createAsyncThunk(
 export const getUserInfoThunk = createAsyncThunk(
   'thunkModule/getUserInfoThunk',
   async (data) => {
-    const { memberId } = data;
+    const { cookie, memberId } = data;
+
     try {
-      await axios.get(
-        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/members/${memberId}`,
-        {
-          headers: {
-            Authorization: '',
-          },
-        }
-      );
+      await axios
+        .get(
+          `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/members/${memberId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${cookie}`,
+            },
+          }
+        )
+        .then((data) => console.log(data));
     } catch (e) {
       console.error(e);
     }

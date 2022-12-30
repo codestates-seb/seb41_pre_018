@@ -10,6 +10,7 @@ const cookieVerifySlice = createSlice({
   initialState,
   reducers: {
     setCookieStr: (state, action) => {
+      console.log(action.payload);
       state.cookie = `Bearer ${action.payload[0]}`;
       state.memberId = action.payload[1];
     },

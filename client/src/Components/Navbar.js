@@ -1,6 +1,9 @@
 import styled from 'styled-components';
 import { RxMagnifyingGlass, RxTextAlignJustify } from 'react-icons/rx';
 import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { useCookies } from 'react-cookie';
+import { loginBoolean } from '../module/loginBooleanSlice';
 
 const Orange_Line = styled.div`
   display: flex;
@@ -95,13 +98,19 @@ const Logout_Button = styled.button`
   }
 `;
 
-const Navbar = (props) => {
+const Navbar = () => {
   const navigate = useNavigate();
-
+  const { isLogin, memberId } = useSelector((state) => state.loginBoolean);
+  const [cookies, setCookie, removeCookie] = useCookies([]);
+  const dispatch = useDispatch();
   const navigateToSearch = () => {
     navigate('/search');
   };
-
+  const logoutHandle = () => {
+    removeCookie('access_token');
+    dispatch(loginBoolean({ isLogin: false, memberId: '' }));
+    navigate('/');
+  };
   return (
     <div>
       <Orange_Line />
@@ -118,14 +127,14 @@ const Navbar = (props) => {
             onKeyUp={(e) => (e.keyCode === 13 ? navigateToSearch() : null)}
           />
         </Search_Wrapper>
-        {props.isLoggedIn ? (
+        {isLogin ? (
           <>
-            <Link to="/user/1">
+            <Link to={`/user/${memberId}`}>
               <Profile_Image
                 src={process.env.PUBLIC_URL + '/Sample_Avatar.png'}
               />
             </Link>
-            <Logout_Button>Log out</Logout_Button>
+            <Logout_Button onClick={logoutHandle}>Log out</Logout_Button>
           </>
         ) : (
           <>
