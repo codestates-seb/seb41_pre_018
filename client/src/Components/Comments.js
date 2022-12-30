@@ -7,11 +7,6 @@ const Custom_Hr = styled.hr`
   align-items: center;
   opacity: 70%;
 `;
-const Custom_Hr = styled.hr`
-  width: 99%;
-  align-items: center;
-  opacity: 70%;
-`;
 
 const Comment_Wrapper = styled.div`
   width: 100%;

@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { AiFillTrophy, AiFillTags } from 'react-icons/ai';
 import { RiQuestionnaireFill } from 'react-icons/ri';
 import { BiCaretUp } from 'react-icons/bi';
 import { BsCaretDown } from 'react-icons/bs';
-
+import { signinThunk } from '../module/thunkModule';
+import { useDispatch } from 'react-redux';
 const Sign_Container = styled.div`
   display: flex;
   justify-content: center;
@@ -157,6 +157,7 @@ function Sign() {
     verifyPasswordVerify: { boolean: false },
     verifyEmailVerify: { boolean: false },
   });
+  const dispatch = useDispatch();
   const { email, username, password, verifyPassword } = watch();
   const passwordRegExp =
     /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,12}$/;
@@ -212,7 +213,8 @@ function Sign() {
   const onSubmit = (userdata) => {
     //fetch 보낼 thunk 함수
     //login page routing
-    console.log(userdata);
+    const { email, username, password } = userdata;
+    dispatch(signinThunk({ email, username, password }));
     reset();
   };
   const onError = (e) => {
@@ -334,13 +336,12 @@ function Sign() {
             </Sign_Text>
           )}
         </Sign_Input_Container>
-        <Link to="/signup-completed">
-          <Sign_Submit
-            type="submit"
-            disabled={!Object.values(verify).every((el) => el.boolean === true)}
-            value="Sign up"
-          />
-        </Link>
+
+        <Sign_Submit
+          type="submit"
+          disabled={!Object.values(verify).every((el) => el.boolean === true)}
+          value="Sign up"
+        />
       </Sign_Form>
     </Sign_Container>
   );
