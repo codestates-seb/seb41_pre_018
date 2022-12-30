@@ -97,6 +97,7 @@ const Logout_Button = styled.button`
 
 const Navbar = (props) => {
   const navigate = useNavigate();
+
   const navigateToSearch = () => {
     navigate('/search');
   };
