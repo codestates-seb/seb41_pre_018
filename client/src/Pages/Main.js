@@ -1,8 +1,12 @@
 import Question from '../Components/Question';
 import { data } from '../dummydata';
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { getAllQuestionsThunk } from '../module/thunkModule';
+import allQuestionsSlice from '../module/allQuestionsSlice';
+import axios from 'axios';
 
 const Pagination_Wrapper = styled.div`
   display: flex;
@@ -79,6 +83,20 @@ const Main = (props) => {
     // 페이지 아이콘 배열에 페이지 넘버 푸쉬
     pages.push(i);
   }
+  const [questions, setQuestions] = useState([]);
+  const allQuestionCondition = {
+    page: 1,
+    size: 10,
+    sortingMethod: 'questionId',
+  };
+  useEffect(() => {
+    axios
+      .get(
+        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/questions?page=${allQuestionCondition.page}&size=${allQuestionCondition.size}&sort=${allQuestionCondition.sortingMethod}`
+      )
+      .then((res) => setQuestions(res.data.data));
+    console.log(questions);
+  }, []);
 
   const [pageState, setPageState] = useState(1); //페이지 버튼 뭐 눌렀는지 상태. 디폴트는 1페이지.
 
@@ -111,7 +129,7 @@ const Main = (props) => {
 
         {pageState ? ( //클릭한 페이지에 따른 조건부 렌더링
           <div className="posts">
-            {data.question
+            {questions
               .slice((pageState - 1) * postPerPage, pageState * postPerPage)
               .map((item, idx) => (
                 <Question
