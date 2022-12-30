@@ -19,7 +19,7 @@ export const signinThunk = createAsyncThunk(
             password,
           }
         )
-        .then((data) => console.log(data));
+        .then((data) => data);
     } catch (e) {
       console.error(e);
     }
@@ -31,16 +31,17 @@ export const loginThunk = createAsyncThunk(
   'thunkModule/loginThunk',
   async (data) => {
     const { email, password } = data;
-    console.log(email, password);
     try {
-      await axios
+      const response = await axios
         .post(
           'http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/members/login',
           { email, password }
         )
-        .then((data) => console.log(data));
+        .then((data) => [data.headers.authorization, data.data.memberId]);
+      return response;
     } catch (e) {
       console.error(e);
+      return false;
     }
   }
 );
@@ -49,7 +50,9 @@ export const logoutThunk = createAsyncThunk(
   'thunkModule/logoutThunk',
   async () => {
     try {
-      await axios.post('http://localhost:8080/logout');
+      await axios.post(
+        'http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/logout'
+      );
     } catch (e) {
       console.error(e);
     }
@@ -63,7 +66,7 @@ export const getAllQuestionsThunk = createAsyncThunk(
     const { page, size, questionId } = data;
     try {
       await axios.get(
-        `http://localhost:8080/questions?page=${page}&size=${size}&sort=${questionId}`
+        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/questions?page=${page}&size=${size}&sort=${questionId}`
       );
     } catch (e) {
       console.error(e);
@@ -76,12 +79,14 @@ export const getUserInfoThunk = createAsyncThunk(
   async (data) => {
     const { memberId } = data;
     try {
-      await axios.get(`http://localhost:8080/members/${memberId}`, {
-        headers: {
-          Authorization:
-            'Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJVU0VSIl0sImVtYWlsIjoidGVzdEBnbWFpbC5jb20iLCJzdWIiOiJ0ZXN0QGdtYWlsLmNvbSIsImlhdCI6MTY3MjM4ODcwOSwiZXhwIjoxNjcyNDc1MTA5fQ.3RMA39T_iVX82SU26pRrIGsZxOl6jG-IkytNyPwZvss',
-        },
-      });
+      await axios.get(
+        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/members/${memberId}`,
+        {
+          headers: {
+            Authorization: '',
+          },
+        }
+      );
     } catch (e) {
       console.error(e);
     }
@@ -93,7 +98,9 @@ export const deleteUserThunk = createAsyncThunk(
   async (data) => {
     const { memberId } = data;
     try {
-      await axios.delete(`http://localhost:8080/member/${memberId}`);
+      await axios.delete(
+        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/member/${memberId}`
+      );
     } catch (e) {
       console.error(e);
     }
@@ -105,12 +112,15 @@ export const patchUserThunk = createAsyncThunk(
   async (data) => {
     const { memberId, username, aboutMe, email, password } = data;
     try {
-      await axios.patch(`http://localhost:8080/member/${memberId}`, {
-        username,
-        aboutMe,
-        email,
-        password,
-      });
+      await axios.patch(
+        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/member/${memberId}`,
+        {
+          username,
+          aboutMe,
+          email,
+          password,
+        }
+      );
     } catch (e) {
       console.error(e);
     }
@@ -123,7 +133,9 @@ export const getQuestionThunk = createAsyncThunk(
   async (data) => {
     const { questionId } = data;
     try {
-      await axios.get(`http://localhost:8080/questions/${questionId}`);
+      await axios.get(
+        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/questions/${questionId}`
+      );
     } catch (e) {
       console.error(e);
     }
@@ -136,11 +148,14 @@ export const postQuestionThunk = createAsyncThunk(
   async (data) => {
     const { title, text, tags } = data;
     try {
-      await axios.post('http://localhost:8080/questions', {
-        title,
-        text,
-        tags,
-      });
+      await axios.post(
+        'http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/questions',
+        {
+          title,
+          text,
+          tags,
+        }
+      );
     } catch (e) {
       console.error(e);
     }
@@ -153,7 +168,7 @@ export const getSearchQuestionThunk = createAsyncThunk(
     const { page, size, questionId, keyword } = data;
     try {
       await axios.get(
-        `http://localhost:8080/questions/search?page=${page}&size=${size}&sort=${questionId}&keyword=${keyword}`
+        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/questions/search?page=${page}&size=${size}&sort=${questionId}&keyword=${keyword}`
       );
     } catch (e) {
       console.error(e);
@@ -166,7 +181,7 @@ export const getSearchQuestionThunk = createAsyncThunk(
 //   async (data) => {
 //     const { questionId } = data;
 //     try {
-//       await axios.delete(`http://localhost:8080/questions/${questionId}`);
+//       await axios.delete(`http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/questions/${questionId}`);
 //     } catch (e) {
 //       console.error(e);
 //     }
@@ -178,11 +193,14 @@ export const patchQuestionThunk = createAsyncThunk(
   async (data) => {
     const { questionId, title, text, tags } = data;
     try {
-      await axios.patch(`http://localhost:8080/questions/${questionId}`, {
-        title,
-        text,
-        tags,
-      });
+      await axios.patch(
+        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/questions/${questionId}`,
+        {
+          title,
+          text,
+          tags,
+        }
+      );
     } catch (e) {
       console.error(e);
     }
@@ -194,7 +212,10 @@ export const postAnswerThunk = createAsyncThunk(
   async (data) => {
     const { questionId, text } = data;
     try {
-      await axios.post(`http://localhost:8080/answers/${questionId}`, { text });
+      await axios.post(
+        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/answers/${questionId}`,
+        { text }
+      );
     } catch (e) {
       console.error(e);
     }
@@ -207,7 +228,7 @@ export const getAnswerThunk = createAsyncThunk(
     const { questionId, answerId } = data;
     try {
       await axios.get(
-        `http://localhost:8080/answers/${questionId}/${answerId}`
+        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/answers/${questionId}/${answerId}`
       );
     } catch (e) {
       console.error(e);
@@ -221,7 +242,7 @@ export const patchAnswerThunk = createAsyncThunk(
     const { questionId, answerId, text } = data;
     try {
       await axios.patch(
-        `http://localhost:8080/answers/${questionId}/${answerId}`,
+        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/answers/${questionId}/${answerId}`,
         { text }
       );
     } catch (e) {
@@ -235,7 +256,9 @@ export const deleteAnswerThunk = createAsyncThunk(
   async (data) => {
     const { answerId } = data;
     try {
-      await axios.delete(`http://localhost:8080/answers/${answerId}`);
+      await axios.delete(
+        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/answers/${answerId}`
+      );
     } catch (e) {
       console.error(e);
     }
@@ -247,9 +270,12 @@ export const postCommentThunk = createAsyncThunk(
   async (data) => {
     const { questionId, text } = data;
     try {
-      await axios.post(`http://localhost:8080/comments/${questionId}`, {
-        text,
-      });
+      await axios.post(
+        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/comments/${questionId}`,
+        {
+          text,
+        }
+      );
     } catch (e) {
       console.error(e);
     }
@@ -265,7 +291,7 @@ export const patchCommentThunk = createAsyncThunk(
       console.error(e);
     }
     await axios.patch(
-      `http://localhost:8080/comments/${questionId}/${commentId}`,
+      `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/comments/${questionId}/${commentId}`,
       { text }
     );
   }
@@ -277,7 +303,7 @@ export const deleteCommentThunk = createAsyncThunk(
     const { questionId, commentId } = data;
     try {
       await axios.delete(
-        `http://localhost:8080/comments/${questionId}/${commentId}`
+        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/comments/${questionId}/${commentId}`
       );
     } catch (e) {
       console.error(e);
