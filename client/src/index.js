@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import store from './module/store';
 import { Provider } from 'react-redux';
-
+// checking...for merge conflict...
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
