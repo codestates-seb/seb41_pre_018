@@ -23,7 +23,8 @@ public class Member extends BaseEntity {
     private String email;
     @Column(nullable = false)
     private String password;
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(columnDefinition = "TEXT")
+//    , nullable = false
     private String aboutMe;
 
     @ElementCollection(fetch = FetchType.EAGER)
