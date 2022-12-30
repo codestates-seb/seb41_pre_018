@@ -10,23 +10,35 @@ export const signinThunk = createAsyncThunk(
   async (data) => {
     const { username, email, password } = data;
     try {
-      await axios.post('http://localhost:8080/members', {
-        username,
-        email,
-        password,
-      });
+      await axios
+        .post(
+          'http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/members',
+          {
+            username,
+            email,
+            password,
+          }
+        )
+        .then((data) => console.log(data));
     } catch (e) {
       console.error(e);
     }
   }
 );
+
 //로그인
 export const loginThunk = createAsyncThunk(
   'thunkModule/loginThunk',
   async (data) => {
     const { email, password } = data;
+    console.log(email, password);
     try {
-      await axios.post('http://localhost:8080/login', { email, password });
+      await axios
+        .post(
+          'http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/members/login',
+          { email, password }
+        )
+        .then((data) => console.log(data));
     } catch (e) {
       console.error(e);
     }
@@ -48,10 +60,10 @@ export const logoutThunk = createAsyncThunk(
 export const getAllQuestionsThunk = createAsyncThunk(
   'thunkModule/getAllQuestionsThunk',
   async (data) => {
-    const { page, size, sort } = data;
+    const { page, size, questionId } = data;
     try {
       await axios.get(
-        `http://localhost:8080/questions?page=${page}&size=${size}&sort=${sort}`
+        `http://localhost:8080/questions?page=${page}&size=${size}&sort=${questionId}`
       );
     } catch (e) {
       console.error(e);
@@ -64,12 +76,18 @@ export const getUserInfoThunk = createAsyncThunk(
   async (data) => {
     const { memberId } = data;
     try {
-      await axios.get(`http://localhost:8080/members/${memberId}`);
+      await axios.get(`http://localhost:8080/members/${memberId}`, {
+        headers: {
+          Authorization:
+            'Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJVU0VSIl0sImVtYWlsIjoidGVzdEBnbWFpbC5jb20iLCJzdWIiOiJ0ZXN0QGdtYWlsLmNvbSIsImlhdCI6MTY3MjM4ODcwOSwiZXhwIjoxNjcyNDc1MTA5fQ.3RMA39T_iVX82SU26pRrIGsZxOl6jG-IkytNyPwZvss',
+        },
+      });
     } catch (e) {
       console.error(e);
     }
   }
 );
+//회원 탈퇴
 export const deleteUserThunk = createAsyncThunk(
   'thunkModule/deleteUserThunk',
   async (data) => {
@@ -116,12 +134,12 @@ export const getQuestionThunk = createAsyncThunk(
 export const postQuestionThunk = createAsyncThunk(
   'thunkModule/postQuestionThunk',
   async (data) => {
-    const { title, text, Tags } = data;
+    const { title, text, tags } = data;
     try {
       await axios.post('http://localhost:8080/questions', {
         title,
         text,
-        Tags,
+        tags,
       });
     } catch (e) {
       console.error(e);
@@ -132,10 +150,10 @@ export const postQuestionThunk = createAsyncThunk(
 export const getSearchQuestionThunk = createAsyncThunk(
   'thunkModule/getSearchQuestionThunk',
   async (data) => {
-    const { page, size, sort, keyword } = data;
+    const { page, size, questionId, keyword } = data;
     try {
       await axios.get(
-        `http://localhost:8080/questions/search?page=${page}&size=${size}&sort=${sort}&keyword=${keyword}`
+        `http://localhost:8080/questions/search?page=${page}&size=${size}&sort=${questionId}&keyword=${keyword}`
       );
     } catch (e) {
       console.error(e);
@@ -143,28 +161,27 @@ export const getSearchQuestionThunk = createAsyncThunk(
   }
 );
 //질문 삭제
-export const delteQuestionThunk = createAsyncThunk(
-  'thunkModule/deleteQuestionThunk',
-  async (data) => {
-    const { questionId } = data;
-    try {
-      await axios.delete(`http://localhost:8080/questions/${questionId}`);
-    } catch (e) {
-      console.error(e);
-    }
-  }
-);
+// export const delteQuestionThunk = createAsyncThunk(
+//   'thunkModule/deleteQuestionThunk',
+//   async (data) => {
+//     const { questionId } = data;
+//     try {
+//       await axios.delete(`http://localhost:8080/questions/${questionId}`);
+//     } catch (e) {
+//       console.error(e);
+//     }
+//   }
+// );
 //질문 수정
 export const patchQuestionThunk = createAsyncThunk(
   'thunkModule/patchQuestionThunk',
   async (data) => {
-    const { questionId, title, text, Tags } = data;
+    const { questionId, title, text, tags } = data;
     try {
       await axios.patch(`http://localhost:8080/questions/${questionId}`, {
-        questionId,
         title,
         text,
-        Tags,
+        tags,
       });
     } catch (e) {
       console.error(e);
@@ -270,15 +287,15 @@ export const deleteCommentThunk = createAsyncThunk(
 ////////////////////////////////////////
 ////////////////////////////////////////
 ////////////////////////////////////////
-useCallback(() => {
-  if (isLogin === false) {
-    dispatch(isLoginThunk()); // 모든 페이지 렌더링 시작 시 함수 실행
-  }
-}, [dispatch]);
+// useCallback(() => {
+//   if (isLogin === false) {
+//     dispatch(isLoginThunk()); // 모든 페이지 렌더링 시작 시 함수 실행
+//   }
+// }, [dispatch]);
 
-useCallback(() => {
-  if (isLogin === true) {
-    dispatch(isLoginThunk()); // 모든 페이지 렌더링 시작 시 함수 실행
-  }
-}, [dispatch]);
+// useCallback(() => {
+//   if (isLogin === true) {
+//     dispatch(isLoginThunk()); // 모든 페이지 렌더링 시작 시 함수 실행
+//   }
+// }, [dispatch]);
 //로그인 필요한 페이지에서 쿠키가 없거나 만료가 되어 응답이 올바르게 오지 않는다면 로그인 창으로 연결해야할것.

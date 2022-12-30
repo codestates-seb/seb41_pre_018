@@ -3,6 +3,8 @@ import { useForm } from 'react-hook-form';
 import { BiUser } from 'react-icons/bi';
 import { BsKey } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { loginThunk } from '../module/thunkModule';
 
 const Login_Wrapper = styled.div`
   margin: 50px auto 0 auto;
@@ -131,7 +133,12 @@ export default function Login() {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const onSubmit = (data) => console.log(data);
+  const dispatch = useDispatch();
+  const onSubmit = (data) => {
+    const { email, password } = data;
+    console.log(email, password);
+    dispatch(loginThunk({ email, password }));
+  };
 
   return (
     <Login_Wrapper>
