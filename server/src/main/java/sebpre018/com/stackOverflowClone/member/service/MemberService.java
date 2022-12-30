@@ -82,6 +82,7 @@ public class MemberService {
         Member verifiedUser = findVerifiedMember(id);
         verifiedUser.setEmail(member.getEmail());
         verifiedUser.setUsername(member.getUsername());
+        verifiedUser.setAboutMe(member.getAboutMe());
         return memberRepository.save(verifiedUser);
     }
     public Member findMember(long id) {
