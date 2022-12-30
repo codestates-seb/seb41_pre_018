@@ -43,7 +43,7 @@ public interface AnswerMapper {
 
         return AnswerResponseDto.builder()
                 .answerId(answer.getAnswerId())
-                .memberId(member.getId())
+                .memberId(member.getMemberId())
                 .questionId(question.getQuestionId())
                 .voteResult(answer.getVoteResult())
                 .text(answer.getText())

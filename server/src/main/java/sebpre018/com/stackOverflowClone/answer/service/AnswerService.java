@@ -31,9 +31,9 @@ public class AnswerService {
     public Answer updateAnswer(Answer answer) {
 
         Answer findAnswer = findVerifiedAnswer(answer.getAnswerId());
-        Member writer = memberService.findVerifiedMember(findAnswer.getMember().getId());
+        Member writer = memberService.findVerifiedMember(findAnswer.getMember().getMemberId());
         answer.setMember(writer);
-        if(memberService.getLoginMember().getId() != writer.getId())
+        if(memberService.getLoginMember().getMemberId() != writer.getMemberId())
             throw new BusinessLogicException(ExceptionCode.UNAUTHORIZED);
 
         Optional.ofNullable(answer.getText())
@@ -53,7 +53,7 @@ public class AnswerService {
 
     public void deleteAnswer(Long answerId) {
         Answer findAnswer = findVerifiedAnswer(answerId);
-        Member writer = memberService.findVerifiedMember(findAnswer.getMember().getId());
+        Member writer = memberService.findVerifiedMember(findAnswer.getMember().getMemberId());
         answerRepository.delete(findAnswer);
     }
 

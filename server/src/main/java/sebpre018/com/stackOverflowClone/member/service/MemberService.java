@@ -69,7 +69,7 @@ public class MemberService {
         Optional<Member> optionalUser = memberRepository.findByEmail(authentication.getName());
         Member member = optionalUser.orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
 
-        System.out.println("HERE:"+member.getId());
+        System.out.println("HERE:"+member.getMemberId());
 
         return member;
     }
@@ -81,7 +81,7 @@ public class MemberService {
     public Member updateMember(Member member,long id) {
         Member verifiedUser = findVerifiedMember(id);
         verifiedUser.setEmail(member.getEmail());
-        verifiedUser.setUsername(member.getUsername());
+        verifiedUser.setUserName(member.getUserName());
         verifiedUser.setAboutMe(member.getAboutMe());
         return memberRepository.save(verifiedUser);
     }

@@ -16,9 +16,9 @@ public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
-    private Long id;
+    private Long memberId;
     @Column(nullable = false)
-    private String username;
+    private String userName;
     @Column(nullable = false)
     private String email;
     @Column(nullable = false)
@@ -51,8 +51,8 @@ public class Member extends BaseEntity {
     public Member(String email){
         this.email = email;
     }
-    public Member(String username, String email, String password, String aboutMe){
-        this.username = username;
+    public Member(String userName, String email, String password, String aboutMe){
+        this.userName = userName;
         this.email = email;
         this.password = password;
         this.aboutMe = aboutMe;
@@ -62,10 +62,10 @@ public class Member extends BaseEntity {
         this.password = password;
     }
 
-    public Member(Long id, String username, String email, String password,
+    public Member(Long memberId, String username, String email, String password,
                 UserStatus userStatus, List<String> roles) {
-        this.id = id;
-        this.username = username;
+        this.memberId = memberId;
+        this.userName = userName;
         this.email = email;
         this.password = password;
         this.userStatus = userStatus;
