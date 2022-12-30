@@ -27,7 +27,9 @@ public interface AnswerMapper {
     default Answer answerPatchDtoToAnswer(AnswerPatchDto answerPatchDto) {
         Question question = new Question();
         question.setQuestionId(answerPatchDto.getQuestionId());
+
         Answer answer = new Answer();
+        answer.setAnswerId(answerPatchDto.getAnswerId());
         answer.setQuestion(question);
         answer.setText(answerPatchDto.getText());
 

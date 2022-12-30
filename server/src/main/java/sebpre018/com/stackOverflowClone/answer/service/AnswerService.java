@@ -29,8 +29,16 @@ public class AnswerService {
     }
 
     public Answer updateAnswer(Answer answer) {
+
         Answer findAnswer = findVerifiedAnswer(answer.getAnswerId());
         Member writer = memberService.findVerifiedMember(findAnswer.getMember().getId());
+        answer.setMember(writer);
+        if(memberService.getLoginMember().getId() != writer.getId())
+            throw new BusinessLogicException(ExceptionCode.UNAUTHORIZED);
+
+        Optional.ofNullable(answer.getText())
+                .ifPresent(text -> findAnswer.setText(text));
+
         return answerRepository.save(answer);
     }
 

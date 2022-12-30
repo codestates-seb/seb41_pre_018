@@ -14,7 +14,7 @@ import java.sql.Blob;
 @AllArgsConstructor
 public class AnswerPatchDto {
     private Long answerId;
-    private Long memberId;
+
     private Long questionId;
     @NotBlank
     private String text;

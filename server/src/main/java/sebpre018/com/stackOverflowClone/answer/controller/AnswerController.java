@@ -50,6 +50,8 @@ public class AnswerController {
                                       @PathVariable("answer-id") Long answerId,
                                       @Valid @RequestBody AnswerPatchDto answerPatchDto) {
         answerPatchDto.setAnswerId(answerId);
+        answerPatchDto.setQuestionId(questionId);
+
         Answer answer = answerService.updateAnswer(mapper.answerPatchDtoToAnswer(answerPatchDto));
         AnswerResponseDto response = mapper.answerToAnswerResponse(answer);
 
