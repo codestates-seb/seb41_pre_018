@@ -6,7 +6,9 @@ import { HiCake } from 'react-icons/hi';
 import DeleteUserModal from '../Components/DeleteUserModal';
 import { Link } from 'react-router-dom';
 import { getUserInfoThunk } from '../module/thunkModule';
-//username 파라미터와 user e-mail 토큰? 기반으로? 받아와야하지 않나?
+import { useCookies } from 'react-cookie';
+import { useDispatch } from 'react-redux';
+
 const My_page_Container = styled.div`
   display: flex;
   justify-content: center;
@@ -215,7 +217,9 @@ function MyPage() {
   const [dayAgo, setDayAgo] = useState('');
   const [hiddenAction, setHiddenAction] = useState(false);
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
+  const [cookies, setCookie, removeCookie] = useCookies([]);
+  dispatch(getUserInfoThunk({ cookie: cookies.access_token, memberId }));
   //현재 더미데이터 조건부
   let response;
   for (let i = 0; i < data.member.length; i++) {
