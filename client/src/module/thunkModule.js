@@ -205,20 +205,23 @@ export const postQuestionThunk = createAsyncThunk(
   'thunkModule/postQuestionThunk',
   async (data) => {
     const { title, text, tags, cookie } = data;
-    console.log(data)
+    console.log(data);
     try {
-      const response = await axios.post(
-        'http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/questions',
-        {
-          title,
-          text,
-          tags,
-        }, {
-          headers: {
-            Authorization: `Bearer ${cookie}`,
+      const response = await axios
+        .post(
+          'http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/questions',
+          {
+            title,
+            text,
+            tags,
           },
-        }
-      ).then((data) => data);
+          {
+            headers: {
+              Authorization: `Bearer ${cookie}`,
+            },
+          }
+        )
+        .then((data) => data);
       console.log(response);
       return response;
     } catch (e) {
