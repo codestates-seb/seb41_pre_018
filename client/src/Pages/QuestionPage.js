@@ -302,11 +302,11 @@ const Question_Page = () => {
           </Text_Content>
         </Content_Wrapper>
         <Tag_Wrapper>
-          {currentQuestion.tags.map((item) => (
-            <Tags>{item}</Tags>
+          {currentQuestion.tags.map((item, idx) => (
+            <Tags key={idx}>{item}</Tags>
           ))}
         </Tag_Wrapper>
-        <Comments />
+        <Comments questionId={currentQuestion.question_id} />
         <Question_Title>내 답변</Question_Title>
         <Userinfo_Wrapper>
           <User_Wrapper>
