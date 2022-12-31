@@ -116,15 +116,13 @@ export const deleteUserThunk = createAsyncThunk(
 export const patchUserThunk = createAsyncThunk(
   'thunkModule/patchUserThunk',
   async (data) => {
-    const { memberId, username, aboutMe, email, password } = data;
+    const { memberId, username, aboutMe } = data;
     try {
       await axios.patch(
         `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/member/${memberId}`,
         {
           username,
           aboutMe,
-          email,
-          password,
         }
       );
     } catch (e) {
