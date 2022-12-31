@@ -1,8 +1,11 @@
 import styled from 'styled-components';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { data } from '../dummydata';
 import { useState, useEffect } from 'react';
+import { useCookies } from 'react-cookie';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginBoolean } from '../module/loginBooleanSlice';
+import { getUserInfoEditThunk, patchUserThunk } from '../module/thunkModule';
 
 const User_Info_Edit_Container = styled.div`
   display: flex;
@@ -112,13 +115,21 @@ const Edit_Cancel_Button = styled.input`
   }
 `;
 function UserInfoEdit() {
-  const { memberId } = useParams();
   const { register, handleSubmit, watch, getValues } = useForm();
   const usernameRegExp = /[A-Za-z0-9가-힇]{2,20}/;
   const [verify, setVerify] = useState({
     usernameVerify: { boolean: false },
   });
+  const [isLoding, setIsLoading] = useState(false);
+  const [userInfo, setUserInfo] = useState({
+    username: '',
+    aboutMe: '',
+  });
+  const { memberId } = useSelector((state) => state.loginBoolean);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [cookies, setCookie, removeCookie] = useCookies([]);
+
   const { usernameEdit } = watch();
   useEffect(() => {
     if (usernameRegExp.test(usernameEdit)) {
@@ -134,24 +145,58 @@ function UserInfoEdit() {
       setVerify({ ...verify, usernameVerify: { boolean: false } });
     }
   }, [usernameEdit]);
-  let response;
-  for (let i = 0; i < data.member.length; i++) {
-    if (Number(memberId) === data.member[i].memberId) {
-      response = data.member[i];
-      break;
-    }
-  }
-  const { username, aboutMe } = response;
+
   const naviateHandle = () => {
     navigate(`/user/${memberId}`);
   };
-  const onSubmit = (userdata) => {
-    console.log(userdata);
-    navigate(`/user/${memberId}`);
+  const onSubmit = async (userdata) => {
+    const { usernameEdit, aboutMeEdit } = userdata;
+    const response = await dispatch(
+      patchUserThunk({
+        cookie: cookies.access_token,
+        memberId,
+        username: usernameEdit,
+        aboutMe: aboutMeEdit,
+      })
+    ).then((data) => {
+      if (data.payload === false) {
+        removeCookie('access_token');
+        dispatch(loginBoolean({ isLogin: false, memberId: '' }));
+        navigate('/login');
+      } else {
+        navigate(`/user/${memberId}`);
+      }
+    });
   };
   const onError = (e) => {
     console.log(e);
   };
+  useEffect(() => {
+    async function fetchData() {
+      const response = await dispatch(
+        getUserInfoEditThunk({ cookie: cookies.access_token, memberId })
+      ).then((data) => {
+        if (data.payload === false) {
+          removeCookie('access_token');
+          dispatch(loginBoolean({ isLogin: false, memberId: '' }));
+          navigate('/login');
+        } else {
+          return data.payload;
+        }
+      });
+
+      const { username, aboutMe } = response;
+
+      setUserInfo({
+        ...userInfo,
+        username,
+        aboutMe,
+      });
+      setIsLoading(true);
+    }
+    fetchData();
+  }, []);
+
   return (
     <User_Info_Edit_Container>
       <Edit_Form onSubmit={handleSubmit(onSubmit, onError)}>
@@ -166,7 +211,7 @@ function UserInfoEdit() {
           <Edit_Input
             id="username"
             {...register('usernameEdit', {
-              value: username,
+              value: userInfo.username,
             })}
             required
           />
@@ -186,7 +231,7 @@ function UserInfoEdit() {
         <Edit_About_me
           id="aboutMeEdit"
           {...register('aboutMeEdit', {
-            value: aboutMe,
+            value: userInfo.aboutMe,
           })}
         ></Edit_About_me>
         <div>
