@@ -85,6 +85,7 @@ public class MemberService {
         verifiedUser.setAboutMe(member.getAboutMe());
         return memberRepository.save(verifiedUser);
     }
+    @Transactional(readOnly = true)
     public Member findMember(long id) {
         return findVerifiedMember(id);
     }
@@ -108,6 +109,7 @@ public class MemberService {
                         new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
         return findMember;
     }
+
 
     private void verifyExistsEmail(String email) {
         Optional<Member> member = memberRepository.findByEmail(email);

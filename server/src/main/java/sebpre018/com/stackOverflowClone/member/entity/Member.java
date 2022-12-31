@@ -37,15 +37,15 @@ public class Member extends BaseEntity {
     @Column(length = 20, nullable = false)
     private UserStatus userStatus = UserStatus.USER_ACTIVE;
 
-    @JsonIgnore
-    @JsonManagedReference
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<Question> questions = new ArrayList<>();
-
-    @JsonIgnore
-    @JsonManagedReference
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<Answer> answers = new ArrayList<>();
+//    @JsonIgnore
+//    @JsonManagedReference
+//    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+//    private List<Question> questions = new ArrayList<>();
+//
+//    @JsonIgnore
+//    @JsonManagedReference
+//    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+//    private List<Answer> answers = new ArrayList<>();
 
     public enum UserStatus {
 

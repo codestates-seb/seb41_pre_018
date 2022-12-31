@@ -2,9 +2,12 @@ package sebpre018.com.stackOverflowClone.member.mapper;
 
 import org.mapstruct.Mapper;
 import sebpre018.com.stackOverflowClone.answer.entity.Answer;
+import sebpre018.com.stackOverflowClone.answer.repository.AnswerRepository;
+import sebpre018.com.stackOverflowClone.comment.repository.CommentRepository;
 import sebpre018.com.stackOverflowClone.member.dto.MemberDto;
 import sebpre018.com.stackOverflowClone.member.entity.Member;
 import sebpre018.com.stackOverflowClone.question.entity.Question;
+import sebpre018.com.stackOverflowClone.question.repository.QuestionRepository;
 
 
 import java.util.List;
@@ -14,18 +17,21 @@ import java.util.stream.Collectors;
 public interface MemberMapper {
     Member memberPostDtoToMember(MemberDto.Post requestBody);
     //Member memberPatchDtoToMember(MemberDto.Patch requestBody);
-    //MemberDto.Response memberToMemberResponseDto(Member member);
+    MemberDto.Response memberToMemberResponseDto(Member member);
     //List<MemberDto.Response> membersToMemberResponseDtos(List<Member> members);
 
-    default MemberDto.AllResponse InfoResponse(Member member) {
+    default MemberDto.AllResponse InfoResponse(Member member, QuestionRepository questionRepository, AnswerRepository answerRepository) {
+        List<Question> questions = questionRepository.findAllByMemberId(member.getMemberId());
+        List<Answer> answers = answerRepository.findAllByMemberId(member.getMemberId());
         MemberDto.AllResponse response = new MemberDto.AllResponse();
         response.setMemberId(member.getMemberId());
         response.setUsername(member.getUsername());
         response.setEmail(member.getEmail());
+        response.setAboutMe(member.getAboutMe());
         response.setCreatedAt(member.getCreatedTime());
         response.setModifiedAt(member.getModifiedTime());
-        response.setQuestions(questionToUserResponseDto(member.getQuestions()));
-        response.setAnswers(answerToUserResponseDto(member.getAnswers()));
+        response.setQuestions(questionToUserResponseDto(questions));
+        response.setAnswers(answerToUserResponseDto(answers));
 
         return response;
     }
