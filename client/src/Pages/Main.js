@@ -95,7 +95,6 @@ const Main = (props) => {
         getAllQuestionsThunk(allQuestionCondition)
       ).then((res) => setQuestions(res.payload));
     }
-
     fetchAllQuestions();
   }, []);
 
@@ -130,26 +129,13 @@ const Main = (props) => {
 
         {pageState ? ( //클릭한 페이지에 따른 조건부 렌더링
           <div className="posts">
-            {/* {data.question
-              .slice((pageState - 1) * postPerPage, pageState * postPerPage)
-              .map((item, idx) => (
-                <Question
-                  title={item.title}
-                  content={item.text}
-                  views={item.views}
-                  vote={item.vote_result}
-                  username={item.username}
-                  createdAt={item.created_time}
-                  tags={item.tags}
-                  idx={idx}
-                />
-              ))} */}
             {questions &&
               questions.map((item, idx) => {
                 {
                   return (
                     <Question
                       key={item.questionId}
+                      questionId={item.questionId}
                       title={item.title}
                       content={item.text}
                       views={item.views}

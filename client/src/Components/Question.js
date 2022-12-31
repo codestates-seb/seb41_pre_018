@@ -129,6 +129,7 @@ const Bottom_Wrapper = styled.div`
 `;
 
 const Question = ({
+  questionId,
   title,
   content,
   views,
@@ -160,7 +161,10 @@ const Question = ({
           )}
         </Count_Wrapper>
         <Content_Wrapper>
-          <Link to={`question/${idx}`} style={{ textDecoration: 'none' }}>
+          <Link
+            to={`question/${questionId}`}
+            style={{ textDecoration: 'none' }}
+          >
             <Title>
               {isSearch ? <RiDiscussFill color="black" /> : null} {title}
             </Title>
