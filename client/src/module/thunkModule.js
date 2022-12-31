@@ -201,7 +201,7 @@ export const getQuestionThunk = createAsyncThunk(
         .get(
           `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/questions/${questionId}`
         )
-        .then((data) => console.log(data.data.data));
+        .then((data) => data.data.data);
 
       return response;
     } catch (e) {

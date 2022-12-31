@@ -193,9 +193,7 @@ const Question_Page = () => {
   // 질문 상세 페이지에서 가져올 더미 데이터
   // => 상태로 전달 받을 예정이며 정상 구현 이후 해당 변수는 삭제합니다.
   const currentId = useParams();
-  const [currentQuestion, setCurrentQuestion] = useState(
-    data.question[currentId.id]
-  );
+  const [currentQuestion, setCurrentQuestion] = useState();
 
   const dispatch = useDispatch();
   const [questionVotes, setQuestionVotes] = useState(0);
@@ -210,8 +208,7 @@ const Question_Page = () => {
     async function fetchQuestion() {
       const response = await dispatch(getQuestionThunk(currentId.id)).then(
         (res) => {
-          console.log(res.payload);
-          // setCurrentQuestion(res.payload);
+          setCurrentQuestion(res.payload);
         }
       );
     }
@@ -247,143 +244,145 @@ const Question_Page = () => {
   };
 
   return (
-    <Outer_Wrapper>
-      <Inner_Wrapper>
-        <Question_Title>{currentQuestion.title}</Question_Title>
-        <Userinfo_Wrapper>
-          <User_Wrapper>
-            <Profile_Image
-              src={process.env.PUBLIC_URL + '/Sample_Avatar.png'}
-            />
-            <Username>Human_001</Username>
-          </User_Wrapper>
-          <Middle_Text_Wrapper>
-            <Gray_Text> Asked </Gray_Text>
-            <span> today</span>
-            <Gray_Text> Modified </Gray_Text>
-            <span> today</span>
-            <Gray_Text> Viewed </Gray_Text>
-            <span> 2 times</span>
-          </Middle_Text_Wrapper>
-          <Button_Wrapper>
-            <Link
-              to="./edit"
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                textDecoration: 'none',
-              }}
-            >
-              <Blue_Button>질문 수정하기</Blue_Button>
-            </Link>
-            <Red_Button>질문 삭제하기</Red_Button>
-          </Button_Wrapper>
-        </Userinfo_Wrapper>
-        <Custom_Hr />
-        <Content_Wrapper>
-          <Vote_Wrapper>
-            <MdKeyboardArrowUp
-              onClick={upVote_question}
-              size="40"
-              color="#C0C0C0"
-              cursor="pointer"
-            />
-            <Vote_Count>{questionVotes}</Vote_Count>
-            <MdKeyboardArrowDown
-              onClick={downVote_question}
-              size="40"
-              color="#C0C0C0"
-              cursor="pointer"
-            />
-          </Vote_Wrapper>
-          <Text_Content>
-            <div dangerouslySetInnerHTML={{ __html: currentQuestion.text }} />
-          </Text_Content>
-        </Content_Wrapper>
-        <Tag_Wrapper>
-          {currentQuestion.tags.map((item, idx) => (
-            <Tags key={idx}>{item}</Tags>
-          ))}
-        </Tag_Wrapper>
-        <Comments questionId={currentQuestion.question_id} />
-        <Question_Title>내 답변</Question_Title>
-        <Userinfo_Wrapper>
-          <User_Wrapper>
-            <Profile_Image
-              src={process.env.PUBLIC_URL + '/Sample_Avatar.png'}
-            />
-            <Username>Human_001</Username>
-          </User_Wrapper>
-          <Middle_Text_Wrapper>
-            <Gray_Text> Asked </Gray_Text>
-            <span> today</span>
-            <Gray_Text> Modified </Gray_Text>
-            <span> today</span>
-            <Gray_Text> Viewed </Gray_Text>
-            <span> 2 times</span>
-          </Middle_Text_Wrapper>
-          <Button_Wrapper>
-            <Answer_Edit_Button onClick={handleEditAnswer}>
-              {isAnswerEditOn ? '수정 완료' : '답변 수정하기'}
-            </Answer_Edit_Button>
-            <Answer_Delete_Button>답변 삭제하기</Answer_Delete_Button>
-          </Button_Wrapper>
-        </Userinfo_Wrapper>
-        <Custom_Hr />
-        <Content_Wrapper>
-          <Vote_Wrapper>
-            <MdKeyboardArrowUp
-              onClick={upVote_answer}
-              size="40"
-              color="#C0C0C0"
-              cursor="pointer"
-            />
-            <Vote_Count>{answerVotes}</Vote_Count>
-            <MdKeyboardArrowDown
-              onClick={downVote_answer}
-              size="40"
-              color="#C0C0C0"
-              cursor="pointer"
-            />
-          </Vote_Wrapper>
-          <Text_Content>
-            {isAnswerEditOn ? (
+    currentQuestion && (
+      <Outer_Wrapper>
+        <Inner_Wrapper>
+          <Question_Title>{currentQuestion.title}</Question_Title>
+          <Userinfo_Wrapper>
+            <User_Wrapper>
+              <Profile_Image
+                src={process.env.PUBLIC_URL + '/Sample_Avatar.png'}
+              />
+              <Username>{currentQuestion.username}</Username>
+            </User_Wrapper>
+            <Middle_Text_Wrapper>
+              <Gray_Text> Asked </Gray_Text>
+              <span> today</span>
+              <Gray_Text> Modified </Gray_Text>
+              <span> today</span>
+              <Gray_Text> Viewed </Gray_Text>
+              <span> 2 times</span>
+            </Middle_Text_Wrapper>
+            <Button_Wrapper>
+              <Link
+                to="./edit"
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  textDecoration: 'none',
+                }}
+              >
+                <Blue_Button>질문 수정하기</Blue_Button>
+              </Link>
+              <Red_Button>질문 삭제하기</Red_Button>
+            </Button_Wrapper>
+          </Userinfo_Wrapper>
+          <Custom_Hr />
+          <Content_Wrapper>
+            <Vote_Wrapper>
+              <MdKeyboardArrowUp
+                onClick={upVote_question}
+                size="40"
+                color="#C0C0C0"
+                cursor="pointer"
+              />
+              <Vote_Count>{currentQuestion.voteResult}</Vote_Count>
+              <MdKeyboardArrowDown
+                onClick={downVote_question}
+                size="40"
+                color="#C0C0C0"
+                cursor="pointer"
+              />
+            </Vote_Wrapper>
+            <Text_Content>
+              <div dangerouslySetInnerHTML={{ __html: currentQuestion.text }} />
+            </Text_Content>
+          </Content_Wrapper>
+          <Tag_Wrapper>
+            {currentQuestion.tags.map((item, idx) => (
+              <Tags key={idx}>{item.hashTag}</Tags>
+            ))}
+          </Tag_Wrapper>
+          <Comments questionId={currentQuestion.questionId} />
+          <Question_Title>내 답변</Question_Title>
+          <Userinfo_Wrapper>
+            <User_Wrapper>
+              <Profile_Image
+                src={process.env.PUBLIC_URL + '/Sample_Avatar.png'}
+              />
+              <Username>Human_001</Username>
+            </User_Wrapper>
+            <Middle_Text_Wrapper>
+              <Gray_Text> Asked </Gray_Text>
+              <span> today</span>
+              <Gray_Text> Modified </Gray_Text>
+              <span> today</span>
+              <Gray_Text> Viewed </Gray_Text>
+              <span> 2 times</span>
+            </Middle_Text_Wrapper>
+            <Button_Wrapper>
+              <Answer_Edit_Button onClick={handleEditAnswer}>
+                {isAnswerEditOn ? '수정 완료' : '답변 수정하기'}
+              </Answer_Edit_Button>
+              <Answer_Delete_Button>답변 삭제하기</Answer_Delete_Button>
+            </Button_Wrapper>
+          </Userinfo_Wrapper>
+          <Custom_Hr />
+          <Content_Wrapper>
+            <Vote_Wrapper>
+              <MdKeyboardArrowUp
+                onClick={upVote_answer}
+                size="40"
+                color="#C0C0C0"
+                cursor="pointer"
+              />
+              <Vote_Count>{answerVotes}</Vote_Count>
+              <MdKeyboardArrowDown
+                onClick={downVote_answer}
+                size="40"
+                color="#C0C0C0"
+                cursor="pointer"
+              />
+            </Vote_Wrapper>
+            <Text_Content>
+              {isAnswerEditOn ? (
+                <ReactQuill
+                  theme="snow"
+                  className="Rich_Text_Editor"
+                  value={currentUserAnswer}
+                  onChange={handleUserAnswer}
+                />
+              ) : (
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: currentUserAnswer,
+                  }}
+                />
+              )}
+            </Text_Content>
+          </Content_Wrapper>
+          <Content_Wrapper>
+            <Vote_Wrapper />
+            <Text_Content>
               <ReactQuill
                 theme="snow"
                 className="Rich_Text_Editor"
-                value={currentUserAnswer}
-                onChange={handleUserAnswer}
+                value={newAnswer}
+                onChange={() => setNewAnswer(newAnswer)}
+                placeholder="답변을 작성하세요"
               />
-            ) : (
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: currentUserAnswer,
-                }}
-              />
-            )}
-          </Text_Content>
-        </Content_Wrapper>
-        <Content_Wrapper>
-          <Vote_Wrapper />
-          <Text_Content>
-            <ReactQuill
-              theme="snow"
-              className="Rich_Text_Editor"
-              value={newAnswer}
-              onChange={() => setNewAnswer(newAnswer)}
-              placeholder="답변을 작성하세요"
-            />
-          </Text_Content>
-        </Content_Wrapper>
-        <Content_Wrapper>
-          <Vote_Wrapper />
-          <Button_Wrapper>
-            <Answer_Submit_Button>답변 등록하기</Answer_Submit_Button>
-          </Button_Wrapper>
-        </Content_Wrapper>
-      </Inner_Wrapper>
-    </Outer_Wrapper>
+            </Text_Content>
+          </Content_Wrapper>
+          <Content_Wrapper>
+            <Vote_Wrapper />
+            <Button_Wrapper>
+              <Answer_Submit_Button>답변 등록하기</Answer_Submit_Button>
+            </Button_Wrapper>
+          </Content_Wrapper>
+        </Inner_Wrapper>
+      </Outer_Wrapper>
+    )
   );
 };
 
