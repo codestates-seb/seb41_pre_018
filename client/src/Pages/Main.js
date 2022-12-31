@@ -3,6 +3,7 @@ import { data } from '../dummydata';
 import styled from 'styled-components';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const Pagination_Wrapper = styled.div`
   display: flex;
@@ -70,7 +71,7 @@ const Pagination_Button = styled.button`
   }
 `;
 
-const Main = (props) => {
+const Main = () => {
   const postPerPage = 10; // 한 페이지에 표시할 글 수
   const postCount = data.question.length; // 모든 글 수
   const pageCount = Math.ceil(postCount / postPerPage); // 페이지 수
@@ -79,6 +80,7 @@ const Main = (props) => {
     // 페이지 아이콘 배열에 페이지 넘버 푸쉬
     pages.push(i);
   }
+  const { isLogin, memberId } = useSelector((state) => state.loginBoolean);
 
   const [pageState, setPageState] = useState(1); //페이지 버튼 뭐 눌렀는지 상태. 디폴트는 1페이지.
 
@@ -104,7 +106,7 @@ const Main = (props) => {
               {`${data.question.length} questions`}
             </Number_Of_Questions>
           </All_Questions_Wrapper>
-          <Link to={props.isLoggedIn ? '/question/new' : '/login'}>
+          <Link to={isLogin ? '/question/new' : '/login'}>
             <Ask_Question>Ask Question</Ask_Question>
           </Link>
         </Title_And_Button_Wrapper>
