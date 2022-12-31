@@ -12,26 +12,27 @@ import Search from './Pages/Search';
 import Deleteuser_Completed from './Pages/Deleteuser_Completed';
 import Question_Page from './Pages/QuestionPage';
 import EditQuestion from './Pages/EditQuestion';
+import UserInfoEdit from './Pages/UserInfoEdit';
 
 const GlobalStyle = createGlobalStyle`
   body {
     background-color: #f1f2f3;
   }
 `;
-let isLoggedIn = true;
 
 function App() {
   return (
     <BrowserRouter>
       <GlobalStyle />
-      <Navbar isLoggedIn={isLoggedIn} />
+      <Navbar />
       <Routes>
-        <Route path="/" element={<Main isLoggedIn={isLoggedIn} />} />
+        <Route path="/" element={<Main />} />
         <Route path="/login" element={<Login />} />
         <Route path="/question/new" element={<NewQuestion />} />
         <Route path="/question/:id/edit" element={<EditQuestion />} />
         <Route path="/signup" element={<Sign />} />
-        <Route path="/user/:name" element={<MyPage />} />
+        <Route path="/user/:memberId" element={<MyPage />} />
+        <Route path="/user/edit/:memberId" element={<UserInfoEdit />} />
         <Route path="/signup-completed" element={<Signup_Completed />} />
         <Route path="/search" element={<Search />} />
         <Route

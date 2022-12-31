@@ -13,7 +13,7 @@ const Custom_Div = styled.div`
   white-space: normal;
   word-break: break-all;
   overflow: auto;
-`
+`;
 
 const Content = styled.div`
   color: rgb(51, 51, 51);
@@ -41,8 +41,8 @@ const Question_Wrapper = styled.div`
   justify-content: space-around;
   align-items: center;
   border-bottom: none;
-  
 `;
+
 const Content_Wrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -126,7 +126,7 @@ const Tags = styled.div`
 const Bottom_Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
-`
+`;
 
 const Question = (props) => {
   return (
@@ -158,7 +158,9 @@ const Question = (props) => {
           </Link>
           <Content>
             <Custom_Div>
-              {props.content.length <= 380 ? props.content.replace(/<[^>]*>?/g, '') : props.content.replace(/<[^>]*>?/g, '').slice(0,380) + '...'}
+              {props.content.length <= 380
+                ? props.content.replace(/<[^>]*>?/g, '')
+                : props.content.replace(/<[^>]*>?/g, '').slice(0, 380) + '...'}
             </Custom_Div>
           </Content>
           <Bottom_Wrapper>
@@ -168,9 +170,9 @@ const Question = (props) => {
               ))}
             </Tag_Wrapper>
             <Userinfo_Wrapper>
-                <Profile_Image src="Sample_Avatar.png" />
-                <Username>{`${props.username} `}</Username>
-                <Created_At>{`${props.createdAt}`}</Created_At>
+              <Profile_Image src="Sample_Avatar.png" />
+              <Username>{`${props.username} `}</Username>
+              <Created_At>{`${props.createdAt}`}</Created_At>
             </Userinfo_Wrapper>
           </Bottom_Wrapper>
         </Content_Wrapper>
