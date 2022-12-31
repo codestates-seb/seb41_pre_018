@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Comments from '../Components/Comments';
 import { Link, useParams } from 'react-router-dom';
 import { MdKeyboardArrowUp, MdKeyboardArrowDown } from 'react-icons/md';
@@ -7,6 +7,8 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { data } from '../dummydata';
 import { BiNoEntry } from 'react-icons/bi';
+import { useDispatch } from 'react-redux';
+import { getQuestionThunk } from '../module/thunkModule';
 
 const Outer_Wrapper = styled.div`
   width: 100%;
@@ -15,7 +17,6 @@ const Outer_Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-
 `;
 
 const Content_Wrapper = styled.div`
@@ -97,7 +98,7 @@ const Blue_Button = styled(Button)`
 const Red_Button = styled(Button)`
   background-color: #b55454;
   color: white;
-`; 
+`;
 const Answer_Delete_Button = styled(Button)`
   background-color: #b55454;
   color: white;
@@ -108,7 +109,7 @@ const Answer_Edit_Button = styled(Button)`
 `;
 const Answer_Submit_Button = styled(Button)`
   margin-left: 30px;
-`
+`;
 
 const Custom_Hr = styled.hr`
   width: 100%;
@@ -127,7 +128,7 @@ const Vote_Count = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #4A4A4A;
+  color: #4a4a4a;
 `;
 
 const Text_Content = styled.div`
@@ -144,7 +145,7 @@ const Text_Content = styled.div`
   }
 
   .Rich_Text_Editor {
-    .ql-toolbar{
+    .ql-toolbar {
       border-top-left-radius: 10px;
       border-top-right-radius: 10px;
     }
@@ -196,14 +197,27 @@ const Question_Page = () => {
     data.question[currentId.id]
   );
 
+  const dispatch = useDispatch();
   const [questionVotes, setQuestionVotes] = useState(0);
   const [answerVotes, setAnswerVotes] = useState(0);
   const [isAnswerEditOn, setIsAnswerEditOn] = useState(false);
   const [currentUserAnswer, setCurrentUserAnswer] = useState(
     data.member[0].answers[0].answer_content
   );
-  const [newAnswer, setNewAnswer] = useState('')
-  
+  const [newAnswer, setNewAnswer] = useState('');
+
+  useEffect(() => {
+    async function fetchQuestion() {
+      const response = await dispatch(getQuestionThunk(currentId.id)).then(
+        (res) => {
+          console.log(res.payload);
+          // setCurrentQuestion(res.payload);
+        }
+      );
+    }
+    fetchQuestion();
+  }, []);
+
   const handleUserAnswer = (val) => {
     setCurrentUserAnswer(val);
   };
@@ -232,7 +246,6 @@ const Question_Page = () => {
     setAnswerVotes(answerVotes - 1);
   };
 
-
   return (
     <Outer_Wrapper>
       <Inner_Wrapper>
@@ -253,7 +266,15 @@ const Question_Page = () => {
             <span> 2 times</span>
           </Middle_Text_Wrapper>
           <Button_Wrapper>
-            <Link to="./edit" style={{display: 'flex', justifyContent: 'center', alignItems: 'center', textDecoration: 'none'}}>
+            <Link
+              to="./edit"
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                textDecoration: 'none',
+              }}
+            >
               <Blue_Button>질문 수정하기</Blue_Button>
             </Link>
             <Red_Button>질문 삭제하기</Red_Button>
@@ -262,9 +283,19 @@ const Question_Page = () => {
         <Custom_Hr />
         <Content_Wrapper>
           <Vote_Wrapper>
-            <MdKeyboardArrowUp onClick={upVote_question} size="40" color='#C0C0C0' cursor='pointer'/>
+            <MdKeyboardArrowUp
+              onClick={upVote_question}
+              size="40"
+              color="#C0C0C0"
+              cursor="pointer"
+            />
             <Vote_Count>{questionVotes}</Vote_Count>
-            <MdKeyboardArrowDown onClick={downVote_question} size="40" color='#C0C0C0' cursor='pointer'/>
+            <MdKeyboardArrowDown
+              onClick={downVote_question}
+              size="40"
+              color="#C0C0C0"
+              cursor="pointer"
+            />
           </Vote_Wrapper>
           <Text_Content>
             <div dangerouslySetInnerHTML={{ __html: currentQuestion.text }} />
@@ -302,9 +333,19 @@ const Question_Page = () => {
         <Custom_Hr />
         <Content_Wrapper>
           <Vote_Wrapper>
-            <MdKeyboardArrowUp onClick={upVote_answer} size="40" color='#C0C0C0' cursor='pointer'/>
+            <MdKeyboardArrowUp
+              onClick={upVote_answer}
+              size="40"
+              color="#C0C0C0"
+              cursor="pointer"
+            />
             <Vote_Count>{answerVotes}</Vote_Count>
-            <MdKeyboardArrowDown onClick={downVote_answer} size="40" color='#C0C0C0' cursor='pointer'/>
+            <MdKeyboardArrowDown
+              onClick={downVote_answer}
+              size="40"
+              color="#C0C0C0"
+              cursor="pointer"
+            />
           </Vote_Wrapper>
           <Text_Content>
             {isAnswerEditOn ? (
@@ -324,19 +365,19 @@ const Question_Page = () => {
           </Text_Content>
         </Content_Wrapper>
         <Content_Wrapper>
-          <Vote_Wrapper/>
+          <Vote_Wrapper />
           <Text_Content>
             <ReactQuill
               theme="snow"
               className="Rich_Text_Editor"
               value={newAnswer}
               onChange={() => setNewAnswer(newAnswer)}
-              placeholder= '답변을 작성하세요'
+              placeholder="답변을 작성하세요"
             />
           </Text_Content>
         </Content_Wrapper>
         <Content_Wrapper>
-          <Vote_Wrapper/>
+          <Vote_Wrapper />
           <Button_Wrapper>
             <Answer_Submit_Button>답변 등록하기</Answer_Submit_Button>
           </Button_Wrapper>

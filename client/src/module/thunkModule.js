@@ -195,11 +195,15 @@ export const patchUserThunk = createAsyncThunk(
 export const getQuestionThunk = createAsyncThunk(
   'thunkModule/postQuestionThunk',
   async (data) => {
-    const { questionId } = data;
+    const questionId = data;
     try {
-      await axios.get(
-        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/questions/${questionId}`
-      );
+      const response = await axios
+        .get(
+          `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/questions/${questionId}`
+        )
+        .then((data) => console.log(data.data.data));
+
+      return response;
     } catch (e) {
       console.error(e);
     }
