@@ -304,7 +304,7 @@ const Question_Page = () => {
               <Tags key={idx}>{item.hashTag}</Tags>
             ))}
           </Tag_Wrapper>
-          <Comments questionId={currentQuestion.questionId} />
+          <Comments currentQuestion={currentQuestion} />
           <Question_Title>내 답변</Question_Title>
           <Userinfo_Wrapper>
             <User_Wrapper>

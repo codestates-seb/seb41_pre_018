@@ -45,12 +45,12 @@ const New_Comment = styled.textarea`
   }
 `;
 
-const Comments = ({ questionId }) => {
+const Comments = ({ currentQuestion }) => {
   const [newComment, setNewComment] = useState();
   return (
     <Comment_Wrapper>
-      {data.comments.map((item, idx) => (
-        <div key={`${questionId}_${idx}`}>
+      {currentQuestion.comments.map((item, idx) => (
+        <div key={`${currentQuestion.questionId}_${idx}`}>
           <Comment_Wrapper>{item.comment}</Comment_Wrapper>
           <Custom_Hr />
         </div>
