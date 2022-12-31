@@ -99,11 +99,11 @@ const Red_Button = styled(Button)`
   color: white;
 `; 
 const Answer_Delete_Button = styled(Button)`
-  background-color: #3498db;
+  background-color: #b55454;
   color: white;
 `;
 const Answer_Edit_Button = styled(Button)`
-  background-color: #b55454;
+  background-color: #3498db;
   color: white;
 `;
 const Answer_Submit_Button = styled(Button)`
