@@ -249,18 +249,22 @@ export const getSearchQuestionThunk = createAsyncThunk(
     }
   }
 );
+
 //질문 삭제
-// export const delteQuestionThunk = createAsyncThunk(
-//   'thunkModule/deleteQuestionThunk',
-//   async (data) => {
-//     const { questionId } = data;
-//     try {
-//       await axios.delete(`http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/questions/${questionId}`);
-//     } catch (e) {
-//       console.error(e);
-//     }
-//   }
-// );
+export const deleteQuestionThunk = createAsyncThunk(
+  'thunkModule/deleteQuestionThunk',
+  async (data) => {
+    const { questionId } = data;
+    try {
+      await axios.delete(`http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/questions/${questionId}`)
+      .then((data) => data);
+      console.log(response);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+);
+
 //질문 수정
 export const patchQuestionThunk = createAsyncThunk(
   'thunkModule/patchQuestionThunk',
