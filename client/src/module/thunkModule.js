@@ -64,14 +64,15 @@ export const getAllQuestionsThunk = createAsyncThunk(
   async (data) => {
     const { page, size, sortingMethod } = data;
     try {
-      await axios
+      const response = await axios
         .get(
           `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/questions?page=${page}&size=${size}&sort=${sortingMethod}`
         )
         .then((result) => {
-          console.log(result.data.data);
           return result.data.data;
         });
+
+      return response;
     } catch (e) {
       console.error(e);
     }
