@@ -71,7 +71,7 @@ const Pagination_Button = styled.button`
   }
 `;
 
-const Main = (props) => {
+const Main = () => {
   const postPerPage = 10; // 한 페이지에 표시할 글 수
   const postCount = data.question.length; // 모든 글 수
   const pageCount = Math.ceil(postCount / postPerPage); // 페이지 수
