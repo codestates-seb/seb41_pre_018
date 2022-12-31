@@ -3,7 +3,7 @@ import { data } from '../dummydata';
 import { RiDiscussFill } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
 
-const Title = styled.a`
+const Title = styled.div`
   color: rgb(41, 128, 185);
   font-size: 20px;
   text-decoration: none;
@@ -128,51 +128,64 @@ const Bottom_Wrapper = styled.div`
   justify-content: space-between;
 `;
 
-const Question = (props) => {
+const Question = ({
+  questionId,
+  title,
+  content,
+  views,
+  vote,
+  username,
+  createdAt,
+  tags,
+  idx,
+  isSearch,
+}) => {
   return (
-    <div>
+    <div key={idx}>
       <Question_Wrapper>
         <Count_Wrapper>
-          {props.isSearch ? (
-            <Votes_Search>{`${props.vote} votes`}</Votes_Search>
+          {isSearch ? (
+            <Votes_Search>{`${vote} votes`}</Votes_Search>
           ) : (
-            <Votes>{`${props.vote} votes`}</Votes>
+            <Votes>{`${vote} votes`}</Votes>
           )}
-          {props.isSearch ? (
+          {isSearch ? (
             <Answers_Search>{`✓ ${data.question.length} answers`}</Answers_Search>
           ) : (
             <Answers>{`${data.question.length} answers`}</Answers>
           )}
-          {props.isSearch ? (
-            <Views_Search>{`${props.views} views`}</Views_Search>
+          {isSearch ? (
+            <Views_Search>{`${views} views`}</Views_Search>
           ) : (
-            <Views>{`${props.views} views`}</Views>
+            <Views>{`${views} views`}</Views>
           )}
         </Count_Wrapper>
         <Content_Wrapper>
-          <Link to={`question/${props.idx}`} style={{ textDecoration: 'none' }}>
+          <Link
+            to={`question/${questionId}`}
+            style={{ textDecoration: 'none' }}
+          >
             <Title>
-              {props.isSearch ? <RiDiscussFill color="black" /> : null}{' '}
-              {props.title}
+              {isSearch ? <RiDiscussFill color="black" /> : null} {title}
             </Title>
           </Link>
           <Content>
             <Custom_Div>
-              {props.content.length <= 380
-                ? props.content.replace(/<[^>]*>?/g, '')
-                : props.content.replace(/<[^>]*>?/g, '').slice(0, 380) + '...'}
+              {content.length <= 380
+                ? content.replace(/<[^>]*>?/g, '')
+                : content.replace(/<[^>]*>?/g, '').slice(0, 380) + '...'}
             </Custom_Div>
           </Content>
           <Bottom_Wrapper>
             <Tag_Wrapper>
-              {props.tags.map((item) => (
-                <Tags>{item}</Tags>
+              {tags.map((item, idx) => (
+                <Tags key={idx}>{item.hashTag}</Tags>
               ))}
             </Tag_Wrapper>
             <Userinfo_Wrapper>
               <Profile_Image src="Sample_Avatar.png" />
-              <Username>{`${props.username} `}</Username>
-              <Created_At>{`${props.createdAt}`}</Created_At>
+              <Username>{`${username} `}</Username>
+              <Created_At>{`${createdAt}`}</Created_At>
             </Userinfo_Wrapper>
           </Bottom_Wrapper>
         </Content_Wrapper>

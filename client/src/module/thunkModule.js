@@ -66,11 +66,17 @@ export const logoutThunk = createAsyncThunk(
 export const getAllQuestionsThunk = createAsyncThunk(
   'thunkModule/getAllQuestionsThunk',
   async (data) => {
-    const { page, size, questionId } = data;
+    const { page, size, sortingMethod } = data;
     try {
-      await axios.get(
-        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/questions?page=${page}&size=${size}&sort=${questionId}`
-      );
+      const response = await axios
+        .get(
+          `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/questions?page=${page}&size=${size}&sort=${sortingMethod}`
+        )
+        .then((result) => {
+          return result.data.data;
+        });
+
+      return response;
     } catch (e) {
       console.error(e);
     }

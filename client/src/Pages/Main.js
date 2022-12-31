@@ -1,8 +1,10 @@
 import Question from '../Components/Question';
 import { data } from '../dummydata';
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { getAllQuestionsThunk } from '../module/thunkModule';
 import { useSelector } from 'react-redux';
 
 const Pagination_Wrapper = styled.div`
@@ -80,6 +82,22 @@ const Main = () => {
     // 페이지 아이콘 배열에 페이지 넘버 푸쉬
     pages.push(i);
   }
+  const [questions, setQuestions] = useState([]);
+  const dispatch = useDispatch();
+  const allQuestionCondition = {
+    page: 1,
+    size: 10,
+    sortingMethod: 'QuestionId',
+  };
+
+  useEffect(() => {
+    async function fetchAllQuestions() {
+      const response = await dispatch(
+        getAllQuestionsThunk(allQuestionCondition)
+      ).then((res) => setQuestions(res.payload));
+    }
+    fetchAllQuestions();
+  }, []);
   const { isLogin, memberId } = useSelector((state) => state.loginBoolean);
   const [pageState, setPageState] = useState(1); //페이지 버튼 뭐 눌렀는지 상태. 디폴트는 1페이지.
 
@@ -112,29 +130,35 @@ const Main = () => {
 
         {pageState ? ( //클릭한 페이지에 따른 조건부 렌더링
           <div className="posts">
-            {data.question
-              .slice((pageState - 1) * postPerPage, pageState * postPerPage)
-              .map((item, idx) => (
-                <Question
-                  title={item.title}
-                  content={item.text}
-                  views={item.views}
-                  vote={item.vote_result}
-                  username={item.username}
-                  createdAt={item.created_time}
-                  tags={item.tags}
-                  idx={idx}
-                />
-              ))}
+            {questions &&
+              questions.map((item, idx) => {
+                {
+                  return (
+                    <Question
+                      key={item.questionId}
+                      questionId={item.questionId}
+                      title={item.title}
+                      content={item.text}
+                      views={item.views}
+                      vote={item.voteResult}
+                      username={item.username}
+                      createdAt={item.createdAt}
+                      tags={item.tags}
+                      idx={idx}
+                    />
+                  );
+                }
+              })}
           </div>
         ) : null}
       </Questions_Wrapper>
       <Pagination_Wrapper>
         <Pagination_Button onClick={navigateWithArrow}>{'<'}</Pagination_Button>
-        {pages.map((element) => (
+        {pages.map((element, idx) => (
           <Pagination_Button
             className={`button${element}`}
             onClick={handlePageClick}
+            key={idx}
           >
             {element}
           </Pagination_Button>
