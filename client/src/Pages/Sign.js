@@ -7,6 +7,7 @@ import { BiCaretUp } from 'react-icons/bi';
 import { BsCaretDown } from 'react-icons/bs';
 import { signinThunk } from '../module/thunkModule';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 const Sign_Container = styled.div`
   display: flex;
   justify-content: center;
@@ -158,6 +159,7 @@ function Sign() {
     verifyEmailVerify: { boolean: false },
   });
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { email, username, password, verifyPassword } = watch();
   const passwordRegExp =
     /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,12}$/;
@@ -210,12 +212,20 @@ function Sign() {
       setVerify({ ...verify, verifyPasswordVerify: { boolean: false } });
     }
   }, [verifyPassword]);
-  const onSubmit = (userdata) => {
+  const onSubmit = async (userdata) => {
     //fetch 보낼 thunk 함수
     //login page routing
     const { email, username, password } = userdata;
-    dispatch(signinThunk({ email, username, password }));
-    reset();
+    const response = await dispatch(
+      signinThunk({ email, username, password })
+    ).then((data) => data.payload.status);
+
+    if (response === 201) {
+      navigate('/login');
+      reset();
+    } else {
+      alert('중복된 아이디 입니다.');
+    }
   };
   const onError = (e) => {
     console.error(e);
