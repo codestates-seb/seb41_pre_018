@@ -221,7 +221,7 @@ function Sign() {
     ).then((data) => data.payload.status);
 
     if (response === 201) {
-      navigate('/login');
+      navigate('/signup-completed');
       reset();
     } else {
       alert('중복된 아이디 입니다.');

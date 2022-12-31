@@ -150,16 +150,23 @@ export const getQuestionThunk = createAsyncThunk(
 export const postQuestionThunk = createAsyncThunk(
   'thunkModule/postQuestionThunk',
   async (data) => {
-    const { title, text, tags } = data;
+    const { title, text, tags, cookie } = data;
+    console.log(data)
     try {
-      await axios.post(
+      const response = await axios.post(
         'http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/questions',
         {
           title,
           text,
           tags,
+        }, {
+          headers: {
+            Authorization: `Bearer ${cookie}`,
+          },
         }
-      );
+      ).then((data) => data);
+      console.log(response);
+      return response;
     } catch (e) {
       console.error(e);
     }
