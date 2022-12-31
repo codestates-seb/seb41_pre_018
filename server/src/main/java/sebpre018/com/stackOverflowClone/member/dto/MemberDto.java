@@ -1,7 +1,6 @@
 package sebpre018.com.stackOverflowClone.member.dto;
 
 import lombok.*;
-import sebpre018.com.stackOverflowClone.member.entity.Member;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -16,7 +15,7 @@ public class MemberDto {
         private String email;
         @NotBlank
         @Pattern(regexp = "[A-Za-z0-9가-힇]{2,20}")
-        private String userName;
+        private String username;
         @NotBlank
         @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@!%*#?&])[A-Za-z\\d@!%*#?&]{8,}$")
         private String password;
