@@ -45,15 +45,15 @@ const New_Comment = styled.textarea`
   }
 `;
 
-const Comments = () => {
+const Comments = ({ questionId }) => {
   const [newComment, setNewComment] = useState();
   return (
     <Comment_Wrapper>
-      {data.comments.map((item) => (
-        <>
+      {data.comments.map((item, idx) => (
+        <div key={`${questionId}_${idx}`}>
           <Comment_Wrapper>{item.comment}</Comment_Wrapper>
           <Custom_Hr />
-        </>
+        </div>
       ))}
       <New_Comment
         placeholder="댓글을 입력하세요"
