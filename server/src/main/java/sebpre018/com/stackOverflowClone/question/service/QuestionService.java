@@ -47,8 +47,8 @@ public class QuestionService {
         // 로그인한 member와 작성한 member Id를 비교해서 아니라면 예외 발생
         Question preQuestion = findVerifiedQuestion(question.getQuestionId()); // id를 통해 기존 질문 찾기
 //
-        Member writer = memberService.findVerifiedMember(preQuestion.getMember().getId()); // 작성자 찾기
-        if(memberService.getLoginMember().getId() != writer.getId()) // 작성자와 로그인한 사람이 다를 경우
+        Member writer = memberService.findVerifiedMember(preQuestion.getMember().getMemberId()); // 작성자 찾기
+        if(memberService.getLoginMember().getMemberId() != writer.getMemberId()) // 작성자와 로그인한 사람이 다를 경우
             throw new BusinessLogicException(ExceptionCode.UNAUTHORIZED); //예외 발생(권한 없음)
 
         Optional.ofNullable(question.getTitle())
@@ -67,8 +67,8 @@ public class QuestionService {
     public void deleteQuestion(Long id) {
         Question question = findVerifiedQuestion(id);
 //
-        Member writer = memberService.findVerifiedMember(question.getMember().getId()); // 작성자 찾기
-        if(memberService.getLoginMember().getId() != writer.getId()) // 작성자와 로그인한 사람이 다를 경우
+        Member writer = memberService.findVerifiedMember(question.getMember().getMemberId()); // 작성자 찾기
+        if(memberService.getLoginMember().getMemberId() != writer.getMemberId()) // 작성자와 로그인한 사람이 다를 경우
             throw new BusinessLogicException(ExceptionCode.UNAUTHORIZED); //예외 발생(권한 없음)
 
         questionRepository.delete(question);

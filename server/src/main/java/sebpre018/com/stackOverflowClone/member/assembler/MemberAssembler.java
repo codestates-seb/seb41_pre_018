@@ -17,7 +17,7 @@ public class MemberAssembler implements RepresentationModelAssembler<Member, Ent
     @Override
     public EntityModel<Member> toModel(Member member) {
         return EntityModel.of(member,
-                WebMvcLinkBuilder.linkTo(methodOn(MemberController.class).getMember(member.getId())).withSelfRel(),
+                WebMvcLinkBuilder.linkTo(methodOn(MemberController.class).getMember(member.getMemberId())).withSelfRel(),
                 linkTo(methodOn(MemberController.class).getMembers()).withRel("members"));
     }
 

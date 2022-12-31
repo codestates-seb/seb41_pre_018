@@ -2,54 +2,68 @@ package sebpre018.com.stackOverflowClone.vote.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import sebpre018.com.stackOverflowClone.exception.BusinessLogicException;
 import sebpre018.com.stackOverflowClone.exception.ExceptionCode;
 import sebpre018.com.stackOverflowClone.member.entity.Member;
 import sebpre018.com.stackOverflowClone.member.service.MemberService;
-import sebpre018.com.stackOverflowClone.question.entity.Question;
-import sebpre018.com.stackOverflowClone.question.service.QuestionService;
-import sebpre018.com.stackOverflowClone.response.SingleResponseDto;
-import sebpre018.com.stackOverflowClone.vote.entity.Vote;
 import sebpre018.com.stackOverflowClone.vote.service.VoteService;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import javax.validation.constraints.Positive;
 
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/")
+@RequestMapping("/vote")
 public class VoteController {
     private final VoteService voteService;
     private final MemberService memberService;
 
-    //question 추천
-    @PostMapping("/question/{questionId}/vote/{voteId}")
-    public void QuestionVote(@PathVariable("questionId") Long questionId,
-                                 HttpServletRequest request) {
+    //질문 vote Up를 눌렀을 때
+    @PostMapping("/questions/{questionId}/{memberId}/up")
+    public void plusQuestionVote(@PathVariable ("questionId") Long questionId,
+                                 @PathVariable("memberId") Long memberId) {
         boolean result = false;
-        result = voteService.addQuestionVote(memberService.getLoginMember(), questionId);
+        Member member = memberService.findMember(memberId);
+        result = voteService.addQuestionVote(member, questionId);
 
-        if (!result) {
-            throw new BusinessLogicException(ExceptionCode.VOTED);//중복투표시 예외 발생
+        if (!result) { //투표 한 적이 있을 때
+            throw new BusinessLogicException(ExceptionCode.VOTED);
         }
     }
-
-    //answer 추천
-    @PostMapping("/answer/{answerId}/vote/{voteId}")
-    public void AnswerVote(@PathVariable("answerId") Long answerId,
-                               HttpServletRequest request) {
+    //질문 vote Down을 눌렀을 때
+    @PostMapping("/questions/{questionId}/{memberId}/down")
+    public void minusQuestionVote(@PathVariable("questionId") Long questionId,
+                                  @PathVariable("memberId") Long memberId) {
         boolean result = false;
-        result = voteService.addAnswerVote(memberService.getLoginMember(), answerId);
+        Member member = memberService.findMember(memberId);
+        result = voteService.minusQuestionVote(member, questionId);
 
         if (!result) {
-            throw new BusinessLogicException(ExceptionCode.VOTED);//중복투표시 예외 발생
+            throw new BusinessLogicException(ExceptionCode.VOTED);
         }
     }
+    //답변 vote Up을 눌렀을 때
+    @PostMapping("/answers/{answerId}/{memberId}/up")
+    public void plusAnswerVote(@PathVariable("answerId") Long answerId,
+                               @PathVariable("memberId") Long memberId) {
+        boolean result = false;
+        Member member = memberService.findMember(memberId);
+        result = voteService.addAnswerVote(member, answerId);
 
+        if (!result) {
+            throw new BusinessLogicException(ExceptionCode.VOTED);
+        }
+    }
+    //답변 vote Down을 눌렀을 때
+    @PostMapping("/answers/{answerId}/{memberId}/down")
+    public void minusAnswerVote(@PathVariable("answerId") Long answerId,
+                               @PathVariable("memberId") Long memberId) {
+        boolean result = false;
+        Member member = memberService.findMember(memberId);
+        result = voteService.minusAnswerVote(member, answerId);
+
+        if (!result) {
+            throw new BusinessLogicException(ExceptionCode.VOTED);
+        }
+    }
 }

@@ -41,9 +41,9 @@ public class CommentService {
 
     public Comment updateComment(Comment comment) {
         Comment findComment = findVerifiedComment(comment.getCommentId()); //기존 댓글 찾기
-        Member writer = memberService.findVerifiedMember(findComment.getMember().getId()); //기존 댓글 작성자 찾기
+        Member writer = memberService.findVerifiedMember(findComment.getMember().getMemberId()); //기존 댓글 작성자 찾기
         comment.setMember(writer); //MemberId responseDto에서 사용해주기 위해 세팅
-        if(memberService.getLoginMember().getId() != writer.getId()) // 작성자와 로그인한 사람 다를 경우
+        if(memberService.getLoginMember().getMemberId() != writer.getMemberId()) // 작성자와 로그인한 사람 다를 경우
             throw new BusinessLogicException(ExceptionCode.UNAUTHORIZED); //예외 발생
 
         Optional.ofNullable(comment.getText())
@@ -62,7 +62,7 @@ public class CommentService {
 
     public void deleteComment(Long commentId) {
         Comment findComment = findVerifiedComment(commentId);
-        Member writer = memberService.findVerifiedMember(findComment.getMember().getId());
+        Member writer = memberService.findVerifiedMember(findComment.getMember().getMemberId());
         Question question = questionService.findVerifiedQuestion(findComment.getQuestion().getQuestionId());
 
         commentRepository.delete(findComment);
