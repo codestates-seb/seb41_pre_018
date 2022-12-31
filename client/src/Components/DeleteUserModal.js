@@ -1,5 +1,10 @@
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useCookies } from 'react-cookie';
+import { useNavigate } from 'react-router-dom';
+import { deleteUserThunk } from '../module/thunkModule';
+import { loginBoolean } from '../module/loginBooleanSlice';
 const Modal_Container = styled.div`
   height: 450px;
   width: 800px;
@@ -92,9 +97,28 @@ const Modal_Cancel_Button = styled.button`
 `;
 function DeleteUserModal({ deleteUserHandle }) {
   const [checked, setChecked] = useState(false);
+  const { memberId } = useSelector((state) => state.loginBoolean);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [cookies, setCookie, removeCookie] = useCookies([]);
   const checkHandle = (e) => {
     setChecked(e.target.checked);
   };
+
+  const deleteUserFunction = useCallback(() => {
+    console.log(cookies.access_token, memberId);
+    dispatch(deleteUserThunk({ cookie: cookies.access_token, memberId })).then(
+      (data) => {
+        if (data.payload !== false) {
+          removeCookie('access_token');
+          dispatch(loginBoolean({ isLogin: false, memberId: '' }));
+          navigate('/');
+        } else {
+          return data.payload;
+        }
+      }
+    );
+  }, [dispatch]);
   return (
     <Modal_Container>
       <Modal_Head_Container>
@@ -138,7 +162,10 @@ function DeleteUserModal({ deleteUserHandle }) {
           <Modal_Cancel_Button onClick={() => deleteUserHandle(false)}>
             Cancel
           </Modal_Cancel_Button>
-          <Modal_DeleteUser_Button disabled={checked === true ? false : true}>
+          <Modal_DeleteUser_Button
+            disabled={checked === true ? false : true}
+            onClick={deleteUserFunction}
+          >
             Delete profile
           </Modal_DeleteUser_Button>
         </Modal_Button_Box>
