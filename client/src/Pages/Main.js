@@ -99,7 +99,6 @@ const Main = () => {
     fetchAllQuestions();
   }, []);
   const { isLogin, memberId } = useSelector((state) => state.loginBoolean);
-
   const [pageState, setPageState] = useState(1); //페이지 버튼 뭐 눌렀는지 상태. 디폴트는 1페이지.
 
   const handlePageClick = (event) => {

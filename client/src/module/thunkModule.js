@@ -89,7 +89,43 @@ export const getUserInfoThunk = createAsyncThunk(
     const { cookie, memberId } = data;
 
     try {
-      await axios
+      const response = await axios
+        .all([
+          axios.get(
+            `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/members/${memberId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${cookie}`,
+              },
+            }
+          ),
+          axios.get(
+            `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/questions?page=1&size=10000&sort=QuestionId`
+          ),
+        ])
+        .then(
+          axios.spread((res1, res2) => {
+            const { createdTime, username, aboutMe } = res1.data;
+            const questions = res2.data.data.filter(
+              (el) => el.memberId === memberId
+            );
+            return { createdTime, username, aboutMe, questions };
+          })
+        );
+
+      return response;
+    } catch (e) {
+      return false;
+    }
+  }
+);
+//회원 정보 수정 위한 회원 정보
+export const getUserInfoEditThunk = createAsyncThunk(
+  'thunkModule/getUserInfoEditThunk',
+  async (data) => {
+    const { cookie, memberId } = data;
+    try {
+      const response = await axios
         .get(
           `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/members/${memberId}`,
           {
@@ -98,9 +134,11 @@ export const getUserInfoThunk = createAsyncThunk(
             },
           }
         )
-        .then((data) => console.log(data));
+        .then((data) => data.data);
+
+      return response;
     } catch (e) {
-      console.error(e);
+      return false;
     }
   }
 );
@@ -108,10 +146,16 @@ export const getUserInfoThunk = createAsyncThunk(
 export const deleteUserThunk = createAsyncThunk(
   'thunkModule/deleteUserThunk',
   async (data) => {
-    const { memberId } = data;
+    const { cookie, memberId } = data;
+    console.log(data);
     try {
       await axios.delete(
-        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/member/${memberId}`
+        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/members/${memberId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${cookie}`,
+          },
+        }
       );
     } catch (e) {
       console.error(e);
@@ -122,17 +166,27 @@ export const deleteUserThunk = createAsyncThunk(
 export const patchUserThunk = createAsyncThunk(
   'thunkModule/patchUserThunk',
   async (data) => {
-    const { memberId, username, aboutMe } = data;
+    const { cookie, memberId, username, aboutMe } = data;
+    console.log(data);
     try {
-      await axios.patch(
-        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/member/${memberId}`,
-        {
-          username,
-          aboutMe,
-        }
-      );
+      const response = await axios
+        .patch(
+          `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/members/${memberId}`,
+          {
+            username,
+            aboutMe,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${cookie}`,
+            },
+          }
+        )
+        .then((data) => data.data);
+
+      return response;
     } catch (e) {
-      console.error(e);
+      return false;
     }
   }
 );
@@ -157,20 +211,23 @@ export const postQuestionThunk = createAsyncThunk(
   'thunkModule/postQuestionThunk',
   async (data) => {
     const { title, text, tags, cookie } = data;
-    console.log(data)
+    console.log(data);
     try {
-      const response = await axios.post(
-        'http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/questions',
-        {
-          title,
-          text,
-          tags,
-        }, {
-          headers: {
-            Authorization: `Bearer ${cookie}`,
+      const response = await axios
+        .post(
+          'http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/questions',
+          {
+            title,
+            text,
+            tags,
           },
-        }
-      ).then((data) => data);
+          {
+            headers: {
+              Authorization: `Bearer ${cookie}`,
+            },
+          }
+        )
+        .then((data) => data);
       console.log(response);
       return response;
     } catch (e) {
