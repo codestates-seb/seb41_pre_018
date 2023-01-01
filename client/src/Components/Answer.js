@@ -143,8 +143,6 @@ const Answer = (props) => {
     const dispatch = useDispatch();
     const { memberId } = useSelector((state) => state.loginBoolean);
     const [username, setUsername] = useState('')
-    const [answerMemberId, setAnswerMemberId] = useState();
-    const [x, setX] = useState(true);
 
     console.log(`props text: ${props.text}`)
     console.log(`props member: ${memberId}`)
@@ -160,6 +158,9 @@ const Answer = (props) => {
       fetchUsername();
     }, []);
 
+    console.log(`created at : ${props.createdAt}`)
+    console.log(`modified at: ${props.ModifiedAt}`)
+
     const handleUserAnswer = (val) => {
         setCurrentUserAnswer(val);
       };
@@ -173,14 +174,15 @@ const Answer = (props) => {
         console.log(data)
         if (isAnswerEditOn === true) {
           await dispatch(
-            patchAnswerThunk(data))
-          if (confirm('수정을 완료하시겠습니까?')) {
-            setIsAnswerEditOn(!isAnswerEditOn);
-          }
+            patchAnswerThunk(data)).then(data => {if (confirm('수정을 완료하시겠습니까?')) {
+              props.handleRender(!props.render);
+              setIsAnswerEditOn(!isAnswerEditOn);
+            }
+          })   
         } else {
           setIsAnswerEditOn(!isAnswerEditOn);
         }
-      };
+    };
 
     const handleDeleteAnswer = async () => {
       const data = {};

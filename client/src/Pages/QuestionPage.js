@@ -7,13 +7,12 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { data } from '../dummydata';
 import { BiNoEntry } from 'react-icons/bi';
-import { useDispatch } from 'react-redux';
 import {getAnswerThunk, postAnswerThunk } from '../module/thunkModule';
 import Answer from '../Components/Answer';
-
-
+import { useDispatch, useSelector } from 'react-redux';
 import { useCookies } from 'react-cookie';
 import { getQuestionAction, getQuestionThunk } from '../module/questionPageInfoSlice';
+import { dateChange } from './MyPage';
 
 const Outer_Wrapper = styled.div`
   width: 100%;
@@ -39,6 +38,13 @@ const Inner_Wrapper = styled.div`
   margin-bottom: 100px;
   padding-bottom: 100px;
   min-width: 800px;
+
+  .No_Answers {
+    margin: 50px 0;
+    text-align: center;
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 18px;
+  }
 `;
 
 const Question_Title = styled.div`
@@ -197,6 +203,7 @@ const Question_Page = () => {
   // 질문 상세 페이지에서 가져올 더미 데이터
   // => 상태로 전달 받을 예정이며 정상 구현 이후 해당 변수는 삭제합니다.
   const currentId = useParams();
+  const { memberId } = useSelector((state) => state.loginBoolean);
   const [currentQuestion, setCurrentQuestion] = useState();
   const [commentsData, setCommentsData] = useState([]);
 
@@ -204,9 +211,8 @@ const Question_Page = () => {
   const [questionVotes, setQuestionVotes] = useState(0);
   const [answerVotes, setAnswerVotes] = useState(0);
   const [isAnswerEditOn, setIsAnswerEditOn] = useState(false);
-  const [currentUserAnswer, setCurrentUserAnswer] = useState(
-    data.member[0].answers[0].answer_content
-  );
+  const [currentUserAnswer, setCurrentUserAnswer] = useState('');
+
   const [newAnswer, setNewAnswer] = useState('');
   const [answersList, setAnswersList] = useState([]);
   const [cookies] = useCookies([]);
@@ -247,6 +253,10 @@ const Question_Page = () => {
 
   const handleUserAnswer = (val) => {
     setCurrentUserAnswer(val);
+  };
+
+  const handleRender = (boolean) => {
+    setRender(boolean);
   };
 
   const handleNewAnswer = (val) => {
@@ -357,22 +367,24 @@ const Question_Page = () => {
               <Gray_Text> Viewed </Gray_Text>
               <span> {currentQuestion.views} times</span>
             </Middle_Text_Wrapper>
-            <Button_Wrapper>
-              <Link
-                to="./edit"
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  textDecoration: 'none',
-                }}
-              >
-                <Blue_Button>질문 수정하기</Blue_Button>
-              </Link>
-              <Red_Button onClick={() => console.log('work in progress')}>
-                질문 삭제하기
-              </Red_Button>
-            </Button_Wrapper>
+            {memberId === currentQuestion.memberId ? (
+              <Button_Wrapper>
+                <Link
+                  to="./edit"
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    textDecoration: 'none',
+                  }}
+                >
+                  <Blue_Button>질문 수정하기</Blue_Button>
+                </Link>
+                <Red_Button onClick={() => console.log('work in progress')}>
+                  질문 삭제하기
+                </Red_Button>
+              </Button_Wrapper>
+            ) : null}
           </Userinfo_Wrapper>
           <Custom_Hr />
           <Content_Wrapper>
@@ -408,7 +420,7 @@ const Question_Page = () => {
             />
           )}
           <Question_Title>답변</Question_Title>
-          {answersList.map(item => <Answer vote={item.voteResult} createdAt={item.createdAt} modifiedAt={item.modifiedAt} text={item.text} id={item.answerId} memberId={item.memberId} username={item.username} questionId={currentId} answerId={item.answerId}/>)}
+          {answersList.map(item => <Answer vote={item.voteResult} createdAt={item.createdAt} modifiedAt={item.modifiedAt} text={item.text} id={item.answerId} memberId={item.memberId} username={item.username} questionId={currentId} answerId={item.answerId} render={render} handleRender={handleRender} />)}
           <Content_Wrapper>
             <Vote_Wrapper />
             <Text_Content>
