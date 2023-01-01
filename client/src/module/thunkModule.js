@@ -20,7 +20,7 @@ export const signinThunk = createAsyncThunk(
           }
         )
         .then((data) => data);
-      console.log(response);
+      // console.log(response);
       return response;
     } catch (e) {
       console.error(e);
@@ -132,7 +132,7 @@ export const getUserInfoThunk = createAsyncThunk(
             return { createdTime, username, aboutMe, questions, answers };
           })
         );
-      console.log(response);
+      // console.log(response);
       return response;
     } catch (e) {
       return false;
@@ -167,7 +167,7 @@ export const deleteUserThunk = createAsyncThunk(
   'thunkModule/deleteUserThunk',
   async (data) => {
     const { cookie, memberId } = data;
-    console.log(data);
+    // console.log(data);
     try {
       await axios.delete(
         `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/members/${memberId}`,
@@ -187,7 +187,7 @@ export const patchUserThunk = createAsyncThunk(
   'thunkModule/patchUserThunk',
   async (data) => {
     const { cookie, memberId, username, aboutMe } = data;
-    console.log(data);
+    // console.log(data);
     try {
       const response = await axios
         .patch(
@@ -218,7 +218,7 @@ export const postQuestionThunk = createAsyncThunk(
   'thunkModule/postQuestionThunk',
   async (data) => {
     const { title, text, tags, cookie } = data;
-    console.log(data);
+    // console.log(data);
     try {
       const response = await axios
         .post(
@@ -235,7 +235,7 @@ export const postQuestionThunk = createAsyncThunk(
           }
         )
         .then((data) => data);
-      console.log(response);
+      // console.log(response);
       return response;
     } catch (e) {
       console.error(e);
@@ -311,10 +311,18 @@ export const postAnswerThunk = createAsyncThunk(
   'thunkModule/postAnswerThunk',
   async (data) => {
     const { questionId, text, cookie } = data;
+    // console.log(`cookie: ${cookie}`)
+    // console.log(`questionId: ${questionId}`)
+    // console.log(`text: ${text}`)
     try {
       await axios.post(
         `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/answers/${questionId}`,
-        { text }
+        { text },
+        {
+          headers: {
+            Authorization: `Bearer ${cookie}`,
+          },
+        }
       );
     } catch (e) {
       console.error(e);
@@ -327,9 +335,13 @@ export const getAnswerThunk = createAsyncThunk(
   async (data) => {
     const { questionId, answerId } = data;
     try {
-      await axios.get(
-        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/answers/${questionId}/${answerId}`
-      );
+      const response = await axios
+        .get(
+          `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/answers/${questionId}/${answerId}`
+        )
+        .then((data) => data.data.data);
+
+      return response;
     } catch (e) {
       console.error(e);
     }
@@ -339,12 +351,22 @@ export const getAnswerThunk = createAsyncThunk(
 export const patchAnswerThunk = createAsyncThunk(
   'thunkModule/patchAnswerThunk',
   async (data) => {
-    const { questionId, answerId, text } = data;
+    const { questionId, answerId, text, cookie } = data;
+    // console.log(data);
     try {
-      await axios.patch(
-        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/answers/${questionId}/${answerId}`,
-        { text }
-      );
+      const response = await axios
+        .patch(
+          `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/answers/${questionId}/${answerId}`,
+          { text },
+          {
+            headers: {
+              Authorization: `Bearer ${cookie}`,
+            },
+          }
+        )
+        .then((data) => data.data.data);
+
+      return response;
     } catch (e) {
       console.error(e);
     }
@@ -354,10 +376,17 @@ export const patchAnswerThunk = createAsyncThunk(
 export const deleteAnswerThunk = createAsyncThunk(
   'thunkModule/deleteAnswerThunk',
   async (data) => {
-    const { answerId } = data;
+    const { answerId, questionId, cookie } = data;
+    console.log(cookie);
     try {
       await axios.delete(
-        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/answers/${answerId}`
+        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/${questionId}/${answerId}`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${cookie}`,
+          },
+        }
       );
     } catch (e) {
       console.error(e);
