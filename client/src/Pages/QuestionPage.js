@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Comments from '../Components/Comments';
-import { Link, useParams } from 'react-router-dom';
+import { Link, redirect, useParams } from 'react-router-dom';
 import { MdKeyboardArrowUp, MdKeyboardArrowDown } from 'react-icons/md';
 import styled from 'styled-components';
 import ReactQuill from 'react-quill';
@@ -11,6 +11,7 @@ import { useDispatch } from 'react-redux';
 import { getQuestionThunk, getAnswerThunk, postAnswerThunk } from '../module/thunkModule';
 import Answer from '../Components/Answer';
 import { useCookies } from 'react-cookie';
+import { dateChange } from './MyPage';
 
 const Outer_Wrapper = styled.div`
   width: 100%;
@@ -196,7 +197,6 @@ const Question_Page = () => {
   const currentId = useParams();
   const [currentQuestion, setCurrentQuestion] = useState();
   const [commentsData, setCommentsData] = useState([]);
-
   const dispatch = useDispatch();
   const [questionVotes, setQuestionVotes] = useState(0);
   const [answerVotes, setAnswerVotes] = useState(0);
@@ -206,6 +206,7 @@ const Question_Page = () => {
   );
   const [newAnswer, setNewAnswer] = useState('');
   const [answersList, setAnswersList] = useState([]);
+  const [render, setRender] = useState(false);
 
   useEffect(() => {
     async function fetchQuestion() {
@@ -215,17 +216,28 @@ const Question_Page = () => {
           setAnswersList(...res.payload.answers);
           console.log(answersList);
           return currentQuestion;
+          console.log(res);
+          const payload = res.payload;
+          const createdAtTime = dateChange(res.payload.createdAt);
+          const modifiedAtTime = dateChange(res.payload.modifiedAt);
+          setCurrentQuestion({
+            ...payload,
+            createdAt: createdAtTime,
+            modifiedAt: modifiedAtTime,
+          });
           setCommentsData(res.payload.comments);
         }
       )
     }
     fetchQuestion();
-  }, [commentsData]);
-
+  }, [render]);
+  console.log('hi');
   const handleUserAnswer = (val) => {
     setCurrentUserAnswer(val);
   };
-
+  const handleRender = (boolean) => {
+    setRender(boolean);
+  };
   const handleEditAnswer = () => {
     if (isAnswerEditOn === true) {
       if (confirm('수정을 완료하시겠습니까?')) {
@@ -310,9 +322,18 @@ const Question_Page = () => {
             </User_Wrapper>
             <Middle_Text_Wrapper>
               <Gray_Text> Asked </Gray_Text>
-              <span> today</span>
+              <span>
+                {currentQuestion.createdAt === 0
+                  ? 'today'
+                  : `Member for ${currentQuestion.createdAt} days`}
+              </span>
               <Gray_Text> Modified </Gray_Text>
-              <span> today</span>
+              <span>
+                {' '}
+                {currentQuestion.modifiedAt === 0
+                  ? 'today'
+                  : `Member for ${currentQuestion.modifiedAt} days`}
+              </span>
               <Gray_Text> Viewed </Gray_Text>
               <span> {currentQuestion.views} times</span>
             </Middle_Text_Wrapper>
@@ -364,9 +385,11 @@ const Question_Page = () => {
               currentQuestion={currentQuestion}
               commentsData={commentsData}
               setCommentsData={setCommentsData}
+              handleRender={handleRender}
+              render={render}
             />
           )}
-          <Question_Title>내 답변</Question_Title>
+          <Question_Title>답변</Question_Title>
           <Userinfo_Wrapper>
             <User_Wrapper>
               <Profile_Image
@@ -374,14 +397,7 @@ const Question_Page = () => {
               />
               <Username>Human_001</Username>
             </User_Wrapper>
-            <Middle_Text_Wrapper>
-              <Gray_Text> Asked </Gray_Text>
-              <span> today</span>
-              <Gray_Text> Modified </Gray_Text>
-              <span> today</span>
-              <Gray_Text> Viewed </Gray_Text>
-              <span> {currentQuestion.views} times</span>
-            </Middle_Text_Wrapper>
+
             <Button_Wrapper>
               <Answer_Edit_Button onClick={handleEditAnswer}>
                 {isAnswerEditOn ? '수정 완료' : '답변 수정하기'}
@@ -389,7 +405,7 @@ const Question_Page = () => {
               <Answer_Delete_Button>답변 삭제하기</Answer_Delete_Button>
             </Button_Wrapper>
           </Userinfo_Wrapper>
-          <Custom_Hr />
+
           <Content_Wrapper>
             <Vote_Wrapper>
               <MdKeyboardArrowUp
@@ -423,15 +439,7 @@ const Question_Page = () => {
               )}
             </Text_Content>
           </Content_Wrapper>
-          {[{
-    "answerId": 2,
-    "memberId": 3,
-    "questionId": 15,
-    "voteResult": 0,
-    "text": "안아줬어요",
-    "createdAt": "2022-12-31T19:54:52.980939",
-    "modifiedAt": "2022-12-31T19:54:52.980939"
-}].map(item => <Answer vote={item.voteResult} createdAt={item.createdAt} modifiedAt={item.modifiedAt} text={item.text} id={item.answerId}/>)}
+          {[answersList].map(item => <Answer vote={item.voteResult} createdAt={item.createdAt} modifiedAt={item.modifiedAt} text={item.text} id={item.answerId}/>)}
           <Answer/>
           <Content_Wrapper>
             <Vote_Wrapper />
