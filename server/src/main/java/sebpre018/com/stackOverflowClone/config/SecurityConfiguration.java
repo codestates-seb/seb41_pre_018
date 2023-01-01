@@ -54,7 +54,7 @@ public class SecurityConfiguration {
                 .apply(new CustomFilterConfigurer())
                 .and()
                 .authorizeRequests(authorize -> authorize
-                        .antMatchers(HttpMethod.POST, "/members/emailCheck/**").permitAll()//이메일 중복 체크
+                        .antMatchers(HttpMethod.GET, "/members/emailCheck/*").permitAll()//이메일 중복 체크
                         .antMatchers(HttpMethod.POST, "/members/").permitAll() // 회원 가입
                         .antMatchers(HttpMethod.GET, "/members/*/Info").permitAll() // 회원 상세 정보 조회
                         .antMatchers(HttpMethod.GET, "/members/**").hasAnyRole("USER", "ADMIN") // 회원 조회
