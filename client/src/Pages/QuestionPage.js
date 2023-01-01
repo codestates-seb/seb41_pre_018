@@ -134,11 +134,10 @@ const Vote_Count = styled.div`
 const Text_Content = styled.div`
   height: auto;
   width: 90%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   margin-left: 30px;
   margin-bottom: 50px;
+  line-height: 1.2;
+  text-align: justify;
 
   * {
     max-width: 100%;
@@ -263,7 +262,7 @@ const Question_Page = () => {
               <Gray_Text> Modified </Gray_Text>
               <span> today</span>
               <Gray_Text> Viewed </Gray_Text>
-              <span> 2 times</span>
+              <span> {currentQuestion.views} times</span>
             </Middle_Text_Wrapper>
             <Button_Wrapper>
               <Link
