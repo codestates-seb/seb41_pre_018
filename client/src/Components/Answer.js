@@ -1,8 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { MdKeyboardArrowUp, MdKeyboardArrowDown } from 'react-icons/md';
 import { data } from '../dummydata';
 import ReactQuill from 'react-quill';
+import { useCookies } from 'react-cookie';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteAnswerThunk, deleteUserThunk, getUserInfoThunk } from '../module/thunkModule';
 
 
 const Content_Wrapper = styled.div`
@@ -133,9 +136,26 @@ const Answer = (props) => {
     const [answerVotes, setAnswerVotes] = useState(props.vote);
     const [currentUserAnswer, setCurrentUserAnswer] = useState(
         props.text
-      );
+    );
+    const [cookies] = useCookies([]);
+    const dispatch = useDispatch();
+    const { memberId } = useSelector((state) => state.loginBoolean);
+    const [username, setUsername] = useState('')
+    const [answerMemberId, setAnswerMemberId] = useState();
 
     console.log(`props text: ${props.text}`)
+    console.log(`props member: ${memberId}`)
+
+    useEffect(() => {
+      async function fetchUsername() {
+        const response = await dispatch(
+          getUserInfoThunk({ cookie: cookies.access_token, memberId })
+        ).then((data) => {
+          setUsername(data.payload.username)
+        });
+      }
+      fetchUsername();
+    }, []);
 
     const handleUserAnswer = (val) => {
         setCurrentUserAnswer(val);
@@ -151,12 +171,35 @@ const Answer = (props) => {
         }
       };
 
+    const handleDeleteAnswer = async () => {
+
+        await dispatch(
+          deleteUserThunk()
+        ).then((res) => {
+          console.log(res.status)
+        });
+        props.memberId
+        props.questionId
+    }
+
     const upVote_answer = () => {
     setAnswerVotes(answerVotes + 1);
     };
     const downVote_answer = () => {
     setAnswerVotes(answerVotes - 1);
     };
+
+    // useEffect(() => {
+    //   async function fetchUserInfo() {
+    //     const response = await dispatch(cookies.access_token, props.memberId).then(
+    //       (res) => {
+    //         console.log(res.payload)
+    //       }
+    //     )
+    //   }
+    //   fetchUserInfo();
+    // }, []);
+  
     
 
     
@@ -167,15 +210,13 @@ const Answer = (props) => {
                 <Profile_Image
                     src={process.env.PUBLIC_URL + '/Sample_Avatar.png'}
                 />
-                <Username>Human_001</Username>
+                <Username>{username}</Username>
                 </User_Wrapper>
                 <Middle_Text_Wrapper>
-                <Gray_Text> Asked </Gray_Text>
+                <Gray_Text> Answered </Gray_Text>
                 <span>{` ${props.createdAt}`}</span>
                 <Gray_Text>Modified</Gray_Text>
                 <span>{` ${props.modifiedAt}`}</span>
-                <Gray_Text> Viewed </Gray_Text>
-                <span> 2 times</span>
                 </Middle_Text_Wrapper>
                 <Button_Wrapper>
                 <Answer_Edit_Button onClick={handleEditAnswer}>

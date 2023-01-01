@@ -321,10 +321,18 @@ export const postAnswerThunk = createAsyncThunk(
   'thunkModule/postAnswerThunk',
   async (data) => {
     const { questionId, text, cookie } = data;
+    console.log(`cookie: ${cookie}`)
+    console.log(`questionId: ${questionId}`)
+    console.log(`text: ${text}`)
     try {
       await axios.post(
         `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/answers/${questionId}`,
-        { text }
+        { text },
+        {
+          headers: {
+            Authorization: `Bearer ${cookie}`,
+          },
+        }
       );
     } catch (e) {
       console.error(e);
