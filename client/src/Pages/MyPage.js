@@ -325,12 +325,12 @@ function MyPage() {
                         <div key={answer.answerId}>
                           <My_Page_Answer_Question_Title>
                             {`${index + 1}.  `}
-                            {/* <Link
+                            <Link
                               to={`/question/${answer.questionId}`}
                               className="Question_Link"
-                            > */}
-                            {answer.text}
-                            {/* </Link> */}
+                            >
+                              {answer.text}
+                            </Link>
                           </My_Page_Answer_Question_Title>
                         </div>
                       );
