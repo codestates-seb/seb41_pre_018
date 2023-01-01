@@ -94,6 +94,12 @@ public class MemberController {
                 new SingleResponseDto<>(response), HttpStatus.OK
         );
     }
+
+    @GetMapping("/emailCheck/{email}")
+    public ResponseEntity<Boolean> verifyExistsEmail(@PathVariable("email") String email){
+        return ResponseEntity.ok(memberService.verifyExistsEmail(email));
+    }
+
 }
 
 
