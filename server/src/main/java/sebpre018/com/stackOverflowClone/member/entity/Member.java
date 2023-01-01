@@ -1,7 +1,6 @@
 package sebpre018.com.stackOverflowClone.member.entity;
 
 import lombok.*;
-import sebpre018.com.stackOverflowClone.answer.entity.Answer;
 import sebpre018.com.stackOverflowClone.audit.BaseEntity;
 
 import javax.persistence.*;
@@ -16,7 +15,7 @@ public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
-    private Long id;
+    private Long memberId;
     @Column(nullable = false)
     private String username;
     @Column(nullable = false)
@@ -62,10 +61,10 @@ public class Member extends BaseEntity {
         this.password = password;
     }
 
-    public Member(Long id, String username, String email, String password,
+    public Member(Long memberId, String username, String email, String password,
                 UserStatus userStatus, List<String> roles) {
-        this.id = id;
-        this.username = username;
+        this.memberId = memberId;
+        this.username = this.username;
         this.email = email;
         this.password = password;
         this.userStatus = userStatus;

@@ -17,7 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import org.springframework.transaction.annotation.Transactional;
-import java.awt.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -69,7 +69,7 @@ public class MemberService {
         Optional<Member> optionalUser = memberRepository.findByEmail(authentication.getName());
         Member member = optionalUser.orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
 
-        System.out.println("HERE:"+member.getId());
+        System.out.println("HERE:"+member.getMemberId());
 
         return member;
     }
@@ -80,8 +80,9 @@ public class MemberService {
 
     public Member updateMember(Member member,long id) {
         Member verifiedUser = findVerifiedMember(id);
-        verifiedUser.setEmail(member.getEmail());
+//        verifiedUser.setEmail(member.getEmail());
         verifiedUser.setUsername(member.getUsername());
+        verifiedUser.setAboutMe(member.getAboutMe());
         return memberRepository.save(verifiedUser);
     }
     public Member findMember(long id) {

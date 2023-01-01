@@ -1,9 +1,6 @@
 package sebpre018.com.stackOverflowClone.vote.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.validator.constraints.Range;
 import sebpre018.com.stackOverflowClone.answer.entity.Answer;
 import sebpre018.com.stackOverflowClone.audit.BaseEntity;
@@ -11,6 +8,8 @@ import sebpre018.com.stackOverflowClone.member.entity.Member;
 import sebpre018.com.stackOverflowClone.question.entity.Question;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @Getter
@@ -23,28 +22,27 @@ public class Vote extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long voteId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "answer_id")
     private Answer answer;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
     private Question question;
 
-    @Range(min = -1, max = 1)
-    private int status;
-
     public Vote(Member member, Question question) {
-        this.member= member;
+        this.member = member;
         this.question = question;
     }
-    public Vote(Member member,Answer answer) {
-        this.member= member;
-        this.answer= answer;
+
+    public Vote(Member member, Answer answer) {
+        this.member = member;
+        this.answer = answer;
     }
+
 }
 

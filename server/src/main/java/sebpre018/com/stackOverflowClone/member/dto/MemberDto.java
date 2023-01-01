@@ -1,7 +1,6 @@
 package sebpre018.com.stackOverflowClone.member.dto;
 
 import lombok.*;
-import sebpre018.com.stackOverflowClone.member.entity.Member;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -20,14 +19,13 @@ public class MemberDto {
         @NotBlank
         @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@!%*#?&])[A-Za-z\\d@!%*#?&]{8,}$")
         private String password;
-//        @NotBlank
-//        private String aboutMe;
+        //private String aboutMe;
     }
     @Getter
     @AllArgsConstructor
     public static class Patch {
 
-        private long id;
+        private long memberId;
         @NotBlank
         @Email
         private String email;
@@ -35,18 +33,18 @@ public class MemberDto {
         private String username;
         @NotBlank
         private String password;
-        @NotBlank
+       // @NotBlank
         private String aboutMe;
 
-        public void setMemberId(long id) {
-            this.id = id;
+        public void setMemberId(long memberId) {
+            this.memberId = memberId;
         }
     }
     @AllArgsConstructor
     @Getter
     public static class Response{
-        private long id;
-        private String username;
+        private long memberId;
+        private String userName;
         private String email;
         private String password;
         private String aboutMe;
