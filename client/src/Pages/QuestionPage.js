@@ -225,7 +225,7 @@ const Question_Page = () => {
     }
     fetchQuestion();
   }, [render]);
-  console.log('hi');
+
   const handleUserAnswer = (val) => {
     setCurrentUserAnswer(val);
   };
@@ -240,6 +240,21 @@ const Question_Page = () => {
     } else {
       setIsAnswerEditOn(!isAnswerEditOn);
     }
+  };
+
+  const quillModules = {
+    toolbar: [
+      [{ header: [1, 2, false] }],
+      ['bold', 'italic', 'underline', 'strike', 'blockquote', 'code-block'],
+      [
+        { list: 'ordered' },
+        { list: 'bullet' },
+        { indent: '-1' },
+        { indent: '+1' },
+      ],
+      ['link', 'image'],
+      ['clean'],
+    ],
   };
 
   // 현재 질문 삭제 기능 미구현으로 코드만 남겨놓음
@@ -390,6 +405,7 @@ const Question_Page = () => {
             <Text_Content>
               {isAnswerEditOn ? (
                 <ReactQuill
+                  modules={quillModules}
                   theme="snow"
                   className="Rich_Text_Editor"
                   value={currentUserAnswer}
@@ -408,6 +424,7 @@ const Question_Page = () => {
             <Vote_Wrapper />
             <Text_Content>
               <ReactQuill
+                modules={quillModules}
                 theme="snow"
                 className="Rich_Text_Editor"
                 value={newAnswer}

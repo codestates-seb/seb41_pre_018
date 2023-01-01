@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import ReactQuill from 'react-quill';
+import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { postQuestionThunk } from '../module/thunkModule';
 import { useDispatch } from 'react-redux';
@@ -210,6 +210,21 @@ export default function NewQuestion() {
     }
   };
 
+  const quillModules = {
+    toolbar: [
+      [{ header: [1, 2, false] }],
+      ['bold', 'italic', 'underline', 'strike', 'blockquote', 'code-block'],
+      [
+        { list: 'ordered' },
+        { list: 'bullet' },
+        { indent: '-1' },
+        { indent: '+1' },
+      ],
+      ['link', 'image'],
+      ['clean'],
+    ],
+  };
+
   return (
     <New_Question_Wrapper>
       <h1>새 질문을 추가합니다.</h1>
@@ -264,6 +279,7 @@ export default function NewQuestion() {
           </h3>
           <p>최소 20자 이상 입력해주세요</p>
           <ReactQuill
+            modules={quillModules}
             theme="snow"
             className="Rich_Text_Editor"
             placeholder="내용을 입력해주세요"
