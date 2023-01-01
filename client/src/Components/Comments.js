@@ -71,7 +71,13 @@ const New_Comment = styled.textarea`
   }
 `;
 
-const Comments = ({ currentQuestion, commentsData, setCommentsData }) => {
+const Comments = ({
+  currentQuestion,
+  commentsData,
+  setCommentsData,
+  handleRender,
+  render,
+}) => {
   const dispatch = useDispatch();
 
   const [isPosted, setIsPosted] = useState(false);
@@ -90,9 +96,11 @@ const Comments = ({ currentQuestion, commentsData, setCommentsData }) => {
         })
       ).then((res) => {
         setNewComment('');
+        handleRender(!render);
       });
     }
     postComment();
+
     setIsPosted(true);
   };
 
@@ -104,7 +112,7 @@ const Comments = ({ currentQuestion, commentsData, setCommentsData }) => {
           commentId: commentsData[event.target.id].commentId,
           cookie: cookies.access_token,
         })
-      );
+      ).then((data) => handleRender(!render));
     }
     deleteComment();
     setCommentsData(
