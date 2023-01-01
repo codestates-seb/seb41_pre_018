@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   postQuestionVoteUpThunk,
   postQuestionVoteDownThunk,
+  postAnswerThunk,
 } from '../module/thunkModule';
 import {
   getQuestionThunk,
@@ -19,6 +20,7 @@ import {
 import { useCookies } from 'react-cookie';
 import { dateChange } from './MyPage';
 import { loginBoolean } from '../module/loginBooleanSlice';
+import Answer from '../Components/Answer';
 
 const Outer_Wrapper = styled.div`
   width: 100%;
@@ -220,6 +222,7 @@ const Question_Page = () => {
     data.member[0].answers[0].answer_content
   );
   const [cookies, setCookie, removeCookie] = useCookies([]);
+  const [answersList, setAnswersList] = useState([]);
   const [newAnswer, setNewAnswer] = useState('');
   const [render, setRender] = useState(false);
 
@@ -228,6 +231,8 @@ const Question_Page = () => {
       const response = await dispatch(getQuestionThunk(currentId.id)).then(
         (res) => {
           const payload = res.payload;
+
+          setAnswersList(res.payload.answers);
           const createdAtTime = dateChange(res.payload.createdAt);
           const modifiedAtTime = dateChange(res.payload.modifiedAt);
           setCurrentQuestion({
@@ -256,12 +261,26 @@ const Question_Page = () => {
   const handleRender = (boolean) => {
     setRender(boolean);
   };
+  const handleNewAnswer = (val) => {
+    setNewAnswer(val);
+  };
   const handleEditAnswer = () => {
     if (isAnswerEditOn === true) {
       setIsAnswerEditOn(!isAnswerEditOn);
     } else {
       setIsAnswerEditOn(!isAnswerEditOn);
     }
+  };
+
+  const handleAddAnswer = async () => {
+    const data = {};
+    data.questionId = currentId.id;
+    data.text = newAnswer;
+    data.cookie = cookies.access_token;
+    console.log(data);
+    const response = await dispatch(postAnswerThunk(data)).then((res) => {
+      setRender(!render);
+    });
   };
 
   const quillModules = {
@@ -419,8 +438,24 @@ const Question_Page = () => {
             />
           )}
           <Question_Title>답변</Question_Title>
+          {answersList.map((item, idx) => (
+            <Answer
+              key={`Answer_${idx}`}
+              vote={item.voteResult}
+              createdAt={item.createdAt}
+              modifiedAt={item.modifiedAt}
+              text={item.text}
+              id={item.answerId}
+              memberId={item.memberId}
+              username={item.username}
+              questionId={currentId}
+              answerId={item.answerId}
+              render={render}
+              handleRender={handleRender}
+            />
+          ))}
           {/* 해당 질문에 답변이 없으면 답변을 표시하지 않습니다. */}
-          {currentQuestion.answers.length === 0 ? (
+          {/* {currentQuestion.answers.length === 0 ? (
             <div className="No_Answers">
               현재 해당 질문에 대한 답변이 없습니다 😢 답변을 기다리고 있을
               질문자를 위해 답변을 등록해보세요!
@@ -433,13 +468,13 @@ const Question_Page = () => {
                     src={process.env.PUBLIC_URL + '/Sample_Avatar.png'}
                   />
                   <Username>Human_001</Username>
-                </User_Wrapper>
+                </User_Wrapper> */}
 
-                {/* 아래 삼항 연산자에서 조건문은 현재 페이지에서
+          {/* 아래 삼항 연산자에서 조건문은 현재 페이지에서
             질문의 답변 수에 맞게 랜더링될 때 (map 함수 예상)
             각 질문들과 현재 사용자의 memberId가 일치한지
             확인하기 위한 조건문으로 수정이 필요합니다. */}
-                {memberId === currentQuestion.answers[0].memberId ? (
+          {/* {memberId === currentQuestion.answers[0].memberId ? (
                   <Button_Wrapper>
                     <Answer_Edit_Button onClick={handleEditAnswer}>
                       {isAnswerEditOn ? '수정 완료' : '답변 수정하기'}
@@ -484,7 +519,7 @@ const Question_Page = () => {
                 </Text_Content>
               </Content_Wrapper>
             </div>
-          )}
+          )} */}
           <Content_Wrapper>
             <Vote_Wrapper />
             <Text_Content>
@@ -493,7 +528,7 @@ const Question_Page = () => {
                 theme="snow"
                 className="Rich_Text_Editor"
                 value={newAnswer}
-                onChange={() => setNewAnswer(newAnswer)}
+                onChange={handleNewAnswer}
                 placeholder="답변을 작성하세요"
               />
             </Text_Content>
@@ -501,7 +536,9 @@ const Question_Page = () => {
           <Content_Wrapper>
             <Vote_Wrapper />
             <Button_Wrapper>
-              <Answer_Submit_Button>답변 등록하기</Answer_Submit_Button>
+              <Answer_Submit_Button onClick={() => handleAddAnswer()}>
+                답변 등록하기
+              </Answer_Submit_Button>
             </Button_Wrapper>
           </Content_Wrapper>
         </Inner_Wrapper>
