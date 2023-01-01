@@ -457,3 +457,86 @@ export const deleteCommentThunk = createAsyncThunk(
     }
   }
 );
+//질문 투표 업
+export const postQuestionVoteUpThunk = createAsyncThunk(
+  'thunkModule/postQuestionVoteUpThunk',
+  async (data) => {
+    const { questionId, memberId, cookie } = data;
+    try {
+      await axios.post(
+        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/vote/questions/${questionId}/${memberId}/up`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${cookie}`,
+          },
+        }
+      );
+    } catch (e) {
+      return false;
+    }
+  }
+);
+//질문 투표 다운
+export const postQuestionVoteDownThunk = createAsyncThunk(
+  'thunkModule/postQuestionVoteDownThunk',
+  async (data) => {
+    const { questionId, memberId, cookie } = data;
+
+    try {
+      await axios.post(
+        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/vote/questions/${questionId}/${memberId}/down`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${cookie}`,
+          },
+        }
+      );
+    } catch (e) {
+      return false;
+    }
+  }
+);
+//답변 투표 업
+export const postAnswerVoteUpThunk = createAsyncThunk(
+  'thunkModule/postAnswerVoteUpThunk',
+  async (data) => {
+    const { questionId, memberId, cookie } = data;
+
+    try {
+      await axios.post(
+        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/vote/answers/${questionId}/${memberId}/up`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${cookie}`,
+          },
+        }
+      );
+    } catch (e) {
+      return false;
+    }
+  }
+);
+//답변 투표 다운
+export const postAnswerVoteDownThunk = createAsyncThunk(
+  'thunkModule/postAnswerVoteDownThunk',
+  async (data) => {
+    const { questionId, memberId, cookie } = data;
+
+    try {
+      await axios.post(
+        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/vote/answers/${questionId}/${memberId}/down`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${cookie}`,
+          },
+        }
+      );
+    } catch (e) {
+      return false;
+    }
+  }
+);
