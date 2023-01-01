@@ -166,7 +166,6 @@ const Answer = (props) => {
     data.answerId = props.answerId;
     data.text = currentUserAnswer;
     data.cookie = cookies.access_token;
-    console.log(data);
     if (isAnswerEditOn === true) {
       await dispatch(patchAnswerThunk(data)).then((data) => {
         if (confirm('수정을 완료하시겠습니까?')) {
@@ -204,7 +203,7 @@ const Answer = (props) => {
   //   }
   //   fetchUserInfo();
   // }, []);
-  console.log(props.memberId);
+
   return (
     <div>
       <Userinfo_Wrapper>
@@ -218,9 +217,7 @@ const Answer = (props) => {
           <Gray_Text>Modified</Gray_Text>
           <span>{` ${props.modifiedAt}`}</span>
         </Middle_Text_Wrapper>
-        {props.currentMemberId ? (
-          <div>hello</div>
-        ) : (
+        {memberId === props.memberId ? (
           <Button_Wrapper>
             <Answer_Edit_Button onClick={handleEditAnswer}>
               {isAnswerEditOn ? '수정 완료' : '답변 수정하기'}
@@ -229,7 +226,7 @@ const Answer = (props) => {
               답변 삭제하기
             </Answer_Delete_Button>
           </Button_Wrapper>
-        )}
+        ) : null}
       </Userinfo_Wrapper>
       <Custom_Hr />
       <Content_Wrapper>
