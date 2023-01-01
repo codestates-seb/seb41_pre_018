@@ -1,5 +1,4 @@
 import Question from '../Components/Question';
-import { data } from '../dummydata';
 import styled from 'styled-components';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -74,18 +73,26 @@ const Pagination_Button = styled.button`
 `;
 
 const Main = () => {
+  const [questions, setQuestions] = useState([]);
+  const [allQuestionslength, setAllQuestionsLength] = useState(0);
   const postPerPage = 10; // 한 페이지에 표시할 글 수
-  const postCount = data.question.length; // 모든 글 수
+  const postCount = allQuestionslength; // 모든 글 수
   const pageCount = Math.ceil(postCount / postPerPage); // 페이지 수
   let pages = []; // 페이지 아이콘을 렌더링 하기 위한 배열
   for (let i = 1; i < pageCount + 1; i++) {
     // 페이지 아이콘 배열에 페이지 넘버 푸쉬
     pages.push(i);
   }
-  const [questions, setQuestions] = useState([]);
+  const { isLogin, memberId } = useSelector((state) => state.loginBoolean);
+  const [pageState, setPageState] = useState(1); //페이지 버튼 뭐 눌렀는지 상태. 디폴트는 1페이지.
   const dispatch = useDispatch();
   const allQuestionCondition = {
     page: 1,
+    size: 100000,
+    sortingMethod: 'QuestionId',
+  };
+  const questionCondition = {
+    page: pageState,
     size: 10,
     sortingMethod: 'QuestionId',
   };
@@ -94,15 +101,26 @@ const Main = () => {
     async function fetchAllQuestions() {
       const response = await dispatch(
         getAllQuestionsThunk(allQuestionCondition)
-      ).then((res) => setQuestions(res.payload));
+      ).then((res) => setAllQuestionsLength(res.payload.length));
+
+      const response2 = await dispatch(
+        getAllQuestionsThunk(questionCondition)
+      ).then((res) => {
+        const questions = res.payload.map((el) => {
+          const date = new Date(el.createdAt)
+            .toLocaleString('ja-JP')
+            .split(' ')[0];
+          const data = { ...el, createdAt: date };
+          return data;
+        });
+
+        setQuestions(questions);
+      });
     }
     fetchAllQuestions();
-  }, []);
-  const { isLogin, memberId } = useSelector((state) => state.loginBoolean);
-  const [pageState, setPageState] = useState(1); //페이지 버튼 뭐 눌렀는지 상태. 디폴트는 1페이지.
-
+  }, [pageState]);
   const handlePageClick = (event) => {
-    setPageState(event.target.textContent); // 버튼 숫자에 따라 state 바뀜
+    setPageState(Number(event.target.textContent)); // 버튼 숫자에 따라 state 바뀜
   };
 
   const navigateWithArrow = (event) => {
@@ -112,7 +130,6 @@ const Main = () => {
       setPageState(Number(pageState) - 1);
     }
   };
-
   return (
     <>
       <Questions_Wrapper>
@@ -120,7 +137,7 @@ const Main = () => {
           <All_Questions_Wrapper>
             <All_Questions>All Questions</All_Questions>
             <Number_Of_Questions>
-              {`${data.question.length} questions`}
+              {`${allQuestionslength} questions`}
             </Number_Of_Questions>
           </All_Questions_Wrapper>
           <Link to={isLogin ? '/question/new' : '/login'}>

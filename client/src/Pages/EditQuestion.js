@@ -142,35 +142,33 @@ export default function NewQuestion() {
   const currentId = useParams();
   const [currentQuestion, setCurrentQuestion] = useState();
   const dispatch = useDispatch();
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
   const [userTags, setUserTags] = useState([]);
-  const [title, setTitle] = useState()
+  const [title, setTitle] = useState('');
   const [userInput, setUserInput] = useState('');
   const [tagInputXCord, setTagInputXCord] = useState(0);
   const [textEditorValue, setTextEditorValue] = useState();
   const navigate = useNavigate();
   const [cookies] = useCookies([]);
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: { title: title },
+  });
+
   useEffect(() => {
     async function fetchQuestion() {
       const response = await dispatch(getQuestionThunk(currentId.id)).then(
         (res) => {
           setCurrentQuestion(res.payload);
-          console.log(res.payload.text)
-          setTextEditorValue(res.payload.text)
-          setTitle(res.payload.title)
-          console.log(title)
-          const tempTags = [...res.payload.tags]
-          const tags = []
-          tempTags.forEach(item => tags.push(item.hashTag))
-          console.log(tags)
-          setUserTags(tags)
-
+          setTextEditorValue(res.payload.text);
+          setTitle(res.payload.title);
+          const tempTags = [...res.payload.tags];
+          const tags = [];
+          tempTags.forEach((item) => tags.push(item.hashTag));
+          setUserTags(tags);
         }
       );
     }
@@ -215,6 +213,10 @@ export default function NewQuestion() {
     }
   };
 
+  const handleTitleChange = (event) => {
+    setTitle(event.target.value);
+  };
+
   const handleTextEditorChange = (val) => {
     setTextEditorValue(val);
   };
@@ -228,26 +230,24 @@ export default function NewQuestion() {
     } else {
       if (confirm('수정한 내용을 등록하시겠습니까?')) {
         const tags = [];
-        userTags.forEach(item => tags.push({"hashTag": `${item}`}));
+        userTags.forEach((item) => tags.push({ hashTag: `${item}` }));
         data['text'] = textEditorValue;
         data['tags'] = tags;
         data['cookie'] = cookies.access_token;
         data.questionId = currentId.id;
 
-        console.log(data)
         navigate('./../');
-        const response = await dispatch(
-          patchQuestionThunk(data)
-        )
-        .then((data) => {   
-          console.log(data.payload.status)     
-          if (data.payload.status === 201) {
-          alert('질문이 수정되었습니다');
-          navigate('/');
-          reset();
-        } else {
-          alert(`에러: 에러코드${data.payload.status}`);
-        }})
+        const response = await dispatch(patchQuestionThunk(data)).then(
+          (data) => {
+            if (data.payload.status === 201) {
+              alert('질문이 수정되었습니다');
+              navigate('/');
+              reset();
+            } else {
+              alert(`에러: 에러코드${data.payload.status}`);
+            }
+          }
+        );
       }
     }
   };
@@ -263,18 +263,14 @@ export default function NewQuestion() {
             </label>
           </h3>
           <input
+            type="text"
             id="title"
             {...register('title', {
-              required: '제목을 입력해주세요',
+              required: true,
             })}
-            defaultValue={title}
-            type="text"
+            value={title}
+            onChange={handleTitleChange}
           />
-          {errors.title && (
-            <span className="Error_Message" role="alert">
-              {errors.title.message}
-            </span>
-          )}
         </Text_Wrapper>
 
         <Text_Wrapper>

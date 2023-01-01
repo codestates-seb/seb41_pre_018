@@ -5,14 +5,16 @@ import questionsSlice from './questionsSlice';
 import userInfoSlice from './userInfoSlice';
 import loginBooleanSlice from './loginBooleanSlice';
 import cookieVerifySlice from './cookieVerifySlice';
+import searchSlice from './searchSlice';
 
 const reducers = combineReducers({
   loginBoolean: loginBooleanSlice.reducer,
+  search: searchSlice.reducer,
 });
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['loginBoolean'],
+  whitelist: ['loginBoolean', 'search'],
 };
 const persistedReducer = persistReducer(persistConfig, reducers);
 const store = configureStore({

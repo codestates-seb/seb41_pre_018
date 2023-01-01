@@ -10,9 +10,7 @@ import { BiNoEntry } from 'react-icons/bi';
 import { useDispatch } from 'react-redux';
 import { getQuestionThunk, getAnswerThunk, postAnswerThunk } from '../module/thunkModule';
 import Answer from '../Components/Answer';
-
-
-
+import { useCookies } from 'react-cookie';
 
 const Outer_Wrapper = styled.div`
   width: 100%;
@@ -95,7 +93,6 @@ const Button = styled.button`
   border: none;
   font-weight: border;
 `;
-
 const Blue_Button = styled(Button)`
   color: white;
   background-color: #3498db;
@@ -139,11 +136,10 @@ const Vote_Count = styled.div`
 const Text_Content = styled.div`
   height: auto;
   width: 90%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   margin-left: 30px;
   margin-bottom: 50px;
+  line-height: 1.2;
+  text-align: justify;
 
   * {
     max-width: 100%;
@@ -199,6 +195,7 @@ const Question_Page = () => {
   // => 상태로 전달 받을 예정이며 정상 구현 이후 해당 변수는 삭제합니다.
   const currentId = useParams();
   const [currentQuestion, setCurrentQuestion] = useState();
+  const [commentsData, setCommentsData] = useState([]);
 
   const dispatch = useDispatch();
   const [questionVotes, setQuestionVotes] = useState(0);
@@ -218,11 +215,12 @@ const Question_Page = () => {
           setAnswersList(...res.payload.answers);
           console.log(answersList);
           return currentQuestion;
+          setCommentsData(res.payload.comments);
         }
       )
     }
     fetchQuestion();
-  }, []);
+  }, [commentsData]);
 
   const handleUserAnswer = (val) => {
     setCurrentUserAnswer(val);
@@ -267,6 +265,22 @@ const Question_Page = () => {
       alert(`에러: HTTP 에러코드${response.payload.status}`);
     }})
   }
+  // 현재 질문 삭제 기능 미구현으로 코드만 남겨놓음
+  // const handleDeleteQuestion = async () => {
+  //   console.log(currentId);
+  //   const response = await dispatch(
+  //     deleteQuestionThunk(currentId, cookies.access_token)
+  //   ).then((response) => {
+  //     console.log(response.payload.status);
+  //     if (response.payload.status === 201) {
+  //       alert('질문이 삭제되었습니다');
+  //       navigate('/');
+  //       reset();
+  //     } else {
+  //       alert(`에러: HTTP 에러코드${response.payload.status}`);
+  //     }
+  //   });
+  // };
 
   const upVote_question = () => {
     setQuestionVotes(questionVotes + 1);
@@ -300,7 +314,7 @@ const Question_Page = () => {
               <Gray_Text> Modified </Gray_Text>
               <span> today</span>
               <Gray_Text> Viewed </Gray_Text>
-              <span> 2 times</span>
+              <span> {currentQuestion.views} times</span>
             </Middle_Text_Wrapper>
             <Button_Wrapper>
               <Link
@@ -314,7 +328,9 @@ const Question_Page = () => {
               >
                 <Blue_Button>질문 수정하기</Blue_Button>
               </Link>
-              <Red_Button onClick={() => handleDeleteQuestion()}>질문 삭제하기</Red_Button>
+              <Red_Button onClick={() => console.log('work in progress')}>
+                질문 삭제하기
+              </Red_Button>
             </Button_Wrapper>
           </Userinfo_Wrapper>
           <Custom_Hr />
@@ -343,7 +359,13 @@ const Question_Page = () => {
               <Tags key={idx}>{item.hashTag}</Tags>
             ))}
           </Tag_Wrapper>
-          <Comments questionId={currentQuestion.questionId} />
+          {commentsData && (
+            <Comments
+              currentQuestion={currentQuestion}
+              commentsData={commentsData}
+              setCommentsData={setCommentsData}
+            />
+          )}
           <Question_Title>내 답변</Question_Title>
           <Userinfo_Wrapper>
             <User_Wrapper>
@@ -358,7 +380,7 @@ const Question_Page = () => {
               <Gray_Text> Modified </Gray_Text>
               <span> today</span>
               <Gray_Text> Viewed </Gray_Text>
-              <span> 2 times</span>
+              <span> {currentQuestion.views} times</span>
             </Middle_Text_Wrapper>
             <Button_Wrapper>
               <Answer_Edit_Button onClick={handleEditAnswer}>

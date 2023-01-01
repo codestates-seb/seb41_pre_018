@@ -8,7 +8,6 @@ import { postQuestionThunk } from '../module/thunkModule';
 import { useDispatch } from 'react-redux';
 import { useCookies } from 'react-cookie';
 
-
 const New_Question_Wrapper = styled.div`
   background-color: rgba(0, 0, 0, 0.1);
   padding: 30px 50px;
@@ -181,10 +180,7 @@ export default function NewQuestion() {
     setTextEditorValue(val);
   };
 
-  
   const onSubmit = async (data) => {
-
-
     if (textEditorValue === '') {
       alert('질문의 내용을 작성해 주세요.');
     } else if (textEditorValue.length < 27) {
@@ -192,26 +188,24 @@ export default function NewQuestion() {
       alert('질문은 20자 이상이어야 합니다.');
     } else {
       if (confirm('질문을 등록하시겠습니까?')) {
-        
         const tags = [];
-        userTags.forEach(item => tags.push({"hashTag": `${item}`}));
+        userTags.forEach((item) => tags.push({ hashTag: `${item}` }));
         data['text'] = textEditorValue;
         data['tags'] = tags;
         data['cookie'] = cookies.access_token;
-        console.log(data)
-
-        const response = await dispatch(
-          postQuestionThunk(data)
-        )
-        .then((data) => {   
-          console.log(data.payload.status)     
-          if (data.payload.status === 201) {
-          alert('질문이 등록되었습니다');
-          navigate('/');
-          reset();
-        } else {
-          alert(`에러: 에러코드${data.payload.status}`);
-        }})
+        console.log(data);
+        const response = await dispatch(postQuestionThunk(data)).then(
+          (data) => {
+            console.log(data.payload.status);
+            if (data.payload.status === 201) {
+              alert('질문이 등록되었습니다');
+              navigate('/');
+              reset();
+            } else {
+              alert(`에러: 에러코드${data.payload.status}`);
+            }
+          }
+        );
       }
     }
   };

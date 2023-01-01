@@ -28,7 +28,23 @@ export const signinThunk = createAsyncThunk(
     }
   }
 );
+export const emaillCheckThunk = createAsyncThunk(
+  'thunkModule/emailCheckThunk',
+  async (data) => {
+    const { email } = data;
 
+    try {
+      const response = await axios
+        .get(
+          `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/members/emailCheck/${email}`
+        )
+        .then((data) => data.data);
+      return response;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+);
 //로그인
 export const loginThunk = createAsyncThunk(
   'thunkModule/loginThunk',
@@ -243,18 +259,21 @@ export const postQuestionThunk = createAsyncThunk(
 export const getSearchQuestionThunk = createAsyncThunk(
   'thunkModule/getSearchQuestionThunk',
   async (data) => {
-    const { page, size, questionId, keyword } = data;
+    const { page, size, sortingMethod, searchElement } = data;
     try {
-      await axios.get(
-        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/questions/search?page=${page}&size=${size}&sort=${questionId}&keyword=${keyword}`
-      );
+      const response = await axios
+        .get(
+          `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/questions/search?page=${page}&size=${size}&sort=${sortingMethod}&search=${searchElement}`
+        )
+        .then((data) => data.data.data);
+      return response;
     } catch (e) {
       console.error(e);
     }
   }
 );
 
-//질문 삭제
+//질문 삭제 => 현재 서버에서 불가능
 // export const deleteQuestionThunk = createAsyncThunk(
 //   'thunkModule/deleteQuestionThunk',
 //   async (data) => {
@@ -289,8 +308,8 @@ export const patchQuestionThunk = createAsyncThunk(
         {
           headers: {
             Authorization: `Bearer ${cookie}`,
-          }
-        },
+          },
+        }
       );
     } catch (e) {
       console.error(e);
@@ -301,7 +320,7 @@ export const patchQuestionThunk = createAsyncThunk(
 export const postAnswerThunk = createAsyncThunk(
   'thunkModule/postAnswerThunk',
   async (data) => {
-    const { questionId, text } = data;
+    const { questionId, text, cookie } = data;
     try {
       await axios.post(
         `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/answers/${questionId}`,
@@ -359,14 +378,24 @@ export const deleteAnswerThunk = createAsyncThunk(
 export const postCommentThunk = createAsyncThunk(
   'thunkModule/postCommentThunk',
   async (data) => {
-    const { questionId, text } = data;
+    const { questionId, text, cookie } = data;
+    console.log(`Bearer ${cookie}`);
     try {
-      await axios.post(
-        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/comments/${questionId}`,
-        {
-          text,
-        }
-      );
+      const response = await axios
+        .post(
+          `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/comments/${questionId}`,
+          {
+            text,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${cookie}`,
+            },
+          }
+        )
+        .then((res) => res.data.data);
+
+      return response;
     } catch (e) {
       console.error(e);
     }
@@ -387,32 +416,27 @@ export const patchCommentThunk = createAsyncThunk(
     );
   }
 );
+
 //댓글 삭제
 export const deleteCommentThunk = createAsyncThunk(
   'thunkModule/deleteCommentThunk',
   async (data) => {
-    const { questionId, commentId } = data;
+    const { questionId, commentId, cookie } = data;
     try {
-      await axios.delete(
-        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/comments/${questionId}/${commentId}`
-      );
+      const response = await axios
+        .delete(
+          `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/comments/${questionId}/${commentId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${cookie}`,
+            },
+          }
+        )
+        .then((res) => res.data.data);
+
+      return response;
     } catch (e) {
       console.error(e);
     }
   }
 );
-////////////////////////////////////////
-////////////////////////////////////////
-////////////////////////////////////////
-// useCallback(() => {
-//   if (isLogin === false) {
-//     dispatch(isLoginThunk()); // 모든 페이지 렌더링 시작 시 함수 실행
-//   }
-// }, [dispatch]);
-
-// useCallback(() => {
-//   if (isLogin === true) {
-//     dispatch(isLoginThunk()); // 모든 페이지 렌더링 시작 시 함수 실행
-//   }
-// }, [dispatch]);
-//로그인 필요한 페이지에서 쿠키가 없거나 만료가 되어 응답이 올바르게 오지 않는다면 로그인 창으로 연결해야할것.
