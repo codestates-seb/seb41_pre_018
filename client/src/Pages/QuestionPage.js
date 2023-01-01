@@ -241,9 +241,7 @@ const Question_Page = () => {
   };
   const handleEditAnswer = () => {
     if (isAnswerEditOn === true) {
-      if (confirm('수정을 완료하시겠습니까?')) {
-        setIsAnswerEditOn(!isAnswerEditOn);
-      }
+      setIsAnswerEditOn(!isAnswerEditOn);
     } else {
       setIsAnswerEditOn(!isAnswerEditOn);
     }

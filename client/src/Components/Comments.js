@@ -111,41 +111,37 @@ const Comments = ({
   const [isEditOn, setIsEditOn] = useState(false);
 
   const addComment = () => {
-    if (confirm('댓글을 추가하시겠습니까?')) {
-      async function postComment() {
-        const response = await dispatch(
-          postCommentThunk({
-            questionId: currentQuestion.questionId,
-            text: newComment,
-            cookie: cookies.access_token,
-          })
-        ).then((res) => {
-          setNewComment('');
-          handleRender(!render);
-        });
-      }
-      postComment();
+    async function postComment() {
+      const response = await dispatch(
+        postCommentThunk({
+          questionId: currentQuestion.questionId,
+          text: newComment,
+          cookie: cookies.access_token,
+        })
+      ).then((res) => {
+        setNewComment('');
+        handleRender(!render);
+      });
     }
+    postComment();
   };
 
   const deleteComment = (event) => {
-    if (confirm('정말 삭제하시겠습니까?')) {
-      async function deleteComment() {
-        const response = await dispatch(
-          deleteCommentThunk({
-            questionId: currentQuestion.questionId,
-            commentId: commentsData[event.target.id].commentId,
-            cookie: cookies.access_token,
-          })
-        ).then((data) => handleRender(!render));
-      }
-      deleteComment();
-      setCommentsData(
-        commentsData.filter(
-          (a) => a.commentId !== commentsData[event.target.id].commentId
-        )
-      );
+    async function deleteComment() {
+      const response = await dispatch(
+        deleteCommentThunk({
+          questionId: currentQuestion.questionId,
+          commentId: commentsData[event.target.id].commentId,
+          cookie: cookies.access_token,
+        })
+      ).then((data) => handleRender(!render));
     }
+    deleteComment();
+    setCommentsData(
+      commentsData.filter(
+        (a) => a.commentId !== commentsData[event.target.id].commentId
+      )
+    );
   };
 
   const toggleEdit = (event) => {
@@ -155,23 +151,21 @@ const Comments = ({
   };
 
   const editComment = () => {
-    if (confirm('댓글을 수정하시겠습니까?')) {
-      async function editComment() {
-        const response = await dispatch(
-          patchCommentThunk({
-            questionId: currentQuestion.questionId,
-            commentId: currentCommentId,
-            text: newComment,
-            cookie: cookies.access_token,
-          })
-        ).then((res) => {
-          setNewComment('');
-          handleRender(!render);
-        });
-      }
-      editComment();
-      setIsEditOn(false);
+    async function editComment() {
+      const response = await dispatch(
+        patchCommentThunk({
+          questionId: currentQuestion.questionId,
+          commentId: currentCommentId,
+          text: newComment,
+          cookie: cookies.access_token,
+        })
+      ).then((res) => {
+        setNewComment('');
+        handleRender(!render);
+      });
     }
+    editComment();
+    setIsEditOn(false);
   };
 
   const cancelEdit = () => {
