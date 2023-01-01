@@ -89,6 +89,14 @@ const My_Page_About = styled.div`
       display: block;
       align-self: center;
       font-size: 20px;
+      text-decoration: none;
+      color: black;
+      position: relative;
+      left: 90px;
+      &:hover {
+        color: #3973b3;
+        cursor: pointer;
+      }
     }
   }
   & div:nth-child(2)::-webkit-scrollbar {
@@ -164,7 +172,7 @@ const My_Page_Title_Span = styled.span`
   margin-bottom: 10px;
 `;
 const My_Page_Answer_Question_Title = styled.span`
-  margin: 5px 0px;
+  margin: 5px 10px;
   font-size: 14px;
   color: black;
   .Question_Link {
@@ -248,7 +256,8 @@ function MyPage() {
         }
       });
 
-      const { createdTime, username, aboutMe, questions } = response;
+      const { createdTime, username, aboutMe, questions, answers } = response;
+
       const dayAgo = dateChange(createdTime);
       setUserInfo({
         ...userInfo,
@@ -256,6 +265,7 @@ function MyPage() {
         username,
         aboutMe,
         questions,
+        answers,
       });
       setIsLoading(true);
     }
@@ -293,11 +303,11 @@ function MyPage() {
                 </button>
               </div>
               <div>
-                {userInfo.aboutMe === '' ? (
-                  <span className="No_Aboutme">
+                {userInfo.aboutMe === null ? (
+                  <Link className="No_Aboutme" to={`/user/edit/${memberId}`}>
                     Your about me section is currently blank. Would you like to
                     add one?
-                  </span>
+                  </Link>
                 ) : (
                   <span>{userInfo.aboutMe}</span>
                 )}
@@ -308,13 +318,19 @@ function MyPage() {
                 <My_Page_Title_Span>Answers</My_Page_Title_Span>
                 <My_Page_Answer_Question_Body>
                   {userInfo.answers.length === 0 ? (
-                    <span>api 없음</span>
+                    <span>No answers</span>
                   ) : (
-                    userInfo.answers.map((answer) => {
+                    userInfo.answers.map((answer, index) => {
                       return (
                         <div key={answer.answerId}>
                           <My_Page_Answer_Question_Title>
-                            My Answer About Question~~~~~~~
+                            {`${index + 1}.  `}
+                            {/* <Link
+                              to={`/question/${answer.questionId}`}
+                              className="Question_Link"
+                            > */}
+                            {answer.text}
+                            {/* </Link> */}
                           </My_Page_Answer_Question_Title>
                         </div>
                       );
@@ -325,23 +341,25 @@ function MyPage() {
               <My_Page_Answer_Question>
                 <My_Page_Title_Span>Questions</My_Page_Title_Span>
                 <My_Page_Answer_Question_Body>
-                  {userInfo.questions.length === 0
-                    ? null
-                    : userInfo.questions.map((question, index) => {
-                        return (
-                          <div key={question.questionId}>
-                            <My_Page_Answer_Question_Title>
-                              {`${index + 1}.  `}
-                              <Link
-                                to={`/question/${question.questionId}`}
-                                className="Question_Link"
-                              >
-                                {question.title}
-                              </Link>
-                            </My_Page_Answer_Question_Title>
-                          </div>
-                        );
-                      })}
+                  {userInfo.questions.length === 0 ? (
+                    <span>No questions</span>
+                  ) : (
+                    userInfo.questions.map((question, index) => {
+                      return (
+                        <div key={question.questionId}>
+                          <My_Page_Answer_Question_Title>
+                            {`${index + 1}.  `}
+                            <Link
+                              to={`/question/${question.questionId}`}
+                              className="Question_Link"
+                            >
+                              {question.title}
+                            </Link>
+                          </My_Page_Answer_Question_Title>
+                        </div>
+                      );
+                    })
+                  )}
                 </My_Page_Answer_Question_Body>
               </My_Page_Answer_Question>
             </My_Page_Answer_Question_Wrapper>
