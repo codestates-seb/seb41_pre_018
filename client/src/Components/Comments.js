@@ -3,8 +3,8 @@ import { useCookies } from 'react-cookie';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { data } from '../dummydata';
-import { postCommentThunk } from '../module/thunkModule';
+import { RiDeleteBin6Line } from 'react-icons/ri';
+import { deleteCommentThunk, postCommentThunk } from '../module/thunkModule';
 
 const Custom_Hr = styled.hr`
   width: 99%;
@@ -15,9 +15,31 @@ const Custom_Hr = styled.hr`
 const Comment_Wrapper = styled.div`
   width: 100%;
   display: flex;
+  padding: 10px;
   flex-direction: column;
-  * {
-    margin: 10px;
+
+  .Comment_Block {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .Comment_Buttons {
+    width: 100px;
+  }
+
+  .Delete_Comment_Button,
+  .Edit_Comment_Button {
+    padding: 5px;
+    border: none;
+    background-color: transparent;
+    color: rgb(52, 152, 218);
+    margin-right: 10px;
+
+    &:hover {
+      cursor: pointer;
+      color: blue;
+    }
   }
 `;
 
@@ -49,11 +71,15 @@ const New_Comment = styled.textarea`
   }
 `;
 
-const Comments = ({ currentQuestion }) => {
-  const [newComment, setNewComment] = useState();
+const Comments = ({ currentQuestion, commentsData, setCommentsData }) => {
   const dispatch = useDispatch();
+
+  const [isPosted, setIsPosted] = useState(false);
+  const [newComment, setNewComment] = useState('');
   const [cookies, setCookie, removeCookie] = useCookies([]);
+
   const navigate = useNavigate();
+
   const addComment = () => {
     async function postComment() {
       const response = await dispatch(
@@ -64,19 +90,49 @@ const Comments = ({ currentQuestion }) => {
         })
       ).then((res) => {
         setNewComment('');
-        navigate('./');
       });
     }
     postComment();
+    setIsPosted(true);
+  };
+
+  const deleteComment = (event) => {
+    async function deleteComment() {
+      const response = await dispatch(
+        deleteCommentThunk({
+          questionId: currentQuestion.questionId,
+          commentId: commentsData[event.target.id].commentId,
+          cookie: cookies.access_token,
+        })
+      );
+    }
+    deleteComment();
+    setCommentsData(
+      commentsData.filter(
+        (a) => a.commentId !== commentsData[event.target.id].commentId
+      )
+    );
   };
 
   return (
     <Comment_Wrapper>
       {currentQuestion.comments.map((item, idx) => (
-        <div key={`${currentQuestion.questionId}_${idx}`}>
-          <Comment_Wrapper>{item.text}</Comment_Wrapper>
+        <Comment_Wrapper key={`${currentQuestion.questionId}_${idx}`}>
+          <div className="Comment_Block">
+            {item.text}
+            <div className="Comment_Buttons">
+              <button className="Edit_Comment_Button">수정</button>
+              <button
+                className="Delete_Comment_Button"
+                onClick={deleteComment}
+                id={idx}
+              >
+                삭제
+              </button>
+            </div>
+          </div>
           <Custom_Hr />
-        </div>
+        </Comment_Wrapper>
       ))}
       <New_Comment
         placeholder="댓글을 입력하세요"

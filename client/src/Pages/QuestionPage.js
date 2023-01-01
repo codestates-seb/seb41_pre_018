@@ -8,9 +8,7 @@ import 'react-quill/dist/quill.snow.css';
 import { data } from '../dummydata';
 import { BiNoEntry } from 'react-icons/bi';
 import { useDispatch } from 'react-redux';
-import { getQuestionThunk} from '../module/thunkModule';
-import { useCookies } from 'react-cookie';
-
+import { getQuestionThunk } from '../module/thunkModule';
 
 const Outer_Wrapper = styled.div`
   width: 100%;
@@ -93,7 +91,6 @@ const Button = styled.button`
   border: none;
   font-weight: border;
 `;
-
 const Blue_Button = styled(Button)`
   color: white;
   background-color: #3498db;
@@ -197,6 +194,7 @@ const Question_Page = () => {
   // => 상태로 전달 받을 예정이며 정상 구현 이후 해당 변수는 삭제합니다.
   const currentId = useParams();
   const [currentQuestion, setCurrentQuestion] = useState();
+  const [commentsData, setCommentsData] = useState([]);
 
   const dispatch = useDispatch();
   const [questionVotes, setQuestionVotes] = useState(0);
@@ -212,11 +210,12 @@ const Question_Page = () => {
       const response = await dispatch(getQuestionThunk(currentId.id)).then(
         (res) => {
           setCurrentQuestion(res.payload);
+          setCommentsData(res.payload.comments);
         }
       );
     }
     fetchQuestion();
-  }, []);
+  }, [commentsData]);
 
   const handleUserAnswer = (val) => {
     setCurrentUserAnswer(val);
@@ -231,22 +230,6 @@ const Question_Page = () => {
       setIsAnswerEditOn(!isAnswerEditOn);
     }
   };
-
-  const handleDeleteQuestion = async () => {
-    console.log(currentId)
-    const response = await dispatch(
-      deleteQuestionThunk(currentId, cookies.access_token)
-    )
-    .then((response) => {   
-      console.log(response.payload.status)     
-      if (response.payload.status === 201) {
-      alert('질문이 삭제되었습니다');
-      navigate('/');
-      reset();
-    } else {
-      alert(`에러: HTTP 에러코드${response.payload.status}`);
-    }})
-  }
 
   const upVote_question = () => {
     setQuestionVotes(questionVotes + 1);
@@ -294,7 +277,7 @@ const Question_Page = () => {
               >
                 <Blue_Button>질문 수정하기</Blue_Button>
               </Link>
-              <Red_Button onClick={() => handleDeleteQuestion()}>질문 삭제하기</Red_Button>
+              <Red_Button>질문 삭제하기</Red_Button>
             </Button_Wrapper>
           </Userinfo_Wrapper>
           <Custom_Hr />
@@ -323,7 +306,13 @@ const Question_Page = () => {
               <Tags key={idx}>{item.hashTag}</Tags>
             ))}
           </Tag_Wrapper>
-          <Comments currentQuestion={currentQuestion} />
+          {commentsData && (
+            <Comments
+              currentQuestion={currentQuestion}
+              commentsData={commentsData}
+              setCommentsData={setCommentsData}
+            />
+          )}
           <Question_Title>내 답변</Question_Title>
           <Userinfo_Wrapper>
             <User_Wrapper>
@@ -338,7 +327,7 @@ const Question_Page = () => {
               <Gray_Text> Modified </Gray_Text>
               <span> today</span>
               <Gray_Text> Viewed </Gray_Text>
-              <span> 2 times</span>
+              <span> {currentQuestion.views} times</span>
             </Middle_Text_Wrapper>
             <Button_Wrapper>
               <Answer_Edit_Button onClick={handleEditAnswer}>

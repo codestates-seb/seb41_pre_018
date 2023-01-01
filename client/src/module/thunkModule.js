@@ -289,8 +289,8 @@ export const patchQuestionThunk = createAsyncThunk(
         {
           headers: {
             Authorization: `Bearer ${cookie}`,
-          }
-        },
+          },
+        }
       );
     } catch (e) {
       console.error(e);
@@ -401,11 +401,20 @@ export const patchCommentThunk = createAsyncThunk(
 export const deleteCommentThunk = createAsyncThunk(
   'thunkModule/deleteCommentThunk',
   async (data) => {
-    const { questionId, commentId } = data;
+    const { questionId, commentId, cookie } = data;
     try {
-      await axios.delete(
-        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/comments/${questionId}/${commentId}`
-      );
+      const response = await axios
+        .delete(
+          `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/comments/${questionId}/${commentId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${cookie}`,
+            },
+          }
+        )
+        .then((res) => res.data.data);
+
+      return response;
     } catch (e) {
       console.error(e);
     }
