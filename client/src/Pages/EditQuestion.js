@@ -175,7 +175,12 @@ export default function NewQuestion() {
 
     if (userInput !== '' && (event.keyCode === 188 || event.keyCode === 32)) {
       setUserInput('');
-      setUserTags(userTags.concat({ hashTag: event.target.value }));
+      setUserTags(
+        userTags.concat({
+          hashTag: event.target.value,
+          tagId: userTags.length - 1,
+        })
+      );
     }
   };
 
@@ -189,19 +194,15 @@ export default function NewQuestion() {
       return el.tagId !== Number(event.target.id);
     });
     setUserTags(filter);
-    setTagInputXCord(
-      document.querySelector('.Tag_Wrapper').clientWidth +
-        7.5 -
-        document.querySelector(`#Tag${userTags.length}`).clientWidth -
-        5
-    );
+    setTagInputXCord(document.querySelector('.Tag_Wrapper').clientWidth + 7.5);
     event.preventDefault();
   };
 
-  const cancelRegister = () => {
+  const cancelRegister = (e) => {
     if (confirm('정말 취소하시겠습니까?')) {
       navigate('./../');
     }
+    e.preventDefault();
   };
 
   const handleTextEditorChange = (val) => {

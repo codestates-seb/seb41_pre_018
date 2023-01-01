@@ -7,11 +7,18 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { data } from '../dummydata';
 import { BiNoEntry } from 'react-icons/bi';
-import { useDispatch } from 'react-redux';
-import { getQuestionThunk } from '../module/questionPageInfoSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  postQuestionVoteUpThunk,
+  postQuestionVoteDownThunk,
+} from '../module/thunkModule';
+import {
+  getQuestionThunk,
+  getQuestionAction,
+} from '../module/questionPageInfoSlice';
 import { useCookies } from 'react-cookie';
 import { dateChange } from './MyPage';
-import { getQuestionAction } from '../module/questionPageInfoSlice';
+import { loginBoolean } from '../module/loginBooleanSlice';
 
 const Outer_Wrapper = styled.div`
   width: 100%;
@@ -204,7 +211,7 @@ const Question_Page = () => {
   const [currentUserAnswer, setCurrentUserAnswer] = useState(
     data.member[0].answers[0].answer_content
   );
-
+  const [cookies, setCookie, removeCookie] = useCookies([]);
   const [newAnswer, setNewAnswer] = useState('');
   const [render, setRender] = useState(false);
 
@@ -221,6 +228,7 @@ const Question_Page = () => {
             modifiedAt: modifiedAtTime,
           });
           setCommentsData(res.payload.comments);
+          setQuestionVotes(res.payload.voteResult);
           dispatch(
             getQuestionAction({
               title: res.payload.title,
@@ -280,11 +288,35 @@ const Question_Page = () => {
   //   });
   // };
 
-  const upVote_question = () => {
-    setQuestionVotes(questionVotes + 1);
+  const upVote_question = async () => {
+    const response = await dispatch(
+      postQuestionVoteUpThunk({
+        questionId: currentQuestion.questionId,
+        memberId: currentQuestion.memberId,
+        cookie: cookies.access_token,
+      })
+    ).then((data) => {
+      if (data.payload === false) {
+        alert('이미 투표하셨습니다.');
+      } else {
+        setQuestionVotes(questionVotes + 1);
+      }
+    });
   };
-  const downVote_question = () => {
-    setQuestionVotes(questionVotes - 1);
+  const downVote_question = async () => {
+    const response = await dispatch(
+      postQuestionVoteDownThunk({
+        questionId: currentQuestion.questionId,
+        memberId: currentQuestion.memberId,
+        cookie: cookies.access_token,
+      })
+    ).then((data) => {
+      if (data.payload === false) {
+        alert('이미 투표하셨습니다.');
+      } else {
+        setQuestionVotes(questionVotes - 1);
+      }
+    });
   };
 
   const upVote_answer = () => {
@@ -349,7 +381,7 @@ const Question_Page = () => {
                 color="#C0C0C0"
                 cursor="pointer"
               />
-              <Vote_Count>{currentQuestion.voteResult}</Vote_Count>
+              <Vote_Count>{questionVotes}</Vote_Count>
               <MdKeyboardArrowDown
                 onClick={downVote_question}
                 size="40"
