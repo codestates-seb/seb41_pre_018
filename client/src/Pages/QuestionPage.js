@@ -209,7 +209,13 @@ const Question_Page = () => {
   const [questionVotes, setQuestionVotes] = useState(0);
   const [answerVotes, setAnswerVotes] = useState(0);
   const [isAnswerEditOn, setIsAnswerEditOn] = useState(false);
+<<<<<<< HEAD
   const [currentUserAnswer, setCurrentUserAnswer] = useState('');
+=======
+  const [currentUserAnswer, setCurrentUserAnswer] = useState(
+    data.member[0].answers[0].answer_content
+  );
+>>>>>>> c6b8df59ba735ec3b4374dd0cd8df2bc974b5f50
 
   const [newAnswer, setNewAnswer] = useState('');
   const [render, setRender] = useState(false);

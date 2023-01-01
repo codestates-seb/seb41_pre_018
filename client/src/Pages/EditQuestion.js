@@ -189,7 +189,16 @@ export default function NewQuestion() {
       return el.tagId !== Number(event.target.id);
     });
     setUserTags(filter);
+<<<<<<< HEAD
     setTagInputXCord(document.querySelector('.Tag_Wrapper').clientWidth + 7.5);
+=======
+    setTagInputXCord(
+      document.querySelector('.Tag_Wrapper').clientWidth +
+        7.5 -
+        document.querySelector(`#Tag${userTags.length}`).clientWidth -
+        5
+    );
+>>>>>>> c6b8df59ba735ec3b4374dd0cd8df2bc974b5f50
     event.preventDefault();
   };
 
