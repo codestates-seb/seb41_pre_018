@@ -1,22 +1,21 @@
 import { useEffect, useState } from 'react';
 import Comments from '../Components/Comments';
-import { Link, redirect, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { MdKeyboardArrowUp, MdKeyboardArrowDown } from 'react-icons/md';
 import styled from 'styled-components';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { data } from '../dummydata';
 import { BiNoEntry } from 'react-icons/bi';
+import {getAnswerThunk, postAnswerThunk } from '../module/thunkModule';
+import Answer from '../Components/Answer';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   postQuestionVoteUpThunk,
   postQuestionVoteDownThunk,
 } from '../module/thunkModule';
-import {
-  getQuestionThunk,
-  getQuestionAction,
-} from '../module/questionPageInfoSlice';
 import { useCookies } from 'react-cookie';
+import { getQuestionAction, getQuestionThunk } from '../module/questionPageInfoSlice';
 import { dateChange } from './MyPage';
 import { loginBoolean } from '../module/loginBooleanSlice';
 
@@ -212,6 +211,7 @@ const Question_Page = () => {
   const { memberId } = useSelector((state) => state.loginBoolean);
   const [currentQuestion, setCurrentQuestion] = useState();
   const [commentsData, setCommentsData] = useState([]);
+
   const dispatch = useDispatch();
   const [questionVotes, setQuestionVotes] = useState(0);
   const [answerVotes, setAnswerVotes] = useState(0);
@@ -219,14 +219,22 @@ const Question_Page = () => {
   const [currentUserAnswer, setCurrentUserAnswer] = useState(
     data.member[0].answers[0].answer_content
   );
-  const [cookies, setCookie, removeCookie] = useCookies([]);
   const [newAnswer, setNewAnswer] = useState('');
+  const [answersList, setAnswersList] = useState([]);
+  const [cookies] = useCookies([]);
   const [render, setRender] = useState(false);
+
+  console.log(`currentId = ${JSON.stringify(currentId)}`)
 
   useEffect(() => {
     async function fetchQuestion() {
       const response = await dispatch(getQuestionThunk(currentId.id)).then(
         (res) => {
+          setCurrentQuestion(res.payload);
+          setAnswersList(res.payload.answers);
+          console.log(answersList);
+          console.log(res.payload)
+          // return currentQuestion;
           const payload = res.payload;
           const createdAtTime = dateChange(res.payload.createdAt);
           const modifiedAtTime = dateChange(res.payload.modifiedAt);
@@ -245,7 +253,7 @@ const Question_Page = () => {
             })
           );
         }
-      );
+      )
     }
     fetchQuestion();
   }, [render]);
@@ -253,9 +261,15 @@ const Question_Page = () => {
   const handleUserAnswer = (val) => {
     setCurrentUserAnswer(val);
   };
+
   const handleRender = (boolean) => {
     setRender(boolean);
   };
+
+  const handleNewAnswer = (val) => {
+    setNewAnswer(val);
+  };
+
   const handleEditAnswer = () => {
     if (isAnswerEditOn === true) {
       setIsAnswerEditOn(!isAnswerEditOn);
@@ -263,6 +277,34 @@ const Question_Page = () => {
       setIsAnswerEditOn(!isAnswerEditOn);
     }
   };
+
+  const handleAddAnswer = async () => {
+    const data = {};
+    data.questionId = currentId.id;
+    data.text = newAnswer;
+    data.cookie = cookies.access_token;
+    console.log(data)
+      const response = await dispatch(postAnswerThunk(data)).then(
+        (res) => {
+          setRender(!render);
+        }
+      )
+  }
+  const handleDeleteQuestion = async () => {
+    const response = await dispatch(
+      deleteQuestionThunk(currentId, cookies.access_token)
+    )
+    .then((response) => {   
+      console.log(response.payload.status)     
+      if (response.payload.status === 201) {
+      alert('질문이 삭제되었습니다');
+      navigate('/');
+      reset();
+    } else {
+      alert(`에러: HTTP 에러코드${response.payload.status}`);
+    }})
+  }
+
 
   const quillModules = {
     toolbar: [
@@ -334,6 +376,8 @@ const Question_Page = () => {
     setAnswerVotes(answerVotes - 1);
   };
 
+
+
   return (
     currentQuestion && (
       <Outer_Wrapper>
@@ -348,18 +392,9 @@ const Question_Page = () => {
             </User_Wrapper>
             <Middle_Text_Wrapper>
               <Gray_Text> Asked </Gray_Text>
-              <span>
-                {currentQuestion.createdAt === 0
-                  ? 'today'
-                  : `Member for ${currentQuestion.createdAt} days`}
-              </span>
+              <span> today</span>
               <Gray_Text> Modified </Gray_Text>
-              <span>
-                {' '}
-                {currentQuestion.modifiedAt === 0
-                  ? 'today'
-                  : `Member for ${currentQuestion.modifiedAt} days`}
-              </span>
+              <span> today</span>
               <Gray_Text> Viewed </Gray_Text>
               <span> {currentQuestion.views} times</span>
             </Middle_Text_Wrapper>
@@ -413,78 +448,10 @@ const Question_Page = () => {
               currentQuestion={currentQuestion}
               commentsData={commentsData}
               setCommentsData={setCommentsData}
-              handleRender={handleRender}
-              render={render}
-              memberId={memberId}
             />
           )}
           <Question_Title>답변</Question_Title>
-          {/* 해당 질문에 답변이 없으면 답변을 표시하지 않습니다. */}
-          {currentQuestion.answers.length === 0 ? (
-            <div className="No_Answers">
-              현재 해당 질문에 대한 답변이 없습니다 😢 답변을 기다리고 있을
-              질문자를 위해 답변을 등록해보세요!
-            </div>
-          ) : (
-            <div className="Answers_Wrapper">
-              <Userinfo_Wrapper>
-                <User_Wrapper>
-                  <Profile_Image
-                    src={process.env.PUBLIC_URL + '/Sample_Avatar.png'}
-                  />
-                  <Username>Human_001</Username>
-                </User_Wrapper>
-
-                {/* 아래 삼항 연산자에서 조건문은 현재 페이지에서
-            질문의 답변 수에 맞게 랜더링될 때 (map 함수 예상)
-            각 질문들과 현재 사용자의 memberId가 일치한지
-            확인하기 위한 조건문으로 수정이 필요합니다. */}
-                {memberId === currentQuestion.answers[0].memberId ? (
-                  <Button_Wrapper>
-                    <Answer_Edit_Button onClick={handleEditAnswer}>
-                      {isAnswerEditOn ? '수정 완료' : '답변 수정하기'}
-                    </Answer_Edit_Button>
-                    <Answer_Delete_Button>답변 삭제하기</Answer_Delete_Button>
-                  </Button_Wrapper>
-                ) : null}
-              </Userinfo_Wrapper>
-
-              <Content_Wrapper>
-                <Vote_Wrapper>
-                  <MdKeyboardArrowUp
-                    onClick={upVote_answer}
-                    size="40"
-                    color="#C0C0C0"
-                    cursor="pointer"
-                  />
-                  <Vote_Count>{answerVotes}</Vote_Count>
-                  <MdKeyboardArrowDown
-                    onClick={downVote_answer}
-                    size="40"
-                    color="#C0C0C0"
-                    cursor="pointer"
-                  />
-                </Vote_Wrapper>
-                <Text_Content>
-                  {isAnswerEditOn ? (
-                    <ReactQuill
-                      modules={quillModules}
-                      theme="snow"
-                      className="Rich_Text_Editor"
-                      value={currentUserAnswer}
-                      onChange={handleUserAnswer}
-                    />
-                  ) : (
-                    <div
-                      dangerouslySetInnerHTML={{
-                        __html: currentUserAnswer,
-                      }}
-                    />
-                  )}
-                </Text_Content>
-              </Content_Wrapper>
-            </div>
-          )}
+          {answersList.map(item => <Answer vote={item.voteResult} createdAt={item.createdAt} modifiedAt={item.modifiedAt} text={item.text} id={item.answerId} memberId={item.memberId} username={item.username} questionId={currentId} answerId={item.answerId} render={render} handleRender={handleRender} />)}
           <Content_Wrapper>
             <Vote_Wrapper />
             <Text_Content>
@@ -493,7 +460,7 @@ const Question_Page = () => {
                 theme="snow"
                 className="Rich_Text_Editor"
                 value={newAnswer}
-                onChange={() => setNewAnswer(newAnswer)}
+                onChange={handleNewAnswer}
                 placeholder="답변을 작성하세요"
               />
             </Text_Content>
@@ -501,11 +468,12 @@ const Question_Page = () => {
           <Content_Wrapper>
             <Vote_Wrapper />
             <Button_Wrapper>
-              <Answer_Submit_Button>답변 등록하기</Answer_Submit_Button>
+              <Answer_Submit_Button onClick={() => handleAddAnswer()}>답변 등록하기</Answer_Submit_Button>
             </Button_Wrapper>
-          </Content_Wrapper>
+          </Content_Wrapper>         
         </Inner_Wrapper>
       </Outer_Wrapper>
+
     )
   );
 };
