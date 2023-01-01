@@ -184,15 +184,12 @@ export default function NewQuestion() {
     setUserInput(filteredString.trim());
     setTagInputXCord(document.querySelector('.Tag_Wrapper').clientWidth + 7.5);
   };
-
   const deleteTag = (event) => {
-    userTags.splice(event.target.id, 1);
-    setTagInputXCord(
-      document.querySelector('.Tag_Wrapper').clientWidth +
-        7.5 -
-        document.querySelector(`#Tag${userTags.length}`).clientWidth -
-        5
-    );
+    const filter = userTags.filter((el) => {
+      return el.tagId !== Number(event.target.id);
+    });
+    setUserTags(filter);
+    setTagInputXCord(document.querySelector('.Tag_Wrapper').clientWidth + 7.5);
     event.preventDefault();
   };
 
@@ -208,7 +205,6 @@ export default function NewQuestion() {
 
   const onSubmit = async (data) => {
     const { title } = data;
-    console.log(userTags);
     if (textEditorValue === '') {
       alert('질문의 내용을 작성해 주세요.');
     } else if (textEditorValue.length < 27) {
@@ -302,7 +298,7 @@ export default function NewQuestion() {
                     id={`Tag${idx}`}
                   >
                     <span>{a.hashTag}</span>
-                    <div type="button" onClick={deleteTag} id={idx}>
+                    <div type="button" onClick={deleteTag} id={a.tagId}>
                       x
                     </div>
                   </div>
