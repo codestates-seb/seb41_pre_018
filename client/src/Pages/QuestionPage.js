@@ -210,7 +210,6 @@ const Question_Page = () => {
     async function fetchQuestion() {
       const response = await dispatch(getQuestionThunk(currentId.id)).then(
         (res) => {
-          console.log(res);
           const payload = res.payload;
           const createdAtTime = dateChange(res.payload.createdAt);
           const modifiedAtTime = dateChange(res.payload.modifiedAt);
