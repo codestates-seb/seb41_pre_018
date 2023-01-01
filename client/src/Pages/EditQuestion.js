@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { data } from './../dummydata.js';
+import { getQuestionThunk, patchQuestionThunk } from '../module/thunkModule.js';
+import { useCookies } from 'react-cookie';
+import { useDispatch } from 'react-redux';
 
 const Edit_Question_Wrapper = styled.div`
   background-color: rgba(0, 0, 0, 0.1);
@@ -136,18 +139,43 @@ const Tag_Input_Field = styled.input`
 export default function NewQuestion() {
   // 질문 상세 페이지에서 가져올 더미 데이터
   // => 상태로 전달 받을 예정이며 정상 구현 이후 해당 변수는 삭제합니다.
-  const [currentQuestion, setCurrentQuestion] = useState(data.question[0]);
+  const currentId = useParams();
+  const [currentQuestion, setCurrentQuestion] = useState();
+  const dispatch = useDispatch();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const [userTags, setUserTags] = useState(currentQuestion.tags);
+  const [userTags, setUserTags] = useState([]);
+  const [title, setTitle] = useState()
   const [userInput, setUserInput] = useState('');
   const [tagInputXCord, setTagInputXCord] = useState(0);
-  const [textEditorValue, setTextEditorValue] = useState(currentQuestion.text);
+  const [textEditorValue, setTextEditorValue] = useState();
   const navigate = useNavigate();
+  const [cookies] = useCookies([]);
+
+  useEffect(() => {
+    async function fetchQuestion() {
+      const response = await dispatch(getQuestionThunk(currentId.id)).then(
+        (res) => {
+          setCurrentQuestion(res.payload);
+          console.log(res.payload.text)
+          setTextEditorValue(res.payload.text)
+          setTitle(res.payload.title)
+          console.log(title)
+          const tempTags = [...res.payload.tags]
+          const tags = []
+          tempTags.forEach(item => tags.push(item.hashTag))
+          console.log(tags)
+          setUserTags(tags)
+
+        }
+      );
+    }
+    fetchQuestion();
+  }, []);
 
   useEffect(() => {
     setTagInputXCord(document.querySelector('.Tag_Wrapper').clientWidth + 7.5);
@@ -191,7 +219,7 @@ export default function NewQuestion() {
     setTextEditorValue(val);
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     if (textEditorValue === '') {
       alert('질문의 내용을 작성해 주세요.');
     } else if (textEditorValue.length < 27) {
@@ -199,10 +227,27 @@ export default function NewQuestion() {
       alert('질문은 20자 이상이어야 합니다.');
     } else {
       if (confirm('수정한 내용을 등록하시겠습니까?')) {
+        const tags = [];
+        userTags.forEach(item => tags.push({"hashTag": `${item}`}));
         data['text'] = textEditorValue;
-        data['tags'] = userTags;
-        console.log(data);
+        data['tags'] = tags;
+        data['cookie'] = cookies.access_token;
+        data.questionId = currentId.id;
+
+        console.log(data)
         navigate('./../');
+        const response = await dispatch(
+          patchQuestionThunk(data)
+        )
+        .then((data) => {   
+          console.log(data.payload.status)     
+          if (data.payload.status === 201) {
+          alert('질문이 수정되었습니다');
+          navigate('/');
+          reset();
+        } else {
+          alert(`에러: 에러코드${data.payload.status}`);
+        }})
       }
     }
   };
@@ -222,7 +267,7 @@ export default function NewQuestion() {
             {...register('title', {
               required: '제목을 입력해주세요',
             })}
-            value={currentQuestion.title}
+            defaultValue={title}
             type="text"
           />
           {errors.title && (
