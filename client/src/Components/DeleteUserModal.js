@@ -112,7 +112,7 @@ function DeleteUserModal({ deleteUserHandle }) {
         if (data.payload !== false) {
           removeCookie('access_token');
           dispatch(loginBoolean({ isLogin: false, memberId: '' }));
-          navigate('/');
+          navigate('/deleteuser-completed');
         } else {
           return data.payload;
         }

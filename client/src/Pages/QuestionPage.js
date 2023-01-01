@@ -9,6 +9,7 @@ import { data } from '../dummydata';
 import { BiNoEntry } from 'react-icons/bi';
 import { useDispatch } from 'react-redux';
 import { getQuestionThunk } from '../module/thunkModule';
+import { useCookies } from 'react-cookie';
 
 const Outer_Wrapper = styled.div`
   width: 100%;
@@ -229,6 +230,22 @@ const Question_Page = () => {
       setIsAnswerEditOn(!isAnswerEditOn);
     }
   };
+  // 현재 질문 삭제 기능 미구현으로 코드만 남겨놓음
+  // const handleDeleteQuestion = async () => {
+  //   console.log(currentId);
+  //   const response = await dispatch(
+  //     deleteQuestionThunk(currentId, cookies.access_token)
+  //   ).then((response) => {
+  //     console.log(response.payload.status);
+  //     if (response.payload.status === 201) {
+  //       alert('질문이 삭제되었습니다');
+  //       navigate('/');
+  //       reset();
+  //     } else {
+  //       alert(`에러: HTTP 에러코드${response.payload.status}`);
+  //     }
+  //   });
+  // };
 
   const upVote_question = () => {
     setQuestionVotes(questionVotes + 1);
@@ -276,7 +293,9 @@ const Question_Page = () => {
               >
                 <Blue_Button>질문 수정하기</Blue_Button>
               </Link>
-              <Red_Button>질문 삭제하기</Red_Button>
+              <Red_Button onClick={() => console.log('work in progress')}>
+                질문 삭제하기
+              </Red_Button>
             </Button_Wrapper>
           </Userinfo_Wrapper>
           <Custom_Hr />

@@ -115,21 +115,27 @@ const Edit_Cancel_Button = styled.input`
   }
 `;
 function UserInfoEdit() {
-  const { register, handleSubmit, watch, getValues } = useForm();
   const usernameRegExp = /[A-Za-z0-9가-힇]{2,20}/;
   const [verify, setVerify] = useState({
     usernameVerify: { boolean: false },
   });
   const [isLoding, setIsLoading] = useState(false);
   const [userInfo, setUserInfo] = useState({
-    username: '',
-    aboutMe: '',
+    username: 'hi',
+    aboutMe: 'hi2',
   });
   const { memberId } = useSelector((state) => state.loginBoolean);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [cookies, setCookie, removeCookie] = useCookies([]);
+  const { register, handleSubmit, watch, getValues } = useForm({
+    defaultValues: {
+      usernameEdit: userInfo.username,
+      aboutMeEdit: userInfo.aboutMe,
+    },
+  });
 
+  console.log(userInfo.username, userInfo.aboutMe);
   const { usernameEdit } = watch();
   useEffect(() => {
     if (usernameRegExp.test(usernameEdit)) {
@@ -151,51 +157,51 @@ function UserInfoEdit() {
   };
   const onSubmit = async (userdata) => {
     const { usernameEdit, aboutMeEdit } = userdata;
-    const response = await dispatch(
-      patchUserThunk({
-        cookie: cookies.access_token,
-        memberId,
-        username: usernameEdit,
-        aboutMe: aboutMeEdit,
-      })
-    ).then((data) => {
-      if (data.payload === false) {
-        removeCookie('access_token');
-        dispatch(loginBoolean({ isLogin: false, memberId: '' }));
-        navigate('/login');
-      } else {
-        navigate(`/user/${memberId}`);
-      }
-    });
+
+    // const response = await dispatch(
+    //   patchUserThunk({
+    //     cookie: cookies.access_token,
+    //     memberId,
+    //     username: usernameEdit,
+    //     aboutMe: aboutMeEdit,
+    //   })
+    // ).then((data) => {
+    //   if (data.payload === false) {
+    //     removeCookie('access_token');
+    //     dispatch(loginBoolean({ isLogin: false, memberId: '' }));
+    //     navigate('/login');
+    //   } else {
+    //     navigate(`/user/${memberId}`);
+    //   }
+    // });
   };
   const onError = (e) => {
     console.log(e);
   };
-  useEffect(() => {
-    async function fetchData() {
-      const response = await dispatch(
-        getUserInfoEditThunk({ cookie: cookies.access_token, memberId })
-      ).then((data) => {
-        if (data.payload === false) {
-          removeCookie('access_token');
-          dispatch(loginBoolean({ isLogin: false, memberId: '' }));
-          navigate('/login');
-        } else {
-          return data.payload;
-        }
-      });
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     const response = await dispatch(
+  //       getUserInfoEditThunk({ cookie: cookies.access_token, memberId })
+  //     ).then((data) => {
+  //       if (data.payload === false) {
+  //         removeCookie('access_token');
+  //         dispatch(loginBoolean({ isLogin: false, memberId: '' }));
+  //         navigate('/login');
+  //       } else {
+  //         return data.payload;
+  //       }
+  //     });
+  //     const { username, aboutMe } = response;
 
-      const { username, aboutMe } = response;
-
-      setUserInfo({
-        ...userInfo,
-        username,
-        aboutMe,
-      });
-      setIsLoading(true);
-    }
-    fetchData();
-  }, []);
+  //     setUserInfo({
+  //       ...userInfo,
+  //       username,
+  //       aboutMe,
+  //     });
+  //     setIsLoading(true);
+  //   }
+  //   fetchData();
+  // }, []);
 
   return (
     <User_Info_Edit_Container>
@@ -210,9 +216,7 @@ function UserInfoEdit() {
           <Edit_Label htmlFor="username">Display Name</Edit_Label>
           <Edit_Input
             id="username"
-            {...register('usernameEdit', {
-              value: userInfo.username,
-            })}
+            {...register('usernameEdit', {})}
             required
           />
           {getValues('usernameEdit') === '' ? null : verify.usernameVerify
@@ -230,9 +234,7 @@ function UserInfoEdit() {
         <Edit_Label htmlFor="aboutMeEdit">About me</Edit_Label>
         <Edit_About_me
           id="aboutMeEdit"
-          {...register('aboutMeEdit', {
-            value: userInfo.aboutMe,
-          })}
+          {...register('aboutMeEdit', {})}
         ></Edit_About_me>
         <div>
           <Edit_Submit
