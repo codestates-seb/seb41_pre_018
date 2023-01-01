@@ -6,6 +6,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class MemberDto {
     @Getter
@@ -40,16 +41,55 @@ public class MemberDto {
             this.memberId = memberId;
         }
     }
+    @Builder
+    @NoArgsConstructor
     @AllArgsConstructor
     @Getter
+    @Setter
     public static class Response{
         private long memberId;
-        private String userName;
+        private String username;
         private String email;
         private String password;
         private String aboutMe;
+
         private LocalDateTime createdAt;
 
         private LocalDateTime modifiedAt;
+    }
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    public static class AllResponse{
+        private long memberId;
+        private String username;
+        private String email;
+        //private String password;
+        private String aboutMe;
+
+        private List<MemberQuestionResponseDto> questions;
+        private List<MemberAnswerResponseDto> answers;
+        private LocalDateTime createdAt;
+
+        private LocalDateTime modifiedAt;
+    }
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class MemberQuestionResponseDto {
+        private Long questionId;
+        private String title;
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class MemberAnswerResponseDto {
+        private Long answerId;
+        private String text;
     }
 }

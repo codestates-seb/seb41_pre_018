@@ -1,7 +1,11 @@
 package sebpre018.com.stackOverflowClone.member.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
+import sebpre018.com.stackOverflowClone.answer.entity.Answer;
 import sebpre018.com.stackOverflowClone.audit.BaseEntity;
+import sebpre018.com.stackOverflowClone.question.entity.Question;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -32,6 +36,16 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(length = 20, nullable = false)
     private UserStatus userStatus = UserStatus.USER_ACTIVE;
+
+//    @JsonIgnore
+//    @JsonManagedReference
+//    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+//    private List<Question> questions = new ArrayList<>();
+//
+//    @JsonIgnore
+//    @JsonManagedReference
+//    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+//    private List<Answer> answers = new ArrayList<>();
 
     public enum UserStatus {
 
@@ -64,7 +78,7 @@ public class Member extends BaseEntity {
     public Member(Long memberId, String username, String email, String password,
                 UserStatus userStatus, List<String> roles) {
         this.memberId = memberId;
-        this.username = this.username;
+        this.username = username;
         this.email = email;
         this.password = password;
         this.userStatus = userStatus;

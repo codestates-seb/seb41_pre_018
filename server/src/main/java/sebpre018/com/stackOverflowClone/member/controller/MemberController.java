@@ -1,29 +1,24 @@
 package sebpre018.com.stackOverflowClone.member.controller;
 
-import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.ObjectUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import sebpre018.com.stackOverflowClone.answer.repository.AnswerRepository;
 import sebpre018.com.stackOverflowClone.member.assembler.MemberAssembler;
-import sebpre018.com.stackOverflowClone.member.dto.MemberDto;
 import sebpre018.com.stackOverflowClone.member.dto.MemberDto;
 import sebpre018.com.stackOverflowClone.member.entity.Member;
 import sebpre018.com.stackOverflowClone.member.mapper.MemberMapper;
 import sebpre018.com.stackOverflowClone.member.service.MemberService;
+import sebpre018.com.stackOverflowClone.question.repository.QuestionRepository;
 import sebpre018.com.stackOverflowClone.response.SingleResponseDto;
-import sebpre018.com.stackOverflowClone.util.UriCreator;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
-import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,14 +29,20 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequestMapping("/members")
 @Slf4j
 public class MemberController {
+    private final AnswerRepository answerRepository;
+    private final QuestionRepository questionRepository;
     private final MemberService memberService;
     private final MemberMapper mapper;
     private final MemberAssembler assembler;
 
-    public MemberController(MemberService memberService, MemberMapper mapper,MemberAssembler assembler){
+    public MemberController(MemberService memberService, MemberMapper mapper, MemberAssembler assembler,
+                            QuestionRepository questionRepository,
+                            AnswerRepository answerRepository) {
         this.memberService = memberService;
         this.mapper = mapper;
         this.assembler = assembler;
+        this.questionRepository = questionRepository;
+        this.answerRepository = answerRepository;
     }
 
     @GetMapping("/{id}")
@@ -83,5 +84,16 @@ public class MemberController {
         memberService.deleteMember(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/{id}/Info")
+    public ResponseEntity getQuestion(@PathVariable("id") @Positive Long id) {
+        Member member = memberService.findMember(id);
+
+        MemberDto.AllResponse response = mapper.InfoResponse(member, questionRepository, answerRepository);
+        return new ResponseEntity<>(
+                new SingleResponseDto<>(response), HttpStatus.OK
+        );
+    }
 }
+
 
