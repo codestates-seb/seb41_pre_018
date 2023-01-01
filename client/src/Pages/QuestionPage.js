@@ -8,9 +8,8 @@ import 'react-quill/dist/quill.snow.css';
 import { data } from '../dummydata';
 import { BiNoEntry } from 'react-icons/bi';
 import { useDispatch } from 'react-redux';
-import { getQuestionThunk} from '../module/thunkModule';
+import { getQuestionThunk } from '../module/thunkModule';
 import { useCookies } from 'react-cookie';
-
 
 const Outer_Wrapper = styled.div`
   width: 100%;
@@ -197,7 +196,7 @@ const Question_Page = () => {
   // => 상태로 전달 받을 예정이며 정상 구현 이후 해당 변수는 삭제합니다.
   const currentId = useParams();
   const [currentQuestion, setCurrentQuestion] = useState();
-
+  console.log(currentQuestion);
   const dispatch = useDispatch();
   const [questionVotes, setQuestionVotes] = useState(0);
   const [answerVotes, setAnswerVotes] = useState(0);
@@ -233,20 +232,20 @@ const Question_Page = () => {
   };
 
   const handleDeleteQuestion = async () => {
-    console.log(currentId)
+    console.log(currentId);
     const response = await dispatch(
       deleteQuestionThunk(currentId, cookies.access_token)
-    )
-    .then((response) => {   
-      console.log(response.payload.status)     
+    ).then((response) => {
+      console.log(response.payload.status);
       if (response.payload.status === 201) {
-      alert('질문이 삭제되었습니다');
-      navigate('/');
-      reset();
-    } else {
-      alert(`에러: HTTP 에러코드${response.payload.status}`);
-    }})
-  }
+        alert('질문이 삭제되었습니다');
+        navigate('/');
+        reset();
+      } else {
+        alert(`에러: HTTP 에러코드${response.payload.status}`);
+      }
+    });
+  };
 
   const upVote_question = () => {
     setQuestionVotes(questionVotes + 1);
@@ -294,7 +293,9 @@ const Question_Page = () => {
               >
                 <Blue_Button>질문 수정하기</Blue_Button>
               </Link>
-              <Red_Button onClick={() => handleDeleteQuestion()}>질문 삭제하기</Red_Button>
+              <Red_Button onClick={() => handleDeleteQuestion()}>
+                질문 삭제하기
+              </Red_Button>
             </Button_Wrapper>
           </Userinfo_Wrapper>
           <Custom_Hr />

@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { AiFillTrophy, AiFillTags } from 'react-icons/ai';
 import { RiQuestionnaireFill } from 'react-icons/ri';
 import { BiCaretUp } from 'react-icons/bi';
 import { BsCaretDown } from 'react-icons/bs';
-import { signinThunk } from '../module/thunkModule';
+import { signinThunk, emaillCheckThunk } from '../module/thunkModule';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 const Sign_Container = styled.div`
@@ -213,27 +213,22 @@ function Sign() {
     }
   }, [verifyPassword]);
   const onSubmit = async (userdata) => {
-    //fetch 보낼 thunk 함수
-    //login page routing
     const { email, username, password } = userdata;
     const response = await dispatch(
       signinThunk({ email, username, password })
     ).then((data) => data.payload.status);
-
-    if (response === 201) {
-      navigate('/signup-completed');
-      reset();
-    } else {
-      alert('중복된 아이디 입니다.');
-    }
+    navigate('/signup-completed');
+    reset();
   };
   const onError = (e) => {
     console.error(e);
   };
-  const idSubmitHandle = () => {
-    //fetch 보낼 함수 리턴 값으로 불리언 설정
-    const response = 'ok';
-    if (response === 'ok' && verify.emailVerify.boolean === true) {
+  const idSubmitHandle = async () => {
+    // const response = dispatch(emaillCheckThunk(verify.emailVerify.email)).then(
+    //   (data) => data.payload
+    // );
+    const response = true;
+    if (response === true && verify.emailVerify.boolean === true) {
       setVerify({ ...verify, verifyEmailVerify: { boolean: true } });
     } else {
       setVerify({ ...verify, verifyEmailVerify: { boolean: false } });
