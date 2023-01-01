@@ -8,8 +8,10 @@ import 'react-quill/dist/quill.snow.css';
 import { data } from '../dummydata';
 import { BiNoEntry } from 'react-icons/bi';
 import { useDispatch } from 'react-redux';
-import { getQuestionThunk} from '../module/thunkModule';
-import { useCookies } from 'react-cookie';
+import { getQuestionThunk, getAnswerThunk, postAnswerThunk } from '../module/thunkModule';
+import Answer from '../Components/Answer';
+
+
 
 
 const Outer_Wrapper = styled.div`
@@ -206,14 +208,18 @@ const Question_Page = () => {
     data.member[0].answers[0].answer_content
   );
   const [newAnswer, setNewAnswer] = useState('');
+  const [answersList, setAnswersList] = useState([]);
 
   useEffect(() => {
     async function fetchQuestion() {
       const response = await dispatch(getQuestionThunk(currentId.id)).then(
         (res) => {
           setCurrentQuestion(res.payload);
+          setAnswersList(...res.payload.answers);
+          console.log(answersList);
+          return currentQuestion;
         }
-      );
+      )
     }
     fetchQuestion();
   }, []);
@@ -231,6 +237,20 @@ const Question_Page = () => {
       setIsAnswerEditOn(!isAnswerEditOn);
     }
   };
+
+  const handleAddAnswer = () => {
+    async function fetchQuestion() {
+      const response = await dispatch(postAnswerThunk(currentId.id)).then(
+        (res) => {
+          setCurrentQuestion(res.payload);
+          setAnswersList(...res.payload.answers);
+          console.log(answersList);
+          return currentQuestion;
+        }
+      )
+    }
+
+  }
 
   const handleDeleteQuestion = async () => {
     console.log(currentId)
@@ -381,6 +401,16 @@ const Question_Page = () => {
               )}
             </Text_Content>
           </Content_Wrapper>
+          {[{
+    "answerId": 2,
+    "memberId": 3,
+    "questionId": 15,
+    "voteResult": 0,
+    "text": "안아줬어요",
+    "createdAt": "2022-12-31T19:54:52.980939",
+    "modifiedAt": "2022-12-31T19:54:52.980939"
+}].map(item => <Answer vote={item.voteResult} createdAt={item.createdAt} modifiedAt={item.modifiedAt} text={item.text} id={item.answerId}/>)}
+          <Answer/>
           <Content_Wrapper>
             <Vote_Wrapper />
             <Text_Content>
@@ -398,9 +428,10 @@ const Question_Page = () => {
             <Button_Wrapper>
               <Answer_Submit_Button>답변 등록하기</Answer_Submit_Button>
             </Button_Wrapper>
-          </Content_Wrapper>
+          </Content_Wrapper>         
         </Inner_Wrapper>
       </Outer_Wrapper>
+
     )
   );
 };
