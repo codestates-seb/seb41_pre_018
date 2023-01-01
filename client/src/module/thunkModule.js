@@ -273,7 +273,7 @@ export const getSearchQuestionThunk = createAsyncThunk(
   }
 );
 
-//질문 삭제
+//질문 삭제 => 현재 서버에서 불가능
 // export const deleteQuestionThunk = createAsyncThunk(
 //   'thunkModule/deleteQuestionThunk',
 //   async (data) => {
@@ -320,7 +320,7 @@ export const patchQuestionThunk = createAsyncThunk(
 export const postAnswerThunk = createAsyncThunk(
   'thunkModule/postAnswerThunk',
   async (data) => {
-    const { questionId, text } = data;
+    const { questionId, text, cookie } = data;
     try {
       await axios.post(
         `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/answers/${questionId}`,
@@ -378,14 +378,24 @@ export const deleteAnswerThunk = createAsyncThunk(
 export const postCommentThunk = createAsyncThunk(
   'thunkModule/postCommentThunk',
   async (data) => {
-    const { questionId, text } = data;
+    const { questionId, text, cookie } = data;
+    console.log(`Bearer ${cookie}`);
     try {
-      await axios.post(
-        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/comments/${questionId}`,
-        {
-          text,
-        }
-      );
+      const response = await axios
+        .post(
+          `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/comments/${questionId}`,
+          {
+            text,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${cookie}`,
+            },
+          }
+        )
+        .then((res) => res.data.data);
+
+      return response;
     } catch (e) {
       console.error(e);
     }
@@ -406,15 +416,25 @@ export const patchCommentThunk = createAsyncThunk(
     );
   }
 );
+
 //댓글 삭제
 export const deleteCommentThunk = createAsyncThunk(
   'thunkModule/deleteCommentThunk',
   async (data) => {
-    const { questionId, commentId } = data;
+    const { questionId, commentId, cookie } = data;
     try {
-      await axios.delete(
-        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/comments/${questionId}/${commentId}`
-      );
+      const response = await axios
+        .delete(
+          `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/comments/${questionId}/${commentId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${cookie}`,
+            },
+          }
+        )
+        .then((res) => res.data.data);
+
+      return response;
     } catch (e) {
       console.error(e);
     }

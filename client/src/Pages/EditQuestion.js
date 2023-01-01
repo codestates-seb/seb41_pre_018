@@ -142,6 +142,13 @@ export default function NewQuestion() {
   const currentId = useParams();
   const [currentQuestion, setCurrentQuestion] = useState();
   const dispatch = useDispatch();
+  const [userTags, setUserTags] = useState([]);
+  const [title, setTitle] = useState('');
+  const [userInput, setUserInput] = useState('');
+  const [tagInputXCord, setTagInputXCord] = useState(0);
+  const [textEditorValue, setTextEditorValue] = useState();
+  const navigate = useNavigate();
+  const [cookies] = useCookies([]);
 
   const {
     register,
@@ -150,27 +157,17 @@ export default function NewQuestion() {
   } = useForm({
     defaultValues: { title: title },
   });
-  const [userTags, setUserTags] = useState([]);
-  const [title, setTitle] = useState();
-  const [userInput, setUserInput] = useState('');
-  const [tagInputXCord, setTagInputXCord] = useState(0);
-  const [textEditorValue, setTextEditorValue] = useState();
-  const navigate = useNavigate();
-  const [cookies] = useCookies([]);
 
   useEffect(() => {
     async function fetchQuestion() {
       const response = await dispatch(getQuestionThunk(currentId.id)).then(
         (res) => {
           setCurrentQuestion(res.payload);
-          console.log(res.payload.text);
           setTextEditorValue(res.payload.text);
           setTitle(res.payload.title);
-          console.log(title);
           const tempTags = [...res.payload.tags];
           const tags = [];
           tempTags.forEach((item) => tags.push(item.hashTag));
-          console.log(tags);
           setUserTags(tags);
         }
       );
@@ -216,6 +213,10 @@ export default function NewQuestion() {
     }
   };
 
+  const handleTitleChange = (event) => {
+    setTitle(event.target.value);
+  };
+
   const handleTextEditorChange = (val) => {
     setTextEditorValue(val);
   };
@@ -235,11 +236,9 @@ export default function NewQuestion() {
         data['cookie'] = cookies.access_token;
         data.questionId = currentId.id;
 
-        console.log(data);
         navigate('./../');
         const response = await dispatch(patchQuestionThunk(data)).then(
           (data) => {
-            console.log(data.payload.status);
             if (data.payload.status === 201) {
               alert('질문이 수정되었습니다');
               navigate('/');
@@ -264,18 +263,14 @@ export default function NewQuestion() {
             </label>
           </h3>
           <input
+            type="text"
             id="title"
             {...register('title', {
-              required: '제목을 입력해주세요',
+              required: true,
             })}
-            defaultValue={title}
-            type="text"
+            value={title}
+            onChange={handleTitleChange}
           />
-          {errors.title && (
-            <span className="Error_Message" role="alert">
-              {errors.title.message}
-            </span>
-          )}
         </Text_Wrapper>
 
         <Text_Wrapper>
