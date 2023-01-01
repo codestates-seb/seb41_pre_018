@@ -1,6 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { data } from '../dummydata';
+import { postCommentThunk } from '../module/thunkModule';
 
 const Custom_Hr = styled.hr`
   width: 99%;
@@ -47,11 +51,30 @@ const New_Comment = styled.textarea`
 
 const Comments = ({ currentQuestion }) => {
   const [newComment, setNewComment] = useState();
+  const dispatch = useDispatch();
+  const [cookies, setCookie, removeCookie] = useCookies([]);
+  const navigate = useNavigate();
+  const addComment = () => {
+    async function postComment() {
+      const response = await dispatch(
+        postCommentThunk({
+          questionId: currentQuestion.questionId,
+          text: newComment,
+          cookie: cookies.access_token,
+        })
+      ).then((res) => {
+        setNewComment('');
+        navigate('./');
+      });
+    }
+    postComment();
+  };
+
   return (
     <Comment_Wrapper>
       {currentQuestion.comments.map((item, idx) => (
         <div key={`${currentQuestion.questionId}_${idx}`}>
-          <Comment_Wrapper>{item.comment}</Comment_Wrapper>
+          <Comment_Wrapper>{item.text}</Comment_Wrapper>
           <Custom_Hr />
         </div>
       ))}
@@ -60,9 +83,7 @@ const Comments = ({ currentQuestion }) => {
         onChange={(e) => setNewComment(e.target.value)}
         value={newComment}
       />
-      <Comment_Button onClick={() => console.log(newComment)}>
-        댓글 추가하기
-      </Comment_Button>
+      <Comment_Button onClick={addComment}>댓글 추가하기</Comment_Button>
     </Comment_Wrapper>
   );
 };

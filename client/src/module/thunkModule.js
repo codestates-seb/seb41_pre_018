@@ -288,7 +288,7 @@ export const patchQuestionThunk = createAsyncThunk(
 export const postAnswerThunk = createAsyncThunk(
   'thunkModule/postAnswerThunk',
   async (data) => {
-    const { questionId, text } = data;
+    const { questionId, text, cookie } = data;
     try {
       await axios.post(
         `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/answers/${questionId}`,
@@ -346,14 +346,24 @@ export const deleteAnswerThunk = createAsyncThunk(
 export const postCommentThunk = createAsyncThunk(
   'thunkModule/postCommentThunk',
   async (data) => {
-    const { questionId, text } = data;
+    const { questionId, text, cookie } = data;
+    console.log(`Bearer ${cookie}`);
     try {
-      await axios.post(
-        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/comments/${questionId}`,
-        {
-          text,
-        }
-      );
+      const response = await axios
+        .post(
+          `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/comments/${questionId}`,
+          {
+            text,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${cookie}`,
+            },
+          }
+        )
+        .then((res) => res.data.data);
+
+      return response;
     } catch (e) {
       console.error(e);
     }
