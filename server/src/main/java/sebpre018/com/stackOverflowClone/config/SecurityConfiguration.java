@@ -54,13 +54,16 @@ public class SecurityConfiguration {
                 .apply(new CustomFilterConfigurer())
                 .and()
                 .authorizeRequests(authorize -> authorize
-                        .antMatchers(HttpMethod.POST, "/members/sign").permitAll() // 회원 가입
+                        .antMatchers(HttpMethod.GET, "/members/emailCheck/*").permitAll()//이메일 중복 체크
+                        .antMatchers(HttpMethod.POST, "/members/").permitAll() // 회원 가입
+                        .antMatchers(HttpMethod.GET, "/members/*/Info").permitAll() // 회원 상세 정보 조회
                         .antMatchers(HttpMethod.GET, "/members/**").hasAnyRole("USER", "ADMIN") // 회원 조회
-                        .antMatchers(HttpMethod.DELETE, "/*/members").hasRole("USER") // 회원 삭제
-                        .antMatchers(HttpMethod.POST, "/questions").hasRole("USER") // 질문 등록
-                        .antMatchers(HttpMethod.PATCH, "/*/questions/**", "/*/vote").hasRole("USER") // 질문 편집
+                        .antMatchers(HttpMethod.DELETE, "/members/**").hasRole("USER") // 회원 삭제
+                        .antMatchers(HttpMethod.POST, "/questions/").hasRole("USER") // 질문 등록
+                        .antMatchers(HttpMethod.PATCH, "/questions/**").hasRole("USER") // 질문 편집
                         .antMatchers(HttpMethod.POST, "/answers/**").hasRole("USER") // 답변 생성
                         .antMatchers(HttpMethod.PATCH, "/answers/**").hasRole("USER") // 답변 수정
+                        .antMatchers(HttpMethod.POST, "/vote/**").hasRole("USER") // 투표
                         .antMatchers(HttpMethod.DELETE).hasRole("USER") // 질문, 답변 삭제
                         .anyRequest().permitAll()
                 );
