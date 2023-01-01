@@ -197,10 +197,7 @@ export const My_Page_Delete_User_Button = styled.button`
 
 function dateChange(UserBirthDay) {
   const d1 = UserBirthDay;
-  // const d1 = UserBirthDay.split('.')
-  //   .slice(0, 3)
-  //   .map((el) => Number(el))
-  //   .join('-');
+
   const d2 = new Date()
     .toLocaleString('ko-KR')
     .split('.')

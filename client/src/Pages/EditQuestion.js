@@ -147,9 +147,11 @@ export default function NewQuestion() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: { title: title },
+  });
   const [userTags, setUserTags] = useState([]);
-  const [title, setTitle] = useState()
+  const [title, setTitle] = useState();
   const [userInput, setUserInput] = useState('');
   const [tagInputXCord, setTagInputXCord] = useState(0);
   const [textEditorValue, setTextEditorValue] = useState();
@@ -161,16 +163,15 @@ export default function NewQuestion() {
       const response = await dispatch(getQuestionThunk(currentId.id)).then(
         (res) => {
           setCurrentQuestion(res.payload);
-          console.log(res.payload.text)
-          setTextEditorValue(res.payload.text)
-          setTitle(res.payload.title)
-          console.log(title)
-          const tempTags = [...res.payload.tags]
-          const tags = []
-          tempTags.forEach(item => tags.push(item.hashTag))
-          console.log(tags)
-          setUserTags(tags)
-
+          console.log(res.payload.text);
+          setTextEditorValue(res.payload.text);
+          setTitle(res.payload.title);
+          console.log(title);
+          const tempTags = [...res.payload.tags];
+          const tags = [];
+          tempTags.forEach((item) => tags.push(item.hashTag));
+          console.log(tags);
+          setUserTags(tags);
         }
       );
     }
@@ -228,26 +229,26 @@ export default function NewQuestion() {
     } else {
       if (confirm('수정한 내용을 등록하시겠습니까?')) {
         const tags = [];
-        userTags.forEach(item => tags.push({"hashTag": `${item}`}));
+        userTags.forEach((item) => tags.push({ hashTag: `${item}` }));
         data['text'] = textEditorValue;
         data['tags'] = tags;
         data['cookie'] = cookies.access_token;
         data.questionId = currentId.id;
 
-        console.log(data)
+        console.log(data);
         navigate('./../');
-        const response = await dispatch(
-          patchQuestionThunk(data)
-        )
-        .then((data) => {   
-          console.log(data.payload.status)     
-          if (data.payload.status === 201) {
-          alert('질문이 수정되었습니다');
-          navigate('/');
-          reset();
-        } else {
-          alert(`에러: 에러코드${data.payload.status}`);
-        }})
+        const response = await dispatch(patchQuestionThunk(data)).then(
+          (data) => {
+            console.log(data.payload.status);
+            if (data.payload.status === 201) {
+              alert('질문이 수정되었습니다');
+              navigate('/');
+              reset();
+            } else {
+              alert(`에러: 에러코드${data.payload.status}`);
+            }
+          }
+        );
       }
     }
   };
