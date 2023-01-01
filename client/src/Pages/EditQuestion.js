@@ -144,6 +144,21 @@ export default function NewQuestion() {
   const { title, text, tags } = useSelector((state) => state.question);
   const dispatch = useDispatch();
 
+  const quillModules = {
+    toolbar: [
+      [{ header: [1, 2, false] }],
+      ['bold', 'italic', 'underline', 'strike', 'blockquote', 'code-block'],
+      [
+        { list: 'ordered' },
+        { list: 'bullet' },
+        { indent: '-1' },
+        { indent: '+1' },
+      ],
+      ['link', 'image'],
+      ['clean'],
+    ],
+  };
+
   const {
     register,
     handleSubmit,
@@ -189,12 +204,7 @@ export default function NewQuestion() {
       return el.tagId !== Number(event.target.id);
     });
     setUserTags(filter);
-    setTagInputXCord(
-      document.querySelector('.Tag_Wrapper').clientWidth +
-        7.5 -
-        document.querySelector(`#Tag${userTags.length}`).clientWidth -
-        5
-    );
+    setTagInputXCord(document.querySelector('.Tag_Wrapper').clientWidth + 7.5);
     event.preventDefault();
   };
 
@@ -270,6 +280,7 @@ export default function NewQuestion() {
             </label>
           </h3>
           <ReactQuill
+            modules={quillModules}
             theme="snow"
             className="Rich_Text_Editor"
             placeholder="내용을 입력해주세요"
