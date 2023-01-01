@@ -44,6 +44,13 @@ const Inner_Wrapper = styled.div`
   margin-bottom: 100px;
   padding-bottom: 100px;
   min-width: 800px;
+
+  .No_Answers {
+    margin: 50px 0;
+    text-align: center;
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 18px;
+  }
 `;
 
 const Question_Title = styled.div`
@@ -202,6 +209,7 @@ const Question_Page = () => {
   // 질문 상세 페이지에서 가져올 더미 데이터
   // => 상태로 전달 받을 예정이며 정상 구현 이후 해당 변수는 삭제합니다.
   const currentId = useParams();
+  const { memberId } = useSelector((state) => state.loginBoolean);
   const [currentQuestion, setCurrentQuestion] = useState();
   const [commentsData, setCommentsData] = useState([]);
   const dispatch = useDispatch();
@@ -355,22 +363,24 @@ const Question_Page = () => {
               <Gray_Text> Viewed </Gray_Text>
               <span> {currentQuestion.views} times</span>
             </Middle_Text_Wrapper>
-            <Button_Wrapper>
-              <Link
-                to="./edit"
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  textDecoration: 'none',
-                }}
-              >
-                <Blue_Button>질문 수정하기</Blue_Button>
-              </Link>
-              <Red_Button onClick={() => console.log('work in progress')}>
-                질문 삭제하기
-              </Red_Button>
-            </Button_Wrapper>
+            {memberId === currentQuestion.memberId ? (
+              <Button_Wrapper>
+                <Link
+                  to="./edit"
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    textDecoration: 'none',
+                  }}
+                >
+                  <Blue_Button>질문 수정하기</Blue_Button>
+                </Link>
+                <Red_Button onClick={() => console.log('work in progress')}>
+                  질문 삭제하기
+                </Red_Button>
+              </Button_Wrapper>
+            ) : null}
           </Userinfo_Wrapper>
           <Custom_Hr />
           <Content_Wrapper>
@@ -405,59 +415,76 @@ const Question_Page = () => {
               setCommentsData={setCommentsData}
               handleRender={handleRender}
               render={render}
+              memberId={memberId}
             />
           )}
           <Question_Title>답변</Question_Title>
-          <Userinfo_Wrapper>
-            <User_Wrapper>
-              <Profile_Image
-                src={process.env.PUBLIC_URL + '/Sample_Avatar.png'}
-              />
-              <Username>Human_001</Username>
-            </User_Wrapper>
+          {/* 해당 질문에 답변이 없으면 답변을 표시하지 않습니다. */}
+          {currentQuestion.answers.length === 0 ? (
+            <div className="No_Answers">
+              현재 해당 질문에 대한 답변이 없습니다 😢 답변을 기다리고 있을
+              질문자를 위해 답변을 등록해보세요!
+            </div>
+          ) : (
+            <div className="Answers_Wrapper">
+              <Userinfo_Wrapper>
+                <User_Wrapper>
+                  <Profile_Image
+                    src={process.env.PUBLIC_URL + '/Sample_Avatar.png'}
+                  />
+                  <Username>Human_001</Username>
+                </User_Wrapper>
 
-            <Button_Wrapper>
-              <Answer_Edit_Button onClick={handleEditAnswer}>
-                {isAnswerEditOn ? '수정 완료' : '답변 수정하기'}
-              </Answer_Edit_Button>
-              <Answer_Delete_Button>답변 삭제하기</Answer_Delete_Button>
-            </Button_Wrapper>
-          </Userinfo_Wrapper>
+                {/* 아래 삼항 연산자에서 조건문은 현재 페이지에서
+            질문의 답변 수에 맞게 랜더링될 때 (map 함수 예상)
+            각 질문들과 현재 사용자의 memberId가 일치한지
+            확인하기 위한 조건문으로 수정이 필요합니다. */}
+                {memberId === currentQuestion.answers[0].memberId ? (
+                  <Button_Wrapper>
+                    <Answer_Edit_Button onClick={handleEditAnswer}>
+                      {isAnswerEditOn ? '수정 완료' : '답변 수정하기'}
+                    </Answer_Edit_Button>
+                    <Answer_Delete_Button>답변 삭제하기</Answer_Delete_Button>
+                  </Button_Wrapper>
+                ) : null}
+              </Userinfo_Wrapper>
 
-          <Content_Wrapper>
-            <Vote_Wrapper>
-              <MdKeyboardArrowUp
-                onClick={upVote_answer}
-                size="40"
-                color="#C0C0C0"
-                cursor="pointer"
-              />
-              <Vote_Count>{answerVotes}</Vote_Count>
-              <MdKeyboardArrowDown
-                onClick={downVote_answer}
-                size="40"
-                color="#C0C0C0"
-                cursor="pointer"
-              />
-            </Vote_Wrapper>
-            <Text_Content>
-              {isAnswerEditOn ? (
-                <ReactQuill
-                  modules={quillModules}
-                  theme="snow"
-                  className="Rich_Text_Editor"
-                  value={currentUserAnswer}
-                  onChange={handleUserAnswer}
-                />
-              ) : (
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: currentUserAnswer,
-                  }}
-                />
-              )}
-            </Text_Content>
-          </Content_Wrapper>
+              <Content_Wrapper>
+                <Vote_Wrapper>
+                  <MdKeyboardArrowUp
+                    onClick={upVote_answer}
+                    size="40"
+                    color="#C0C0C0"
+                    cursor="pointer"
+                  />
+                  <Vote_Count>{answerVotes}</Vote_Count>
+                  <MdKeyboardArrowDown
+                    onClick={downVote_answer}
+                    size="40"
+                    color="#C0C0C0"
+                    cursor="pointer"
+                  />
+                </Vote_Wrapper>
+                <Text_Content>
+                  {isAnswerEditOn ? (
+                    <ReactQuill
+                      modules={quillModules}
+                      theme="snow"
+                      className="Rich_Text_Editor"
+                      value={currentUserAnswer}
+                      onChange={handleUserAnswer}
+                    />
+                  ) : (
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: currentUserAnswer,
+                      }}
+                    />
+                  )}
+                </Text_Content>
+              </Content_Wrapper>
+            </div>
+          )}
           <Content_Wrapper>
             <Vote_Wrapper />
             <Text_Content>

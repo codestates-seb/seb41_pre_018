@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useCookies } from 'react-cookie';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import {
   deleteCommentThunk,
@@ -102,6 +102,7 @@ const Comments = ({
   setCommentsData,
   handleRender,
   render,
+  memberId,
 }) => {
   const dispatch = useDispatch();
 
@@ -185,22 +186,24 @@ const Comments = ({
         <li key={`${currentQuestion.questionId}_${idx}`}>
           <div className="Comment_Block">
             <p>{item.text}</p>
-            <Comment_Buttons_Wrapper>
-              <button
-                className="Edit_Comment_Button"
-                onClick={toggleEdit}
-                id={idx}
-              >
-                수정
-              </button>
-              <button
-                className="Delete_Comment_Button"
-                onClick={deleteComment}
-                id={idx}
-              >
-                삭제
-              </button>
-            </Comment_Buttons_Wrapper>
+            {memberId === currentQuestion.memberId ? (
+              <Comment_Buttons_Wrapper>
+                <button
+                  className="Edit_Comment_Button"
+                  onClick={toggleEdit}
+                  id={idx}
+                >
+                  수정
+                </button>
+                <button
+                  className="Delete_Comment_Button"
+                  onClick={deleteComment}
+                  id={idx}
+                >
+                  삭제
+                </button>
+              </Comment_Buttons_Wrapper>
+            ) : null}
           </div>
           <Custom_Hr />
         </li>
