@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Comments from '../Components/Comments';
-import { Link, redirect, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { MdKeyboardArrowUp, MdKeyboardArrowDown } from 'react-icons/md';
 import styled from 'styled-components';
 import ReactQuill from 'react-quill';
@@ -221,6 +221,7 @@ const Question_Page = () => {
   const [currentUserAnswer, setCurrentUserAnswer] = useState(
     data.member[0].answers[0].answer_content
   );
+  const navigate = useNavigate();
   const [cookies, setCookie, removeCookie] = useCookies([]);
   const [answersList, setAnswersList] = useState([]);
   const [newAnswer, setNewAnswer] = useState('');
@@ -323,7 +324,9 @@ const Question_Page = () => {
         cookie: cookies.access_token,
       })
     ).then((data) => {
-      if (data.payload === false) {
+      if (data.payload === 401) {
+        navigate('/login');
+      } else if (data.payload === 409) {
         alert('이미 투표하셨습니다.');
       } else {
         setQuestionVotes(questionVotes + 1);
@@ -338,8 +341,8 @@ const Question_Page = () => {
         cookie: cookies.access_token,
       })
     ).then((data) => {
-      if (data.payload === false) {
-        alert('이미 투표하셨습니다.');
+      if (data.payload === '401') {
+        navigate('/login');
       } else {
         setQuestionVotes(questionVotes - 1);
       }
