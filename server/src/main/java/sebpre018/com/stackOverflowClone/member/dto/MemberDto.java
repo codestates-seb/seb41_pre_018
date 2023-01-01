@@ -18,7 +18,7 @@ public class MemberDto {
         @Pattern(regexp = "[A-Za-z0-9가-힇]{2,20}")
         private String username;
         @NotBlank
-        @Pattern(regexp = "^(?=.[A-Za-z])(?=.\\d)(?=.[@!%#?&])[A-Za-z\\d@!%#?&]{8,}$")
+        @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@!%*#?&])[A-Za-z\\d@!%*#?&]{8,}$")
         private String password;
         //private String aboutMe;
     }

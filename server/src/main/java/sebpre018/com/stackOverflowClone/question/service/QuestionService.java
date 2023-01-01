@@ -64,6 +64,10 @@ public class QuestionService {
         return questionRepository.save(preQuestion); //저장
     }
 
+    public Question updateView(Question question) {
+        return questionRepository.save(question);
+    }
+
     public void deleteQuestion(Long id) {
         Question question = findVerifiedQuestion(id);
 //
