@@ -139,6 +139,7 @@ const Question = ({
   tags,
   idx,
   isSearch,
+  answerCount,
 }) => {
   return (
     <div key={idx}>
@@ -150,9 +151,9 @@ const Question = ({
             <Votes>{`${vote} votes`}</Votes>
           )}
           {isSearch ? (
-            <Answers_Search>{`✓ ${data.question.length} answers`}</Answers_Search>
+            <Answers_Search>{`✓ ${answerCount} answers`}</Answers_Search>
           ) : (
-            <Answers>{`${data.question.length} answers`}</Answers>
+            <Answers>{`${answerCount} answers`}</Answers>
           )}
           {isSearch ? (
             <Views_Search>{`${views} views`}</Views_Search>

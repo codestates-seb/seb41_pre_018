@@ -8,11 +8,12 @@ import 'react-quill/dist/quill.snow.css';
 import { data } from '../dummydata';
 import { BiNoEntry } from 'react-icons/bi';
 import { useDispatch } from 'react-redux';
-import { getQuestionThunk, getAnswerThunk, postAnswerThunk } from '../module/thunkModule';
+import {getAnswerThunk, postAnswerThunk } from '../module/thunkModule';
 import Answer from '../Components/Answer';
 
 
 import { useCookies } from 'react-cookie';
+import { getQuestionAction, getQuestionThunk } from '../module/questionPageInfoSlice';
 
 const Outer_Wrapper = styled.div`
   width: 100%;
@@ -222,6 +223,13 @@ const Question_Page = () => {
           console.log(res.payload)
           return currentQuestion;
           setCommentsData(res.payload.comments);
+          dispatch(
+            getQuestionAction({
+              title: res.payload.title,
+              text: res.payload.text,
+              tags: res.payload.tags,
+            })
+          );
         }
       )
     }
