@@ -51,6 +51,7 @@ public interface MemberMapper {
                 .map(answer-> MemberDto.MemberAnswerResponseDto
                         .builder()
                         .answerId(answer.getAnswerId())
+                        .questionId(answer.getQuestion().getQuestionId())
                         .text(answer.getText())
                         .build())
                 .collect(Collectors.toList());

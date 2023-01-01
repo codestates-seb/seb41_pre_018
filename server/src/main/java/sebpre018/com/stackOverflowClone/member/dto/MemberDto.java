@@ -90,6 +90,7 @@ public class MemberDto {
     @NoArgsConstructor
     public static class MemberAnswerResponseDto {
         private Long answerId;
+        private Long questionId;
         private String text;
     }
 }
