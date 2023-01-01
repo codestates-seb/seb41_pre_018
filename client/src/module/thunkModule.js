@@ -369,14 +369,11 @@ export const postCommentThunk = createAsyncThunk(
   'thunkModule/postCommentThunk',
   async (data) => {
     const { questionId, text, cookie } = data;
-    console.log(`Bearer ${cookie}`);
     try {
       const response = await axios
         .post(
           `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/comments/${questionId}`,
-          {
-            text,
-          },
+          { text },
           {
             headers: {
               Authorization: `Bearer ${cookie}`,
@@ -395,15 +392,20 @@ export const postCommentThunk = createAsyncThunk(
 export const patchCommentThunk = createAsyncThunk(
   'thunkModule/patchCommentThunk',
   async (data) => {
-    const { questionId, commentId, text } = data;
+    const { questionId, commentId, text, cookie } = data;
     try {
+      const response = await axios.patch(
+        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/comments/${questionId}/${commentId}`,
+        { text },
+        {
+          headers: {
+            Authorization: `Bearer ${cookie}`,
+          },
+        }
+      );
     } catch (e) {
       console.error(e);
     }
-    await axios.patch(
-      `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/comments/${questionId}/${commentId}`,
-      { text }
-    );
   }
 );
 
