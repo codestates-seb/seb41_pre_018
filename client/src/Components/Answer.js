@@ -5,8 +5,9 @@ import { data } from '../dummydata';
 import ReactQuill from 'react-quill';
 import { useCookies } from 'react-cookie';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteAnswerThunk, deleteUserThunk, getUserInfoThunk } from '../module/thunkModule';
-
+import { deleteAnswerThunk, deleteUserThunk, getUserInfoThunk, patchAnswerThunk } from '../module/thunkModule';
+import { useParams } from 'react-router-dom'
+import { render } from 'react-dom';
 
 const Content_Wrapper = styled.div`
   display: flex;
@@ -132,6 +133,7 @@ const Middle_Text_Wrapper = styled.div`
 
 
 const Answer = (props) => {
+    const currentId = useParams();
     const [isAnswerEditOn, setIsAnswerEditOn] = useState(false);
     const [answerVotes, setAnswerVotes] = useState(props.vote);
     const [currentUserAnswer, setCurrentUserAnswer] = useState(
@@ -142,6 +144,7 @@ const Answer = (props) => {
     const { memberId } = useSelector((state) => state.loginBoolean);
     const [username, setUsername] = useState('')
     const [answerMemberId, setAnswerMemberId] = useState();
+    const [x, setX] = useState(true);
 
     console.log(`props text: ${props.text}`)
     console.log(`props member: ${memberId}`)
@@ -161,8 +164,16 @@ const Answer = (props) => {
         setCurrentUserAnswer(val);
       };
 
-    const handleEditAnswer = () => {
+    const handleEditAnswer = async () => {
+        const data = {};
+        data.questionId = currentId.id;
+        data.answerId = props.answerId;
+        data.text = currentUserAnswer;
+        data.cookie = cookies.access_token;
+        console.log(data)
         if (isAnswerEditOn === true) {
+          await dispatch(
+            patchAnswerThunk(data))
           if (confirm('수정을 완료하시겠습니까?')) {
             setIsAnswerEditOn(!isAnswerEditOn);
           }
@@ -172,15 +183,15 @@ const Answer = (props) => {
       };
 
     const handleDeleteAnswer = async () => {
-
-        await dispatch(
-          deleteUserThunk()
-        ).then((res) => {
-          console.log(res.status)
-        });
-        props.memberId
-        props.questionId
+      const data = {};
+      data.answerId = 1;
+      data.questionId = 2;
+      data.cookie = cookies.access_token;
+      const response = await dispatch(
+        deleteAnswerThunk(data))
+    
     }
+  
 
     const upVote_answer = () => {
     setAnswerVotes(answerVotes + 1);
@@ -222,7 +233,7 @@ const Answer = (props) => {
                 <Answer_Edit_Button onClick={handleEditAnswer}>
                     {isAnswerEditOn ? '수정 완료' : '답변 수정하기'}
                 </Answer_Edit_Button>
-                <Answer_Delete_Button>답변 삭제하기</Answer_Delete_Button>
+                <Answer_Delete_Button onClick={handleDeleteAnswer}>답변 삭제하기</Answer_Delete_Button>
                 </Button_Wrapper>
             </Userinfo_Wrapper>
             <Custom_Hr />

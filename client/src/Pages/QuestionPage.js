@@ -210,6 +210,7 @@ const Question_Page = () => {
   const [newAnswer, setNewAnswer] = useState('');
   const [answersList, setAnswersList] = useState([]);
   const [cookies] = useCookies([]);
+  const [render, setRender] = useState(false);
 
   console.log(`currentId = ${JSON.stringify(currentId)}`)
 
@@ -221,7 +222,15 @@ const Question_Page = () => {
           setAnswersList(res.payload.answers);
           console.log(answersList);
           console.log(res.payload)
-          return currentQuestion;
+          // return currentQuestion;
+          const payload = res.payload;
+          const createdAtTime = dateChange(res.payload.createdAt);
+          const modifiedAtTime = dateChange(res.payload.modifiedAt);
+          setCurrentQuestion({
+            ...payload,
+            createdAt: createdAtTime,
+            modifiedAt: modifiedAtTime,
+          });
           setCommentsData(res.payload.comments);
           dispatch(
             getQuestionAction({
@@ -234,8 +243,7 @@ const Question_Page = () => {
       )
     }
     fetchQuestion();
-  }, [commentsData]);
-
+  }, [render]);
 
   const handleUserAnswer = (val) => {
     setCurrentUserAnswer(val);
@@ -247,9 +255,7 @@ const Question_Page = () => {
 
   const handleEditAnswer = () => {
     if (isAnswerEditOn === true) {
-      if (confirm('수정을 완료하시겠습니까?')) {
-        setIsAnswerEditOn(!isAnswerEditOn);
-      }
+      setIsAnswerEditOn(!isAnswerEditOn);
     } else {
       setIsAnswerEditOn(!isAnswerEditOn);
     }
@@ -263,13 +269,11 @@ const Question_Page = () => {
     console.log(data)
       const response = await dispatch(postAnswerThunk(data)).then(
         (res) => {
-          console.log(res.payload)
+          setRender(!render);
         }
       )
   }
-
   const handleDeleteQuestion = async () => {
-    console.log(currentId)
     const response = await dispatch(
       deleteQuestionThunk(currentId, cookies.access_token)
     )
@@ -283,6 +287,23 @@ const Question_Page = () => {
       alert(`에러: HTTP 에러코드${response.payload.status}`);
     }})
   }
+
+
+  const quillModules = {
+    toolbar: [
+      [{ header: [1, 2, false] }],
+      ['bold', 'italic', 'underline', 'strike', 'blockquote', 'code-block'],
+      [
+        { list: 'ordered' },
+        { list: 'bullet' },
+        { indent: '-1' },
+        { indent: '+1' },
+      ],
+      ['link', 'image'],
+      ['clean'],
+    ],
+  };
+
   // 현재 질문 삭제 기능 미구현으로 코드만 남겨놓음
   // const handleDeleteQuestion = async () => {
   //   console.log(currentId);
@@ -387,11 +408,12 @@ const Question_Page = () => {
             />
           )}
           <Question_Title>답변</Question_Title>
-          {answersList.map(item => <Answer vote={item.voteResult} createdAt={item.createdAt} modifiedAt={item.modifiedAt} text={item.text} id={item.answerId} memberId={item.memberId} username={item.username} questionId={currentId}/>)}
+          {answersList.map(item => <Answer vote={item.voteResult} createdAt={item.createdAt} modifiedAt={item.modifiedAt} text={item.text} id={item.answerId} memberId={item.memberId} username={item.username} questionId={currentId} answerId={item.answerId}/>)}
           <Content_Wrapper>
             <Vote_Wrapper />
             <Text_Content>
               <ReactQuill
+                modules={quillModules}
                 theme="snow"
                 className="Rich_Text_Editor"
                 value={newAnswer}
