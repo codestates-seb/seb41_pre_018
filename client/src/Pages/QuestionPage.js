@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Comments from '../Components/Comments';
-import { Link, redirect, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { MdKeyboardArrowUp, MdKeyboardArrowDown } from 'react-icons/md';
 import styled from 'styled-components';
 import ReactQuill from 'react-quill';
@@ -8,10 +8,19 @@ import 'react-quill/dist/quill.snow.css';
 import { data } from '../dummydata';
 import { BiNoEntry } from 'react-icons/bi';
 import { useDispatch, useSelector } from 'react-redux';
-import { getQuestionThunk } from '../module/questionPageInfoSlice';
+import {
+  postQuestionVoteUpThunk,
+  postQuestionVoteDownThunk,
+  postAnswerThunk,
+} from '../module/thunkModule';
+import {
+  getQuestionThunk,
+  getQuestionAction,
+} from '../module/questionPageInfoSlice';
 import { useCookies } from 'react-cookie';
 import { dateChange } from './MyPage';
-import { getQuestionAction } from '../module/questionPageInfoSlice';
+import { loginBoolean } from '../module/loginBooleanSlice';
+import Answer from '../Components/Answer';
 
 const Outer_Wrapper = styled.div`
   width: 100%;
@@ -209,8 +218,12 @@ const Question_Page = () => {
   const [questionVotes, setQuestionVotes] = useState(0);
   const [answerVotes, setAnswerVotes] = useState(0);
   const [isAnswerEditOn, setIsAnswerEditOn] = useState(false);
-  const [currentUserAnswer, setCurrentUserAnswer] = useState('');
-
+  const [currentUserAnswer, setCurrentUserAnswer] = useState(
+    data.member[0].answers[0].answer_content
+  );
+  const navigate = useNavigate();
+  const [cookies, setCookie, removeCookie] = useCookies([]);
+  const [answersList, setAnswersList] = useState([]);
   const [newAnswer, setNewAnswer] = useState('');
   const [render, setRender] = useState(false);
 
@@ -219,6 +232,8 @@ const Question_Page = () => {
       const response = await dispatch(getQuestionThunk(currentId.id)).then(
         (res) => {
           const payload = res.payload;
+
+          setAnswersList(res.payload.answers);
           const createdAtTime = dateChange(res.payload.createdAt);
           const modifiedAtTime = dateChange(res.payload.modifiedAt);
           setCurrentQuestion({
@@ -227,6 +242,7 @@ const Question_Page = () => {
             modifiedAt: modifiedAtTime,
           });
           setCommentsData(res.payload.comments);
+          setQuestionVotes(res.payload.voteResult);
           dispatch(
             getQuestionAction({
               title: res.payload.title,
@@ -246,12 +262,26 @@ const Question_Page = () => {
   const handleRender = (boolean) => {
     setRender(boolean);
   };
+  const handleNewAnswer = (val) => {
+    setNewAnswer(val);
+  };
   const handleEditAnswer = () => {
     if (isAnswerEditOn === true) {
       setIsAnswerEditOn(!isAnswerEditOn);
     } else {
       setIsAnswerEditOn(!isAnswerEditOn);
     }
+  };
+
+  const handleAddAnswer = async () => {
+    const data = {};
+    data.questionId = currentId.id;
+    data.text = newAnswer;
+    data.cookie = cookies.access_token;
+    console.log(data);
+    const response = await dispatch(postAnswerThunk(data)).then((res) => {
+      setRender(!render);
+    });
   };
 
   const quillModules = {
@@ -286,11 +316,37 @@ const Question_Page = () => {
   //   });
   // };
 
-  const upVote_question = () => {
-    setQuestionVotes(questionVotes + 1);
+  const upVote_question = async () => {
+    const response = await dispatch(
+      postQuestionVoteUpThunk({
+        questionId: currentQuestion.questionId,
+        memberId: currentQuestion.memberId,
+        cookie: cookies.access_token,
+      })
+    ).then((data) => {
+      if (data.payload === 401) {
+        navigate('/login');
+      } else if (data.payload === 409) {
+        alert('이미 투표하셨습니다.');
+      } else {
+        setQuestionVotes(questionVotes + 1);
+      }
+    });
   };
-  const downVote_question = () => {
-    setQuestionVotes(questionVotes - 1);
+  const downVote_question = async () => {
+    const response = await dispatch(
+      postQuestionVoteDownThunk({
+        questionId: currentQuestion.questionId,
+        memberId: currentQuestion.memberId,
+        cookie: cookies.access_token,
+      })
+    ).then((data) => {
+      if (data.payload === '401') {
+        navigate('/login');
+      } else {
+        setQuestionVotes(questionVotes - 1);
+      }
+    });
   };
 
   const upVote_answer = () => {
@@ -357,7 +413,7 @@ const Question_Page = () => {
                 color="#C0C0C0"
                 cursor="pointer"
               />
-              <Vote_Count>{currentQuestion.voteResult}</Vote_Count>
+              <Vote_Count>{questionVotes}</Vote_Count>
               <MdKeyboardArrowDown
                 onClick={downVote_question}
                 size="40"
@@ -385,8 +441,24 @@ const Question_Page = () => {
             />
           )}
           <Question_Title>답변</Question_Title>
+          {answersList.map((item, idx) => (
+            <Answer
+              key={`Answer_${idx}`}
+              vote={item.voteResult}
+              createdAt={item.createdAt}
+              modifiedAt={item.modifiedAt}
+              text={item.text}
+              id={item.answerId}
+              memberId={item.memberId}
+              username={item.username}
+              questionId={currentId}
+              answerId={item.answerId}
+              render={render}
+              handleRender={handleRender}
+            />
+          ))}
           {/* 해당 질문에 답변이 없으면 답변을 표시하지 않습니다. */}
-          {currentQuestion.answers.length === 0 ? (
+          {/* {currentQuestion.answers.length === 0 ? (
             <div className="No_Answers">
               현재 해당 질문에 대한 답변이 없습니다 😢 답변을 기다리고 있을
               질문자를 위해 답변을 등록해보세요!
@@ -399,13 +471,13 @@ const Question_Page = () => {
                     src={process.env.PUBLIC_URL + '/Sample_Avatar.png'}
                   />
                   <Username>Human_001</Username>
-                </User_Wrapper>
+                </User_Wrapper> */}
 
-                {/* 아래 삼항 연산자에서 조건문은 현재 페이지에서
+          {/* 아래 삼항 연산자에서 조건문은 현재 페이지에서
             질문의 답변 수에 맞게 랜더링될 때 (map 함수 예상)
             각 질문들과 현재 사용자의 memberId가 일치한지
             확인하기 위한 조건문으로 수정이 필요합니다. */}
-                {memberId === currentQuestion.answers[0].memberId ? (
+          {/* {memberId === currentQuestion.answers[0].memberId ? (
                   <Button_Wrapper>
                     <Answer_Edit_Button onClick={handleEditAnswer}>
                       {isAnswerEditOn ? '수정 완료' : '답변 수정하기'}
@@ -450,7 +522,7 @@ const Question_Page = () => {
                 </Text_Content>
               </Content_Wrapper>
             </div>
-          )}
+          )} */}
           <Content_Wrapper>
             <Vote_Wrapper />
             <Text_Content>
@@ -459,7 +531,7 @@ const Question_Page = () => {
                 theme="snow"
                 className="Rich_Text_Editor"
                 value={newAnswer}
-                onChange={() => setNewAnswer(newAnswer)}
+                onChange={handleNewAnswer}
                 placeholder="답변을 작성하세요"
               />
             </Text_Content>
@@ -467,7 +539,9 @@ const Question_Page = () => {
           <Content_Wrapper>
             <Vote_Wrapper />
             <Button_Wrapper>
-              <Answer_Submit_Button>답변 등록하기</Answer_Submit_Button>
+              <Answer_Submit_Button onClick={() => handleAddAnswer()}>
+                답변 등록하기
+              </Answer_Submit_Button>
             </Button_Wrapper>
           </Content_Wrapper>
         </Inner_Wrapper>
