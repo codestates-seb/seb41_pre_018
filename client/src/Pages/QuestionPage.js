@@ -204,6 +204,7 @@ const Question_Page = () => {
   const [currentUserAnswer, setCurrentUserAnswer] = useState(
     data.member[0].answers[0].answer_content
   );
+
   const [newAnswer, setNewAnswer] = useState('');
   const [render, setRender] = useState(false);
 
