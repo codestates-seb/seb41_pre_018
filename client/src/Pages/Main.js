@@ -113,7 +113,7 @@ const Main = () => {
           const data = { ...el, createdAt: date };
           return data;
         });
-
+        console.log(questions);
         setQuestions(questions);
       });
     }
@@ -161,6 +161,7 @@ const Main = () => {
                       username={item.username}
                       createdAt={item.createdAt}
                       tags={item.tags}
+                      answerCount={item.answerCount}
                       idx={idx}
                     />
                   );

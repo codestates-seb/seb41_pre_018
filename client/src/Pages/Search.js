@@ -177,6 +177,7 @@ const Search = (props) => {
                   vote={item.voteResult}
                   username={item.username}
                   createdAt={item.createdAt}
+                  answerCount={item.answerCount}
                   tags={item.tags}
                   idx={idx}
                 />

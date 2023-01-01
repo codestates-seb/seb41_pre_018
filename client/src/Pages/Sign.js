@@ -223,15 +223,19 @@ function Sign() {
   const onError = (e) => {
     console.error(e);
   };
+
   const idSubmitHandle = async () => {
-    // const response = dispatch(emaillCheckThunk(verify.emailVerify.email)).then(
-    //   (data) => data.payload
-    // );
-    const response = true;
+    const response = await dispatch(
+      emaillCheckThunk({ email: verify.emailVerify.email })
+    ).then((data) => data.payload);
+    console.log(response);
+    // const response = true;
     if (response === true && verify.emailVerify.boolean === true) {
       setVerify({ ...verify, verifyEmailVerify: { boolean: true } });
     } else {
       setVerify({ ...verify, verifyEmailVerify: { boolean: false } });
+      alert('중복된 이메일 입니다.');
+      reset({ email: '' });
     }
   };
   return (

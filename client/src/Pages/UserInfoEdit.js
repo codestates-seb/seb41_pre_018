@@ -119,23 +119,18 @@ function UserInfoEdit() {
   const [verify, setVerify] = useState({
     usernameVerify: { boolean: false },
   });
-  const [isLoding, setIsLoading] = useState(false);
-  const [userInfo, setUserInfo] = useState({
-    username: 'hi',
-    aboutMe: 'hi2',
-  });
+
   const { memberId } = useSelector((state) => state.loginBoolean);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [cookies, setCookie, removeCookie] = useCookies([]);
-  const { register, handleSubmit, watch, getValues } = useForm({
+  const { register, handleSubmit, watch, getValues, setValue } = useForm({
     defaultValues: {
-      usernameEdit: userInfo.username,
-      aboutMeEdit: userInfo.aboutMe,
+      usernameEdit: '',
+      aboutMeEdit: '',
     },
   });
 
-  console.log(userInfo.username, userInfo.aboutMe);
   const { usernameEdit } = watch();
   useEffect(() => {
     if (usernameRegExp.test(usernameEdit)) {
@@ -156,52 +151,49 @@ function UserInfoEdit() {
     navigate(`/user/${memberId}`);
   };
   const onSubmit = async (userdata) => {
-    const { usernameEdit, aboutMeEdit } = userdata;
-
-    // const response = await dispatch(
-    //   patchUserThunk({
-    //     cookie: cookies.access_token,
-    //     memberId,
-    //     username: usernameEdit,
-    //     aboutMe: aboutMeEdit,
-    //   })
-    // ).then((data) => {
-    //   if (data.payload === false) {
-    //     removeCookie('access_token');
-    //     dispatch(loginBoolean({ isLogin: false, memberId: '' }));
-    //     navigate('/login');
-    //   } else {
-    //     navigate(`/user/${memberId}`);
-    //   }
-    // });
+    let { usernameEdit, aboutMeEdit } = userdata;
+    if (aboutMeEdit === '') {
+      aboutMeEdit = null;
+    }
+    const response = await dispatch(
+      patchUserThunk({
+        cookie: cookies.access_token,
+        memberId,
+        username: usernameEdit,
+        aboutMe: aboutMeEdit,
+      })
+    ).then((data) => {
+      if (data.payload === false) {
+        removeCookie('access_token');
+        dispatch(loginBoolean({ isLogin: false, memberId: '' }));
+        navigate('/login');
+      } else {
+        navigate(`/user/${memberId}`);
+      }
+    });
   };
   const onError = (e) => {
     console.log(e);
   };
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     const response = await dispatch(
-  //       getUserInfoEditThunk({ cookie: cookies.access_token, memberId })
-  //     ).then((data) => {
-  //       if (data.payload === false) {
-  //         removeCookie('access_token');
-  //         dispatch(loginBoolean({ isLogin: false, memberId: '' }));
-  //         navigate('/login');
-  //       } else {
-  //         return data.payload;
-  //       }
-  //     });
-  //     const { username, aboutMe } = response;
-
-  //     setUserInfo({
-  //       ...userInfo,
-  //       username,
-  //       aboutMe,
-  //     });
-  //     setIsLoading(true);
-  //   }
-  //   fetchData();
-  // }, []);
+  useEffect(() => {
+    async function fetchData() {
+      const response = await dispatch(
+        getUserInfoEditThunk({ cookie: cookies.access_token, memberId })
+      ).then((data) => {
+        if (data.payload === false) {
+          removeCookie('access_token');
+          dispatch(loginBoolean({ isLogin: false, memberId: '' }));
+          navigate('/login');
+        } else {
+          return data.payload;
+        }
+      });
+      const { username, aboutMe } = response;
+      setValue('usernameEdit', username);
+      setValue('aboutMeEdit', aboutMe);
+    }
+    fetchData();
+  }, []);
 
   return (
     <User_Info_Edit_Container>
