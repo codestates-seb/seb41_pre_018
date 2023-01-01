@@ -195,7 +195,7 @@ export const My_Page_Delete_User_Button = styled.button`
   }
 `;
 
-function dateChange(UserBirthDay) {
+export function dateChange(UserBirthDay) {
   const d1 = UserBirthDay;
 
   const d2 = new Date()
