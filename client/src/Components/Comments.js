@@ -151,10 +151,10 @@ const Comments = ({
   const toggleEdit = (event) => {
     setIsEditOn(true);
     setNewComment(commentsData[event.target.id].text);
-    setCurrentCommentId(Number(event.target.id) + 1);
+    setCurrentCommentId(Number(commentsData[event.target.id].commentId));
   };
 
-  const editComment = (event) => {
+  const editComment = () => {
     if (confirm('댓글을 수정하시겠습니까?')) {
       async function editComment() {
         const response = await dispatch(
@@ -170,6 +170,7 @@ const Comments = ({
         });
       }
       editComment();
+      setIsEditOn(false);
     }
   };
 
