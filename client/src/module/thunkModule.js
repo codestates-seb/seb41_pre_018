@@ -116,19 +116,23 @@ export const getUserInfoThunk = createAsyncThunk(
             }
           ),
           axios.get(
-            `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/questions?page=1&size=10000&sort=QuestionId`
+            `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/members/${memberId}/Info`,
+            {
+              headers: {
+                Authorization: `Bearer ${cookie}`,
+              },
+            }
           ),
         ])
         .then(
           axios.spread((res1, res2) => {
             const { createdTime, username, aboutMe } = res1.data;
-            const questions = res2.data.data.filter(
-              (el) => el.memberId === memberId
-            );
-            return { createdTime, username, aboutMe, questions };
+
+            const { questions, answers } = res2.data.data;
+            return { createdTime, username, aboutMe, questions, answers };
           })
         );
-
+      console.log(response);
       return response;
     } catch (e) {
       return false;
@@ -208,23 +212,6 @@ export const patchUserThunk = createAsyncThunk(
 );
 
 //질문 상세 페이지
-export const getQuestionThunk = createAsyncThunk(
-  'thunkModule/postQuestionThunk',
-  async (data) => {
-    const questionId = data;
-    try {
-      const response = await axios
-        .get(
-          `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/questions/${questionId}`
-        )
-        .then((data) => data.data.data);
-
-      return response;
-    } catch (e) {
-      console.error(e);
-    }
-  }
-);
 
 //질문 등록
 export const postQuestionThunk = createAsyncThunk(
@@ -298,21 +285,24 @@ export const patchQuestionThunk = createAsyncThunk(
   async (data) => {
     const { questionId, title, text, tags, cookie } = data;
     try {
-      await axios.patch(
-        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/questions/${questionId}`,
-        {
-          title,
-          text,
-          tags,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${cookie}`,
+      const response = await axios
+        .patch(
+          `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/questions/${questionId}`,
+          {
+            title,
+            text,
+            tags,
           },
-        }
-      );
+          {
+            headers: {
+              Authorization: `Bearer ${cookie}`,
+            },
+          }
+        )
+        .then((data) => data);
+      return response;
     } catch (e) {
-      console.error(e);
+      return false;
     }
   }
 );
@@ -321,18 +311,10 @@ export const postAnswerThunk = createAsyncThunk(
   'thunkModule/postAnswerThunk',
   async (data) => {
     const { questionId, text, cookie } = data;
-    console.log(`cookie: ${cookie}`)
-    console.log(`questionId: ${questionId}`)
-    console.log(`text: ${text}`)
     try {
       await axios.post(
         `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/answers/${questionId}`,
-        { text },
-        {
-          headers: {
-            Authorization: `Bearer ${cookie}`,
-          },
-        }
+        { text }
       );
     } catch (e) {
       console.error(e);
@@ -357,17 +339,11 @@ export const getAnswerThunk = createAsyncThunk(
 export const patchAnswerThunk = createAsyncThunk(
   'thunkModule/patchAnswerThunk',
   async (data) => {
-    const { questionId, answerId, text, cookie } = data;
-    console.log(data)
+    const { questionId, answerId, text } = data;
     try {
       await axios.patch(
         `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/answers/${questionId}/${answerId}`,
-        { text },
-        {
-          headers: {
-            Authorization: `Bearer ${cookie}`,
-          },
-        }
+        { text }
       );
     } catch (e) {
       console.error(e);
@@ -378,14 +354,11 @@ export const patchAnswerThunk = createAsyncThunk(
 export const deleteAnswerThunk = createAsyncThunk(
   'thunkModule/deleteAnswerThunk',
   async (data) => {
-    const { answerId, questionId, cookie } = data; 
-    console.log(cookie)
+    const { answerId } = data;
     try {
-      await axios.delete(`http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/${questionId}/${answerId}`, null, {
-        headers: {
-          Authorization: `Bearer ${cookie}`,
-        },
-      })
+      await axios.delete(
+        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/answers/${answerId}`
+      );
     } catch (e) {
       console.error(e);
     }
@@ -396,14 +369,11 @@ export const postCommentThunk = createAsyncThunk(
   'thunkModule/postCommentThunk',
   async (data) => {
     const { questionId, text, cookie } = data;
-    console.log(`Bearer ${cookie}`);
     try {
       const response = await axios
         .post(
           `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/comments/${questionId}`,
-          {
-            text,
-          },
+          { text },
           {
             headers: {
               Authorization: `Bearer ${cookie}`,
@@ -422,15 +392,20 @@ export const postCommentThunk = createAsyncThunk(
 export const patchCommentThunk = createAsyncThunk(
   'thunkModule/patchCommentThunk',
   async (data) => {
-    const { questionId, commentId, text } = data;
+    const { questionId, commentId, text, cookie } = data;
     try {
+      const response = await axios.patch(
+        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/comments/${questionId}/${commentId}`,
+        { text },
+        {
+          headers: {
+            Authorization: `Bearer ${cookie}`,
+          },
+        }
+      );
     } catch (e) {
       console.error(e);
     }
-    await axios.patch(
-      `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/comments/${questionId}/${commentId}`,
-      { text }
-    );
   }
 );
 
