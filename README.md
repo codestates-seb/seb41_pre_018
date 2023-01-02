@@ -9,14 +9,18 @@
 
 # 18조 ![branches (1)](https://user-images.githubusercontent.com/61323917/208298153-8ac37259-d88b-4ad2-9e76-a880d201db1d.png) Origin Main
 
-이 페이지는 코드스테이츠 부트캠프 프론트엔드, 백엔드 41기가 진행한 Pre-Project 페이지입니다.
+![image](https://user-images.githubusercontent.com/61323917/210232657-2d890acc-a526-4de3-9cd0-31c23b760528.png)
+
+이 페이지는 코드스테이츠 부트캠프 프론트엔드, 백엔드 41기가 진행한 Pre-Project 페이지입니다. <a href="https://stackoverflow.com/">Stackoverflow </a> 페이지를 클론코딩해 해당 웹 페이지에서 제공하고 있는 기능을 최대한 구현하려고 노력했습니다.
+
+
 
 ## 프로젝트 개요
 
 ### ![settings](https://user-images.githubusercontent.com/61323917/208302868-0afad42c-b5ad-4a01-8b76-53c987fa8d31.png) 프로젝트 핵심 기능 소개
-*
-*
-*
+* 회원가입, 로그인, 내 회원 정보 조회
+* 질문(Question), 답변(Answer), 댓글(Comment) CRUD 
+* 질문 검색(Search), 질문/댓글 좋아요 또는 싫어요 투표(Vote) 
 
 ### 🎯 프로젝트 목표
 * 프로젝트를 분석 및 설계하고 실제 구현을 함으로써 실제에 가까운 개발 프로세스를 경험합니다.
@@ -36,11 +40,44 @@
 
 ## 사용된 기술 스택
 프로젝트에서 사용된 기술 스택은 다음과 같습니다:
-* Front-End
-  * React <img src="https://camo.githubusercontent.com/98ce3f27aec475c03ad0441a7d4092f6b956814c7adc7f0049689dccedb82f1d/68747470733a2f2f6564656e742e6769746875622e696f2f537570657254696e7949636f6e732f696d616765732f7376672f72656163742e737667" alt="GitHub Icon" width="25px"/>
-  * Styled-Component <img src="https://user-images.githubusercontent.com/61323917/208299058-48f6d624-82e8-4961-ae7d-3c60b5cff06d.png" alt="GitHub Icon" width="25px"/>
-* Back-End
-  * MySQL <img src="https://user-images.githubusercontent.com/61323917/208299278-c54b030b-cab9-4ec6-8ed8-c869997fae90.png" alt="GitHub Icon" width="25px"/>
-	
+
+* ![front-end (1)](https://user-images.githubusercontent.com/61323917/210227902-cc522b89-2404-49b6-9878-5ba612c3131a.png) Front-End
+  * HTML.CSS.JavaScript
+  * React 
+  * React-Redux 
+  * React-Quill
+  * Styled-Component 
+
+* ![database-storage (1)](https://user-images.githubusercontent.com/61323917/210227811-8c85d452-d03d-4273-80a8-b6d7dbdb4eb6.png) Back-End
+  * Java 
+  * Java Spring 
+  * Spring Boot 
+  * Spring Security
+  * Spring Data JPA 
+  * MySQL 
+
+* ![version-control](https://user-images.githubusercontent.com/61323917/210228712-f4790ec1-a2a2-4482-83a2-3aec394316bd.png) Version-Control
+  * Git
+  * GitHub 
+
+* ![conversation](https://user-images.githubusercontent.com/61323917/210229261-b9ce2838-d1d1-42ce-9eea-4313eade85ba.png) Communication
+  * Discord 
+  * Kakao Oven
+  * Figma
+  * Notion
+  * Postman
+
+* ![upload](https://user-images.githubusercontent.com/61323917/210228766-bf34c866-6455-487d-ac0f-1e8d9f25d4ce.png) Deployment
+  * Amazon Web Service: EC2, S3
+
+
 ## 프로젝트 상세
-이후 프로젝트에 대한 상세 설명 및 구동 시연 gif 등이 들어갈 예정입니다.
+
+* ![magnifying-glass](https://user-images.githubusercontent.com/61323917/210229775-0d8b8dd9-7c28-44eb-9951-cc7d4317e414.png) Bugs Report
+  * 질문 삭제 불가
+  * 투표 후 답변 삭제 불가
+
+
+<p> 배포 링크: http://soc-client-bucket.s3-website.ap-northeast-2.amazonaws.com/login </p>
+<p> 서버 링크 1 : 13.124.223.25 </p>
+<p> 서버 링크 2 : ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com </p>
