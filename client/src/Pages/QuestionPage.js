@@ -278,7 +278,6 @@ const Question_Page = () => {
     data.questionId = currentId.id;
     data.text = newAnswer;
     data.cookie = cookies.access_token;
-    console.log(data);
     const response = await dispatch(postAnswerThunk(data)).then((res) => {
       setRender(!render);
     });
@@ -459,72 +458,6 @@ const Question_Page = () => {
               handleRender={handleRender}
             />
           ))}
-          {/* 해당 질문에 답변이 없으면 답변을 표시하지 않습니다. */}
-          {/* {currentQuestion.answers.length === 0 ? (
-            <div className="No_Answers">
-              현재 해당 질문에 대한 답변이 없습니다 😢 답변을 기다리고 있을
-              질문자를 위해 답변을 등록해보세요!
-            </div>
-          ) : (
-            <div className="Answers_Wrapper">
-              <Userinfo_Wrapper>
-                <User_Wrapper>
-                  <Profile_Image
-                    src={process.env.PUBLIC_URL + '/Sample_Avatar.png'}
-                  />
-                  <Username>Human_001</Username>
-                </User_Wrapper> */}
-
-          {/* 아래 삼항 연산자에서 조건문은 현재 페이지에서
-            질문의 답변 수에 맞게 랜더링될 때 (map 함수 예상)
-            각 질문들과 현재 사용자의 memberId가 일치한지
-            확인하기 위한 조건문으로 수정이 필요합니다. */}
-          {/* {memberId === currentQuestion.answers[0].memberId ? (
-                  <Button_Wrapper>
-                    <Answer_Edit_Button onClick={handleEditAnswer}>
-                      {isAnswerEditOn ? '수정 완료' : '답변 수정하기'}
-                    </Answer_Edit_Button>
-                    <Answer_Delete_Button>답변 삭제하기</Answer_Delete_Button>
-                  </Button_Wrapper>
-                ) : null}
-              </Userinfo_Wrapper>
-
-              <Content_Wrapper>
-                <Vote_Wrapper>
-                  <MdKeyboardArrowUp
-                    onClick={upVote_answer}
-                    size="40"
-                    color="#C0C0C0"
-                    cursor="pointer"
-                  />
-                  <Vote_Count>{answerVotes}</Vote_Count>
-                  <MdKeyboardArrowDown
-                    onClick={downVote_answer}
-                    size="40"
-                    color="#C0C0C0"
-                    cursor="pointer"
-                  />
-                </Vote_Wrapper>
-                <Text_Content>
-                  {isAnswerEditOn ? (
-                    <ReactQuill
-                      modules={quillModules}
-                      theme="snow"
-                      className="Rich_Text_Editor"
-                      value={currentUserAnswer}
-                      onChange={handleUserAnswer}
-                    />
-                  ) : (
-                    <div
-                      dangerouslySetInnerHTML={{
-                        __html: currentUserAnswer,
-                      }}
-                    />
-                  )}
-                </Text_Content>
-              </Content_Wrapper>
-            </div>
-          )} */}
           <Content_Wrapper>
             <Vote_Wrapper />
             <Text_Content>

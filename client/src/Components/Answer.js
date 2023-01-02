@@ -148,7 +148,10 @@ const Answer = (props) => {
   useEffect(() => {
     async function fetchUsername() {
       const response = await dispatch(
-        getUserInfoThunk({ cookie: cookies.access_token, memberId })
+        getUserInfoThunk({
+          cookie: cookies.access_token,
+          memberId: props.memberId,
+        })
       ).then((data) => {
         setUsername(data.payload.username);
       });
@@ -180,10 +183,13 @@ const Answer = (props) => {
 
   const handleDeleteAnswer = async () => {
     const data = {};
-    data.answerId = 1;
-    data.questionId = 2;
+    data.answerId = props.answerId;
     data.cookie = cookies.access_token;
-    const response = await dispatch(deleteAnswerThunk(data));
+    if (confirm('답변을 삭제하시겠습니까?')) {
+      const response = await dispatch(deleteAnswerThunk(data)).then((res) =>
+        props.handleRender(!props.render)
+      );
+    }
   };
 
   const upVote_answer = () => {
