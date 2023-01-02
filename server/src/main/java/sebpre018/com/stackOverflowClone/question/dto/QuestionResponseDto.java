@@ -22,6 +22,8 @@ public class QuestionResponseDto {
 
     private String text;
 
+    private int answerCount;
+
     private int voteResult;
 
     private int views;

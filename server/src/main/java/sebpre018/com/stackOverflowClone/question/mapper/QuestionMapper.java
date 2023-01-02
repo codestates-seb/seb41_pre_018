@@ -66,12 +66,15 @@ public interface QuestionMapper {
     default QuestionResponseDto questionToQuestionResponse(Question question){
         Member member = question.getMember();
 
+
+
         return QuestionResponseDto.builder()
                 .questionId(question.getQuestionId())
                 .memberId(member.getMemberId())
-                .username(member.getUserName())
+                .username(member.getUsername())
                 .title(question.getTitle())
                 .text(question.getText())
+                .answerCount(question.getAnswerCount())
                 .voteResult(question.getVoteResult())
                 .views(question.getViews())
                 .createdAt(question.getCreatedTime())
@@ -91,7 +94,7 @@ public interface QuestionMapper {
                 .collect(Collectors.toList());
     }
 
-    List<QuestionResponseDto> questionsToQuestionResponseDtos(List<Question> questions);
+    List<QuestionResponseDto> questionsToQuestionResponses(List<Question> questions);
 
     default List<AnswerResponseDto> answersToAnswerResponseDtos(List<Answer> answers){
         return answers.stream()
@@ -99,6 +102,8 @@ public interface QuestionMapper {
                         .answerId(answer.getAnswerId())
                         .questionId(answer.getQuestion().getQuestionId())
                         .memberId(answer.getMember().getMemberId())
+                        .voteResult(answer.getVoteResult())
+                        .username(answer.getMember().getUsername())
                         .createdAt(answer.getCreatedTime())
                         .modifiedAt(answer.getModifiedTime())
                         .text(answer.getText())
@@ -125,7 +130,7 @@ public interface QuestionMapper {
         return AllResponseDto.builder()
                 .questionId(question.getQuestionId())
                 .memberId(member.getMemberId())
-                .username(member.getUserName())
+                .username(member.getUsername())
                 .title(question.getTitle())
                 .text(question.getText())
                 .voteResult(question.getVoteResult())

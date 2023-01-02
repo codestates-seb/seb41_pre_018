@@ -10,6 +10,9 @@ import sebpre018.com.stackOverflowClone.exception.BusinessLogicException;
 import sebpre018.com.stackOverflowClone.exception.ExceptionCode;
 import sebpre018.com.stackOverflowClone.member.entity.Member;
 import sebpre018.com.stackOverflowClone.member.service.MemberService;
+import sebpre018.com.stackOverflowClone.question.entity.Question;
+import sebpre018.com.stackOverflowClone.question.repository.QuestionRepository;
+import sebpre018.com.stackOverflowClone.question.service.QuestionService;
 
 import java.util.Optional;
 
@@ -18,12 +21,22 @@ public class AnswerService {
 
     private final AnswerRepository answerRepository;
     private final MemberService memberService;
-    public AnswerService(AnswerRepository answerRepository, MemberService memberService) {
+
+    private final QuestionService questionService;
+
+
+    public AnswerService(AnswerRepository answerRepository, MemberService memberService, QuestionService questionService, QuestionRepository questionRepository) {
         this.answerRepository = answerRepository;
         this.memberService = memberService;
+        this.questionService = questionService;
     }
+
     public Answer createAnswer(Answer answer) {
         answer.setMember(memberService.getLoginMember());
+        Question findQuestion = questionService.findQuestion(answer.getQuestion().getQuestionId());
+        int answerCount = findQuestion.getAnswerCount();
+        findQuestion.setAnswerCount(++answerCount);
+        questionService.updateAnswerCount(findQuestion);
 //        verifyExistsAnswer(answer.getAnswerId());
         return answerRepository.save(answer);
     }
@@ -39,7 +52,7 @@ public class AnswerService {
         Optional.ofNullable(answer.getText())
                 .ifPresent(text -> findAnswer.setText(text));
 
-        return answerRepository.save(answer);
+        return answerRepository.save(findAnswer);
     }
 
     public Answer findAnswer(Long answerId) {
@@ -53,6 +66,10 @@ public class AnswerService {
 
     public void deleteAnswer(Long answerId) {
         Answer findAnswer = findVerifiedAnswer(answerId);
+        Question findQuestion = questionService.findQuestion(findAnswer.getQuestion().getQuestionId());
+        int answerCount = findQuestion.getAnswerCount();
+        findQuestion.setAnswerCount(--answerCount);
+        questionService.updateAnswerCount(findQuestion);
         Member writer = memberService.findVerifiedMember(findAnswer.getMember().getMemberId());
         answerRepository.delete(findAnswer);
     }

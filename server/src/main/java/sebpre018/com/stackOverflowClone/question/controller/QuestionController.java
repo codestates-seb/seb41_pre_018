@@ -77,7 +77,7 @@ public class QuestionController {
         Question question = questionService.findQuestion(id);
         int view = question.getViews();
         question.setViews(++view); //조회수 증가
-
+        questionService.updateView(question);
         AllResponseDto response = mapper.questionToAllResponse(question, answerRepository, commentRepository);
         return new ResponseEntity<>(
                 new SingleResponseDto<>(response), HttpStatus.OK
@@ -95,7 +95,7 @@ public class QuestionController {
         questions.stream().forEach(question -> question.setTags(tagService.findTagsByQuestionId(question.getQuestionId())));
 
         return new ResponseEntity<> (new MultiResponseDto<>(
-                mapper.questionsToQuestionResponseDtos(questions), pageQuestions)
+                mapper.questionsToQuestionResponses(questions), pageQuestions)
                 , HttpStatus.OK);
     }
 
@@ -113,7 +113,7 @@ public class QuestionController {
         questions.stream().forEach(question -> question.setTags(tagService.findTagsByQuestionId(question.getQuestionId())));
 
         return new ResponseEntity<>(new MultiResponseDto<>(
-                mapper.questionsToQuestionResponseDtos(questions),
+                mapper.questionsToQuestionResponses(questions),
                 searchResult),HttpStatus.OK);
 
     }
