@@ -52,6 +52,9 @@ public class Question extends BaseEntity {
     @Column(nullable = false)
     private int views = 0;
 
+    @Column(nullable = false)
+    private int answerCount = 0;
+
 //    BaseEntity 상속으로 변경
 //    @Embedded
 //    @Column(nullable = false)

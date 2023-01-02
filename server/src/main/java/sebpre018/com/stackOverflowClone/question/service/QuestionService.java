@@ -68,6 +68,10 @@ public class QuestionService {
         return questionRepository.save(question);
     }
 
+    public Question updateAnswerCount(Question question) {
+        return questionRepository.save(question);
+    }
+
     public void deleteQuestion(Long id) {
         Question question = findVerifiedQuestion(id);
 //

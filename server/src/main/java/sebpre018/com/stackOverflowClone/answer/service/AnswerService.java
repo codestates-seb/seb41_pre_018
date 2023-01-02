@@ -10,6 +10,9 @@ import sebpre018.com.stackOverflowClone.exception.BusinessLogicException;
 import sebpre018.com.stackOverflowClone.exception.ExceptionCode;
 import sebpre018.com.stackOverflowClone.member.entity.Member;
 import sebpre018.com.stackOverflowClone.member.service.MemberService;
+import sebpre018.com.stackOverflowClone.question.entity.Question;
+import sebpre018.com.stackOverflowClone.question.repository.QuestionRepository;
+import sebpre018.com.stackOverflowClone.question.service.QuestionService;
 
 import java.util.Optional;
 
@@ -18,12 +21,22 @@ public class AnswerService {
 
     private final AnswerRepository answerRepository;
     private final MemberService memberService;
-    public AnswerService(AnswerRepository answerRepository, MemberService memberService) {
+
+    private final QuestionService questionService;
+
+
+    public AnswerService(AnswerRepository answerRepository, MemberService memberService, QuestionService questionService, QuestionRepository questionRepository) {
         this.answerRepository = answerRepository;
         this.memberService = memberService;
+        this.questionService = questionService;
     }
+
     public Answer createAnswer(Answer answer) {
         answer.setMember(memberService.getLoginMember());
+        Question findQuestion = questionService.findQuestion(answer.getQuestion().getQuestionId());
+        int answerCount = findQuestion.getAnswerCount();
+        findQuestion.setAnswerCount(++answerCount);
+        questionService.updateAnswerCount(findQuestion);
 //        verifyExistsAnswer(answer.getAnswerId());
         return answerRepository.save(answer);
     }
