@@ -66,12 +66,15 @@ public interface QuestionMapper {
     default QuestionResponseDto questionToQuestionResponse(Question question){
         Member member = question.getMember();
 
+
+
         return QuestionResponseDto.builder()
                 .questionId(question.getQuestionId())
                 .memberId(member.getMemberId())
                 .username(member.getUsername())
                 .title(question.getTitle())
                 .text(question.getText())
+                .answerCount(question.getAnswerCount())
                 .voteResult(question.getVoteResult())
                 .views(question.getViews())
                 .createdAt(question.getCreatedTime())
@@ -91,7 +94,7 @@ public interface QuestionMapper {
                 .collect(Collectors.toList());
     }
 
-    List<QuestionResponseDto> questionsToQuestionResponseDtos(List<Question> questions);
+    List<QuestionResponseDto> questionsToQuestionResponses(List<Question> questions);
 
     default List<AnswerResponseDto> answersToAnswerResponseDtos(List<Answer> answers){
         return answers.stream()
