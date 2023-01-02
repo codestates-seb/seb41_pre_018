@@ -341,10 +341,12 @@ const Question_Page = () => {
         cookie: cookies.access_token,
       })
     ).then((data) => {
-      if (data.payload === '401') {
+      if (data.payload === 401) {
         navigate('/login');
+      } else if (data.payload === 409) {
+        alert('이미 투표하셨습니다.');
       } else {
-        setQuestionVotes(questionVotes - 1);
+        setQuestionVotes(questionVotes + 1);
       }
     });
   };

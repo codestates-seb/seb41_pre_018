@@ -498,7 +498,7 @@ export const postQuestionVoteDownThunk = createAsyncThunk(
         }
       );
     } catch (e) {
-      return false;
+      return e.response.status;
     }
   }
 );
