@@ -1,6 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { useCallback } from 'react';
 
 //질문 투표 및 답변 투표는 보류 상태
 
@@ -9,38 +8,58 @@ export const signinThunk = createAsyncThunk(
   'thunkModule/signinThunk',
   async (data) => {
     const { username, email, password } = data;
+
     try {
-      await axios
+      const response = await axios
         .post(
           'http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/members',
           {
-            username,
             email,
+            username,
             password,
           }
         )
-        .then((data) => console.log(data));
+        .then((data) => data);
+
+      return response;
+    } catch (e) {
+      return e.response.status;
+    }
+  }
+);
+export const emaillCheckThunk = createAsyncThunk(
+  'thunkModule/emailCheckThunk',
+  async (data) => {
+    const { email } = data;
+
+    try {
+      const response = await axios
+        .get(
+          `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/members/emailCheck/${email}`
+        )
+        .then((data) => data.data);
+      return response;
     } catch (e) {
       console.error(e);
     }
   }
 );
-
 //로그인
 export const loginThunk = createAsyncThunk(
   'thunkModule/loginThunk',
   async (data) => {
     const { email, password } = data;
-    console.log(email, password);
     try {
-      await axios
+      const response = await axios
         .post(
           'http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/members/login',
           { email, password }
         )
-        .then((data) => console.log(data));
+        .then((data) => [data.headers.authorization, data.data.memberId]);
+      return response;
     } catch (e) {
       console.error(e);
+      return false;
     }
   }
 );
@@ -49,7 +68,9 @@ export const logoutThunk = createAsyncThunk(
   'thunkModule/logoutThunk',
   async () => {
     try {
-      await axios.post('http://localhost:8080/logout');
+      await axios.post(
+        'http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/logout'
+      );
     } catch (e) {
       console.error(e);
     }
@@ -60,11 +81,17 @@ export const logoutThunk = createAsyncThunk(
 export const getAllQuestionsThunk = createAsyncThunk(
   'thunkModule/getAllQuestionsThunk',
   async (data) => {
-    const { page, size, questionId } = data;
+    const { page, size, sortingMethod } = data;
     try {
-      await axios.get(
-        `http://localhost:8080/questions?page=${page}&size=${size}&sort=${questionId}`
-      );
+      const response = await axios
+        .get(
+          `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/questions?page=${page}&size=${size}&sort=${sortingMethod}`
+        )
+        .then((result) => {
+          return result.data.data;
+        });
+
+      return response;
     } catch (e) {
       console.error(e);
     }
@@ -74,16 +101,63 @@ export const getAllQuestionsThunk = createAsyncThunk(
 export const getUserInfoThunk = createAsyncThunk(
   'thunkModule/getUserInfoThunk',
   async (data) => {
-    const { memberId } = data;
+    const { cookie, memberId } = data;
+
     try {
-      await axios.get(`http://localhost:8080/members/${memberId}`, {
-        headers: {
-          Authorization:
-            'Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJVU0VSIl0sImVtYWlsIjoidGVzdEBnbWFpbC5jb20iLCJzdWIiOiJ0ZXN0QGdtYWlsLmNvbSIsImlhdCI6MTY3MjM4ODcwOSwiZXhwIjoxNjcyNDc1MTA5fQ.3RMA39T_iVX82SU26pRrIGsZxOl6jG-IkytNyPwZvss',
-        },
-      });
+      const response = await axios
+        .all([
+          axios.get(
+            `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/members/${memberId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${cookie}`,
+              },
+            }
+          ),
+          axios.get(
+            `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/members/${memberId}/Info`,
+            {
+              headers: {
+                Authorization: `Bearer ${cookie}`,
+              },
+            }
+          ),
+        ])
+        .then(
+          axios.spread((res1, res2) => {
+            const { createdTime, username, aboutMe } = res1.data;
+
+            const { questions, answers } = res2.data.data;
+            return { createdTime, username, aboutMe, questions, answers };
+          })
+        );
+      // console.log(response);
+      return response;
     } catch (e) {
-      console.error(e);
+      return false;
+    }
+  }
+);
+//회원 정보 수정 위한 회원 정보
+export const getUserInfoEditThunk = createAsyncThunk(
+  'thunkModule/getUserInfoEditThunk',
+  async (data) => {
+    const { cookie, memberId } = data;
+    try {
+      const response = await axios
+        .get(
+          `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/members/${memberId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${cookie}`,
+            },
+          }
+        )
+        .then((data) => data.data);
+
+      return response;
+    } catch (e) {
+      return false;
     }
   }
 );
@@ -91,11 +165,22 @@ export const getUserInfoThunk = createAsyncThunk(
 export const deleteUserThunk = createAsyncThunk(
   'thunkModule/deleteUserThunk',
   async (data) => {
-    const { memberId } = data;
+    const { cookie, memberId } = data;
+    // console.log(data);
     try {
-      await axios.delete(`http://localhost:8080/member/${memberId}`);
+      const response = await axios
+        .delete(
+          `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/members/${memberId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${cookie}`,
+            },
+          }
+        )
+        .then((data) => data.status);
+      return response;
     } catch (e) {
-      console.error(e);
+      return;
     }
   }
 );
@@ -103,44 +188,57 @@ export const deleteUserThunk = createAsyncThunk(
 export const patchUserThunk = createAsyncThunk(
   'thunkModule/patchUserThunk',
   async (data) => {
-    const { memberId, username, aboutMe, email, password } = data;
+    const { cookie, memberId, username, aboutMe } = data;
+    // console.log(data);
     try {
-      await axios.patch(`http://localhost:8080/member/${memberId}`, {
-        username,
-        aboutMe,
-        email,
-        password,
-      });
+      const response = await axios
+        .patch(
+          `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/members/${memberId}`,
+          {
+            username,
+            aboutMe,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${cookie}`,
+            },
+          }
+        )
+        .then((data) => data.data);
+
+      return response;
     } catch (e) {
-      console.error(e);
+      return false;
     }
   }
 );
 
 //질문 상세 페이지
-export const getQuestionThunk = createAsyncThunk(
-  'thunkModule/postQuestionThunk',
-  async (data) => {
-    const { questionId } = data;
-    try {
-      await axios.get(`http://localhost:8080/questions/${questionId}`);
-    } catch (e) {
-      console.error(e);
-    }
-  }
-);
 
 //질문 등록
 export const postQuestionThunk = createAsyncThunk(
   'thunkModule/postQuestionThunk',
   async (data) => {
-    const { title, text, tags } = data;
+    const { title, text, tags, cookie } = data;
+    // console.log(data);
     try {
-      await axios.post('http://localhost:8080/questions', {
-        title,
-        text,
-        tags,
-      });
+      const response = await axios
+        .post(
+          'http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/questions',
+          {
+            title,
+            text,
+            tags,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${cookie}`,
+            },
+          }
+        )
+        .then((data) => data);
+      // console.log(response);
+      return response;
     } catch (e) {
       console.error(e);
     }
@@ -150,41 +248,63 @@ export const postQuestionThunk = createAsyncThunk(
 export const getSearchQuestionThunk = createAsyncThunk(
   'thunkModule/getSearchQuestionThunk',
   async (data) => {
-    const { page, size, questionId, keyword } = data;
+    const { page, size, sortingMethod, searchElement } = data;
     try {
-      await axios.get(
-        `http://localhost:8080/questions/search?page=${page}&size=${size}&sort=${questionId}&keyword=${keyword}`
-      );
+      const response = await axios
+        .get(
+          `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/questions/search?page=${page}&size=${size}&sort=${sortingMethod}&search=${searchElement}`
+        )
+        .then((data) => data.data.data);
+      return response;
     } catch (e) {
       console.error(e);
     }
   }
 );
-//질문 삭제
-// export const delteQuestionThunk = createAsyncThunk(
+
+//질문 삭제 => 현재 서버에서 불가능
+// export const deleteQuestionThunk = createAsyncThunk(
 //   'thunkModule/deleteQuestionThunk',
 //   async (data) => {
-//     const { questionId } = data;
+//     const { questionId, cookie } = data;
 //     try {
-//       await axios.delete(`http://localhost:8080/questions/${questionId}`);
+//       await axios.delete(`http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/questions/${questionId}`, null, {
+//         headers: {
+//           Authorization: `Bearer ${cookie}`,
+//         },
+//       })
+//       .then((data) => data);
+//       console.log(response);
 //     } catch (e) {
 //       console.error(e);
 //     }
 //   }
 // );
+
 //질문 수정
 export const patchQuestionThunk = createAsyncThunk(
   'thunkModule/patchQuestionThunk',
   async (data) => {
-    const { questionId, title, text, tags } = data;
+    const { questionId, title, text, tags, cookie } = data;
     try {
-      await axios.patch(`http://localhost:8080/questions/${questionId}`, {
-        title,
-        text,
-        tags,
-      });
+      const response = await axios
+        .patch(
+          `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/questions/${questionId}`,
+          {
+            title,
+            text,
+            tags,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${cookie}`,
+            },
+          }
+        )
+        .then((data) => data);
+      return response;
     } catch (e) {
-      console.error(e);
+      return false;
     }
   }
 );
@@ -192,9 +312,19 @@ export const patchQuestionThunk = createAsyncThunk(
 export const postAnswerThunk = createAsyncThunk(
   'thunkModule/postAnswerThunk',
   async (data) => {
-    const { questionId, text } = data;
+    const { questionId, text, cookie } = data;
     try {
-      await axios.post(`http://localhost:8080/answers/${questionId}`, { text });
+      const response = await axios.post(
+        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/answers/${questionId}`,
+        { text },
+        {
+          headers: {
+            Authorization: `Bearer ${cookie}`,
+          },
+        }
+      );
+
+      return response;
     } catch (e) {
       console.error(e);
     }
@@ -206,9 +336,13 @@ export const getAnswerThunk = createAsyncThunk(
   async (data) => {
     const { questionId, answerId } = data;
     try {
-      await axios.get(
-        `http://localhost:8080/answers/${questionId}/${answerId}`
-      );
+      const response = await axios
+        .get(
+          `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/answers/${questionId}/${answerId}`
+        )
+        .then((data) => data.data.data);
+
+      return response;
     } catch (e) {
       console.error(e);
     }
@@ -218,12 +352,22 @@ export const getAnswerThunk = createAsyncThunk(
 export const patchAnswerThunk = createAsyncThunk(
   'thunkModule/patchAnswerThunk',
   async (data) => {
-    const { questionId, answerId, text } = data;
+    const { questionId, answerId, text, cookie } = data;
+    // console.log(data);
     try {
-      await axios.patch(
-        `http://localhost:8080/answers/${questionId}/${answerId}`,
-        { text }
-      );
+      const response = await axios
+        .patch(
+          `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/answers/${questionId}/${answerId}`,
+          { text },
+          {
+            headers: {
+              Authorization: `Bearer ${cookie}`,
+            },
+          }
+        )
+        .then((data) => data.data.data);
+
+      return response;
     } catch (e) {
       console.error(e);
     }
@@ -233,11 +377,21 @@ export const patchAnswerThunk = createAsyncThunk(
 export const deleteAnswerThunk = createAsyncThunk(
   'thunkModule/deleteAnswerThunk',
   async (data) => {
-    const { answerId } = data;
+    const { answerId, cookie } = data;
+    console.log(data);
     try {
-      await axios.delete(`http://localhost:8080/answers/${answerId}`);
+      const response = await axios.delete(
+        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/answers/${answerId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${cookie}`,
+          },
+        }
+      );
+
+      return response;
     } catch (e) {
-      console.error(e);
+      return e.response.status;
     }
   }
 );
@@ -245,11 +399,21 @@ export const deleteAnswerThunk = createAsyncThunk(
 export const postCommentThunk = createAsyncThunk(
   'thunkModule/postCommentThunk',
   async (data) => {
-    const { questionId, text } = data;
+    const { questionId, text, cookie } = data;
     try {
-      await axios.post(`http://localhost:8080/comments/${questionId}`, {
-        text,
-      });
+      const response = await axios
+        .post(
+          `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/comments/${questionId}`,
+          { text },
+          {
+            headers: {
+              Authorization: `Bearer ${cookie}`,
+            },
+          }
+        )
+        .then((res) => res.data.data);
+
+      return response;
     } catch (e) {
       console.error(e);
     }
@@ -259,43 +423,128 @@ export const postCommentThunk = createAsyncThunk(
 export const patchCommentThunk = createAsyncThunk(
   'thunkModule/patchCommentThunk',
   async (data) => {
-    const { questionId, commentId, text } = data;
+    const { questionId, commentId, text, cookie } = data;
     try {
-    } catch (e) {
-      console.error(e);
-    }
-    await axios.patch(
-      `http://localhost:8080/comments/${questionId}/${commentId}`,
-      { text }
-    );
-  }
-);
-//댓글 삭제
-export const deleteCommentThunk = createAsyncThunk(
-  'thunkModule/deleteCommentThunk',
-  async (data) => {
-    const { questionId, commentId } = data;
-    try {
-      await axios.delete(
-        `http://localhost:8080/comments/${questionId}/${commentId}`
+      const response = await axios.patch(
+        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/comments/${questionId}/${commentId}`,
+        { text },
+        {
+          headers: {
+            Authorization: `Bearer ${cookie}`,
+          },
+        }
       );
     } catch (e) {
       console.error(e);
     }
   }
 );
-////////////////////////////////////////
-////////////////////////////////////////
-////////////////////////////////////////
-// useCallback(() => {
-//   if (isLogin === false) {
-//     dispatch(isLoginThunk()); // 모든 페이지 렌더링 시작 시 함수 실행
-//   }
-// }, [dispatch]);
 
-// useCallback(() => {
-//   if (isLogin === true) {
-//     dispatch(isLoginThunk()); // 모든 페이지 렌더링 시작 시 함수 실행
-//   }
-// }, [dispatch]);
-//로그인 필요한 페이지에서 쿠키가 없거나 만료가 되어 응답이 올바르게 오지 않는다면 로그인 창으로 연결해야할것.
+//댓글 삭제
+export const deleteCommentThunk = createAsyncThunk(
+  'thunkModule/deleteCommentThunk',
+  async (data) => {
+    const { questionId, commentId, cookie } = data;
+    try {
+      const response = await axios
+        .delete(
+          `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/comments/${questionId}/${commentId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${cookie}`,
+            },
+          }
+        )
+        .then((res) => res.data.data);
+
+      return response;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+);
+//질문 투표 업
+export const postQuestionVoteUpThunk = createAsyncThunk(
+  'thunkModule/postQuestionVoteUpThunk',
+  async (data) => {
+    const { questionId, memberId, cookie } = data;
+    try {
+      await axios.post(
+        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/vote/questions/${questionId}/${memberId}/up`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${cookie}`,
+          },
+        }
+      );
+    } catch (e) {
+      return e.response.status;
+    }
+  }
+);
+//질문 투표 다운
+export const postQuestionVoteDownThunk = createAsyncThunk(
+  'thunkModule/postQuestionVoteDownThunk',
+  async (data) => {
+    const { questionId, memberId, cookie } = data;
+
+    try {
+      await axios.post(
+        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/vote/questions/${questionId}/${memberId}/down`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${cookie}`,
+          },
+        }
+      );
+    } catch (e) {
+      return e.response.status;
+    }
+  }
+);
+//답변 투표 업
+export const postAnswerVoteUpThunk = createAsyncThunk(
+  'thunkModule/postAnswerVoteUpThunk',
+  async (data) => {
+    const { answerId, memberId, cookie } = data;
+    console.log(data);
+    try {
+      await axios
+        .post(
+          `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/vote/answers/${answerId}/${memberId}/up`,
+          null,
+          {
+            headers: {
+              Authorization: `Bearer ${cookie}`,
+            },
+          }
+        )
+        .then((data) => console.log(data));
+    } catch (e) {
+      return e.response.status;
+    }
+  }
+);
+//답변 투표 다운
+export const postAnswerVoteDownThunk = createAsyncThunk(
+  'thunkModule/postAnswerVoteDownThunk',
+  async (data) => {
+    const { answerId, memberId, cookie } = data;
+
+    try {
+      await axios.post(
+        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/vote/answers/${answerId}/${memberId}/down`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${cookie}`,
+          },
+        }
+      );
+    } catch (e) {
+      return e.response.status;
+    }
+  }
+);

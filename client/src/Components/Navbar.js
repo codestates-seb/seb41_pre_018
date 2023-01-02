@@ -1,6 +1,11 @@
 import styled from 'styled-components';
 import { RxMagnifyingGlass, RxTextAlignJustify } from 'react-icons/rx';
 import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { useCookies } from 'react-cookie';
+import { loginBoolean } from '../module/loginBooleanSlice';
+import { searchAction } from '../module/searchSlice';
+import { useState } from 'react';
 
 const Orange_Line = styled.div`
   display: flex;
@@ -95,36 +100,64 @@ const Logout_Button = styled.button`
   }
 `;
 
-const Navbar = (props) => {
+const Navbar = () => {
   const navigate = useNavigate();
-  const navigateToSearch = () => {
-    navigate('/search');
+  const { isLogin, memberId } = useSelector((state) => state.loginBoolean);
+  const { searchElement } = useSelector((state) => state.search);
+  const [value, setValue] = useState(searchElement);
+  const [cookies, setCookie, removeCookie] = useCookies([]);
+  const dispatch = useDispatch();
+  const navigateToSearch = (value) => {
+    if (value === '') {
+      dispatch(searchAction(value));
+      navigate('/');
+    } else {
+      dispatch(searchAction(value));
+      navigate('/search');
+    }
   };
-
+  const logoutHandle = () => {
+    removeCookie('access_token');
+    dispatch(loginBoolean({ isLogin: false, memberId: '' }));
+    navigate('/');
+  };
+  const onSearchHandle = (e) => {
+    setValue(e.target.value);
+  };
+  const goHomeHandle = () => {
+    dispatch(searchAction(''));
+    setValue('');
+  };
   return (
     <div>
       <Orange_Line />
       <Navbar_Background>
         <RxTextAlignJustify color="gray" size={30} />
         <Link to="/">
-          <Logo src={process.env.PUBLIC_URL + '/Logo.png'} />
+          <Logo
+            src={process.env.PUBLIC_URL + '/Logo.png'}
+            onClick={goHomeHandle}
+          />
         </Link>
         <Search_Wrapper>
           <RxMagnifyingGlass color="gray" size={25} />
           <Search_Input
             placeholder="Search..."
-            onChange={(e) => console.log(e.target.value)}
-            onKeyUp={(e) => (e.keyCode === 13 ? navigateToSearch() : null)}
+            value={value}
+            onChange={(e) => onSearchHandle(e)}
+            onKeyUp={(e) =>
+              e.keyCode === 13 ? navigateToSearch(e.target.value) : null
+            }
           />
         </Search_Wrapper>
-        {props.isLoggedIn ? (
+        {isLogin ? (
           <>
-            <Link to="/user/1">
+            <Link to={`/user/${memberId}`}>
               <Profile_Image
                 src={process.env.PUBLIC_URL + '/Sample_Avatar.png'}
               />
             </Link>
-            <Logout_Button>Log out</Logout_Button>
+            <Logout_Button onClick={logoutHandle}>Log out</Logout_Button>
           </>
         ) : (
           <>

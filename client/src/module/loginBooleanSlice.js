@@ -1,25 +1,21 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
-export const isLoginThunk = createAsyncThunk(
-  'thunkModule/inLoginThunk',
-  async () => {
-    await axios.get('http://localhost:8080/questions');
-  }
-);
+import { createSlice } from '@reduxjs/toolkit';
+
 const initialState = {
   isLogin: false,
+  memberId: '',
 };
 
 const loginBooleanSlice = createSlice({
   name: 'loginBooleanSlice',
   initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder.addCase(
-      isLoginThunk.fulfilled,
-      (state, action) => (state.isLogin = action.payload)
-    );
+  reducers: {
+    loginBoolean: (state, action) => {
+      const { isLogin, memberId } = action.payload;
+      state.isLogin = isLogin;
+      state.memberId = memberId;
+    },
   },
 });
 
+export const { loginBoolean } = loginBooleanSlice.actions;
 export default loginBooleanSlice;

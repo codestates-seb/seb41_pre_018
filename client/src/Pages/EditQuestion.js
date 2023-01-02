@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { data } from './../dummydata.js';
+
+import { patchQuestionThunk } from '../module/thunkModule.js';
+
+import { useCookies } from 'react-cookie';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Edit_Question_Wrapper = styled.div`
   background-color: rgba(0, 0, 0, 0.1);
@@ -105,7 +109,7 @@ const Text_Wrapper = styled.div`
         margin-right: 2px;
       }
 
-      button {
+      div {
         height: 100%;
         border: none;
         font-size: 16px;
@@ -136,19 +140,45 @@ const Tag_Input_Field = styled.input`
 export default function NewQuestion() {
   // 질문 상세 페이지에서 가져올 더미 데이터
   // => 상태로 전달 받을 예정이며 정상 구현 이후 해당 변수는 삭제합니다.
-  const [currentQuestion, setCurrentQuestion] = useState(data.question[0]);
+  const currentId = useParams();
+  const { title, text, tags } = useSelector((state) => state.question);
+  const dispatch = useDispatch();
+
+  const quillModules = {
+    toolbar: [
+      [{ header: [1, 2, false] }],
+      ['bold', 'italic', 'underline', 'strike', 'blockquote', 'code-block'],
+      [
+        { list: 'ordered' },
+        { list: 'bullet' },
+        { indent: '-1' },
+        { indent: '+1' },
+      ],
+      ['link', 'image'],
+      ['clean'],
+    ],
+  };
 
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
-  } = useForm();
-  const [userTags, setUserTags] = useState(currentQuestion.tags);
+  } = useForm({
+    defaultValues: { title: '' },
+  });
+  const [userTags, setUserTags] = useState([]);
   const [userInput, setUserInput] = useState('');
   const [tagInputXCord, setTagInputXCord] = useState(0);
-  const [textEditorValue, setTextEditorValue] = useState(currentQuestion.text);
+  const [textEditorValue, setTextEditorValue] = useState();
   const navigate = useNavigate();
+  const [cookies] = useCookies([]);
 
+  useEffect(() => {
+    setValue('title', title);
+    setTextEditorValue(text);
+    setUserTags(tags);
+  }, []);
   useEffect(() => {
     setTagInputXCord(document.querySelector('.Tag_Wrapper').clientWidth + 7.5);
   }, [userTags]);
@@ -160,7 +190,12 @@ export default function NewQuestion() {
 
     if (userInput !== '' && (event.keyCode === 188 || event.keyCode === 32)) {
       setUserInput('');
-      userTags.push(event.target.value);
+      setUserTags(
+        userTags.concat({
+          hashTag: event.target.value,
+          tagId: userTags.length - 1,
+        })
+      );
     }
   };
 
@@ -169,29 +204,28 @@ export default function NewQuestion() {
     setUserInput(filteredString.trim());
     setTagInputXCord(document.querySelector('.Tag_Wrapper').clientWidth + 7.5);
   };
-
   const deleteTag = (event) => {
-    userTags.splice(event.target.id, 1);
-    setTagInputXCord(
-      document.querySelector('.Tag_Wrapper').clientWidth +
-        7.5 -
-        document.querySelector(`#Tag${userTags.length}`).clientWidth -
-        5
-    );
+    const filter = userTags.filter((el) => {
+      return el.tagId !== Number(event.target.id);
+    });
+    setUserTags(filter);
+    setTagInputXCord(document.querySelector('.Tag_Wrapper').clientWidth + 7.5);
     event.preventDefault();
   };
 
-  const cancelRegister = () => {
+  const cancelRegister = (e) => {
     if (confirm('정말 취소하시겠습니까?')) {
       navigate('./../');
     }
+    e.preventDefault();
   };
 
   const handleTextEditorChange = (val) => {
     setTextEditorValue(val);
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
+    const { title } = data;
     if (textEditorValue === '') {
       alert('질문의 내용을 작성해 주세요.');
     } else if (textEditorValue.length < 27) {
@@ -199,10 +233,24 @@ export default function NewQuestion() {
       alert('질문은 20자 이상이어야 합니다.');
     } else {
       if (confirm('수정한 내용을 등록하시겠습니까?')) {
+        const tags = [];
+
+        userTags.forEach((item) => tags.push({ hashTag: `${item.hashTag}` }));
         data['text'] = textEditorValue;
-        data['tags'] = userTags;
-        console.log(data);
-        navigate('./../');
+        data['tags'] = tags;
+        data['cookie'] = cookies.access_token;
+        data.questionId = currentId.id;
+
+        const response = await dispatch(patchQuestionThunk(data)).then(
+          (data) => {
+            if (data.payload !== false) {
+              alert('질문이 수정되었습니다');
+              navigate('./../');
+            } else {
+              alert(`에러: 에러코드${data.payload.status}`);
+            }
+          }
+        );
       }
     }
   };
@@ -222,7 +270,6 @@ export default function NewQuestion() {
             {...register('title', {
               required: '제목을 입력해주세요',
             })}
-            value={currentQuestion.title}
             type="text"
           />
           {errors.title && (
@@ -239,6 +286,7 @@ export default function NewQuestion() {
             </label>
           </h3>
           <ReactQuill
+            modules={quillModules}
             theme="snow"
             className="Rich_Text_Editor"
             placeholder="내용을 입력해주세요"
@@ -266,11 +314,15 @@ export default function NewQuestion() {
             <div className="Tag_Wrapper">
               {userTags.map((a, idx) => {
                 return (
-                  <div className="Tag" key={`Tag${idx}`} id={`Tag${idx}`}>
-                    <span>{a}</span>
-                    <button onClick={deleteTag} id={idx}>
+                  <div
+                    className="Tag"
+                    key={a.tagId !== undefined ? a.tagId : idx}
+                    id={`Tag${idx}`}
+                  >
+                    <span>{a.hashTag}</span>
+                    <div type="button" onClick={deleteTag} id={a.tagId}>
                       x
-                    </button>
+                    </div>
                   </div>
                 );
               })}

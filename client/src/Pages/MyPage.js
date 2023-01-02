@@ -1,11 +1,15 @@
 import styled from 'styled-components';
-import { data } from '../dummydata';
-import { useParams, useNavigate } from 'react-router-dom';
+
+import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { HiCake } from 'react-icons/hi';
 import DeleteUserModal from '../Components/DeleteUserModal';
 import { Link } from 'react-router-dom';
-//username 파라미터와 user e-mail 토큰? 기반으로? 받아와야하지 않나?
+import { getUserInfoThunk } from '../module/thunkModule';
+import { useCookies } from 'react-cookie';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginBoolean } from '../module/loginBooleanSlice';
+
 const My_page_Container = styled.div`
   display: flex;
   justify-content: center;
@@ -85,6 +89,14 @@ const My_Page_About = styled.div`
       display: block;
       align-self: center;
       font-size: 20px;
+      text-decoration: none;
+      color: black;
+      position: relative;
+      left: 90px;
+      &:hover {
+        color: #3973b3;
+        cursor: pointer;
+      }
     }
   }
   & div:nth-child(2)::-webkit-scrollbar {
@@ -160,7 +172,7 @@ const My_Page_Title_Span = styled.span`
   margin-bottom: 10px;
 `;
 const My_Page_Answer_Question_Title = styled.span`
-  margin: 5px 0px;
+  margin: 5px 10px;
   font-size: 14px;
   color: black;
   .Question_Link {
@@ -191,11 +203,9 @@ export const My_Page_Delete_User_Button = styled.button`
   }
 `;
 
-function dateChange(UserBirthDay) {
-  const d1 = UserBirthDay.split('.')
-    .slice(0, 3)
-    .map((el) => Number(el))
-    .join('-');
+export function dateChange(UserBirthDay) {
+  const d1 = UserBirthDay;
+
   const d2 = new Date()
     .toLocaleString('ko-KR')
     .split('.')
@@ -206,122 +216,171 @@ function dateChange(UserBirthDay) {
   const date2 = new Date(d2);
 
   const diffDate = date2.getTime() - date1.getTime();
-  return diffDate / (1000 * 60 * 60 * 24);
+
+  return parseInt(diffDate / (1000 * 60 * 60 * 24));
 }
 
 function MyPage() {
-  const { memberId } = useParams();
-  const [dayAgo, setDayAgo] = useState('');
+  const [isLoding, setIsLoading] = useState(false);
+  const [userInfo, setUserInfo] = useState({
+    dayAgo: '',
+    username: '',
+    aboutMe: '',
+    questions: [],
+    answers: [],
+  });
   const [hiddenAction, setHiddenAction] = useState(false);
+  const { memberId } = useSelector((state) => state.loginBoolean);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [cookies, setCookie, removeCookie] = useCookies([]);
   //현재 더미데이터 조건부
-  let response;
-  for (let i = 0; i < data.member.length; i++) {
-    if (Number(memberId) === data.member[i].memberId) {
-      response = data.member[i];
-      break;
-    }
-  }
+
   const deleteUserHandle = (boolean) => {
     setHiddenAction(boolean);
   };
   const navigateToHandle = () => {
     navigate(`/user/edit/${memberId}`);
   };
-  const { username, created_time, modified_time, aboutMe, answers, questions } =
-    response;
   useEffect(() => {
-    const day = dateChange(created_time);
-    setDayAgo(day);
+    async function fetchData() {
+      const response = await dispatch(
+        getUserInfoThunk({ cookie: cookies.access_token, memberId })
+      ).then((data) => {
+        if (data.payload === false) {
+          removeCookie('access_token');
+          dispatch(loginBoolean({ isLogin: false, memberId: '' }));
+          navigate('/login');
+        } else {
+          return data.payload;
+        }
+      });
+
+      const { createdTime, username, aboutMe, questions, answers } = response;
+
+      const dayAgo = dateChange(createdTime);
+      setUserInfo({
+        ...userInfo,
+        dayAgo,
+        username,
+        aboutMe,
+        questions,
+        answers,
+      });
+      setIsLoading(true);
+    }
+    fetchData();
   }, []);
   return (
     <My_page_Container>
-      <My_Page_Sub_Container
-        className={hiddenAction === true ? 'opacityComponent' : null}
-      >
-        <My_Page_Header>
-          <My_Page_Profile_Image
-            src={process.env.PUBLIC_URL + '/Sample_Avatar.png'}
-          />
-          <div className="Header_Right_Wrapper">
-            <span>{username}</span>
-            <div className="Created_User_Day">
-              <HiCake className="Hi_Cake" />
-              <span>Member for {dayAgo} days</span>
-            </div>
-          </div>
-        </My_Page_Header>
-        <My_Page_About>
-          <div>
-            <My_Page_Title_Span>About</My_Page_Title_Span>
-            <button
+      {isLoding === false ? (
+        <span>loading</span>
+      ) : (
+        <>
+          <My_Page_Sub_Container
+            className={hiddenAction === true ? 'opacityComponent' : null}
+          >
+            <My_Page_Header>
+              <My_Page_Profile_Image
+                src={process.env.PUBLIC_URL + '/Sample_Avatar.png'}
+              />
+              <div className="Header_Right_Wrapper">
+                <span>{userInfo.username}</span>
+                <div className="Created_User_Day">
+                  <HiCake className="Hi_Cake" />
+                  <span>Member for {userInfo.dayAgo} days</span>
+                </div>
+              </div>
+            </My_Page_Header>
+            <My_Page_About>
+              <div>
+                <My_Page_Title_Span>About</My_Page_Title_Span>
+                <button
+                  disabled={hiddenAction === true ? true : false}
+                  onClick={navigateToHandle}
+                >
+                  Click to edit
+                </button>
+              </div>
+              <div>
+                {userInfo.aboutMe === null ? (
+                  <Link className="No_Aboutme" to={`/user/edit/${memberId}`}>
+                    Your about me section is currently blank. Would you like to
+                    add one?
+                  </Link>
+                ) : (
+                  <span>{userInfo.aboutMe}</span>
+                )}
+              </div>
+            </My_Page_About>
+            <My_Page_Answer_Question_Wrapper>
+              <My_Page_Answer_Question className="Answer_Box">
+                <My_Page_Title_Span>Answers</My_Page_Title_Span>
+                <My_Page_Answer_Question_Body>
+                  {userInfo.answers.length === 0 ? (
+                    <span>No answers</span>
+                  ) : (
+                    userInfo.answers.map((answer, index) => {
+                      return (
+                        <div key={answer.answerId}>
+                          <My_Page_Answer_Question_Title>
+                            {`${index + 1}.  `}
+                            <Link
+                              to={`/question/${answer.questionId}`}
+                              className="Question_Link"
+                            >
+                              {answer.text.length <= 50
+                                ? answer.text.replace(/<[^>]*>?/g, '')
+                                : answer.text
+                                    .replace(/<[^>]*>?/g, '')
+                                    .slice(0, 50) + '...'}
+                            </Link>
+                          </My_Page_Answer_Question_Title>
+                        </div>
+                      );
+                    })
+                  )}
+                </My_Page_Answer_Question_Body>
+              </My_Page_Answer_Question>
+              <My_Page_Answer_Question>
+                <My_Page_Title_Span>Questions</My_Page_Title_Span>
+                <My_Page_Answer_Question_Body>
+                  {userInfo.questions.length === 0 ? (
+                    <span>No questions</span>
+                  ) : (
+                    userInfo.questions.map((question, index) => {
+                      return (
+                        <div key={question.questionId}>
+                          <My_Page_Answer_Question_Title>
+                            {`${index + 1}.  `}
+                            <Link
+                              to={`/question/${question.questionId}`}
+                              className="Question_Link"
+                            >
+                              {question.title}
+                            </Link>
+                          </My_Page_Answer_Question_Title>
+                        </div>
+                      );
+                    })
+                  )}
+                </My_Page_Answer_Question_Body>
+              </My_Page_Answer_Question>
+            </My_Page_Answer_Question_Wrapper>
+            <My_Page_Delete_User_Button
+              onClick={() => deleteUserHandle(true)}
               disabled={hiddenAction === true ? true : false}
-              onClick={navigateToHandle}
             >
-              Click to edit
-            </button>
-          </div>
-          <div>
-            {aboutMe === '' ? (
-              <span className="No_Aboutme">
-                Your about me section is currently blank. Would you like to add
-                one?
-              </span>
-            ) : (
-              <span>{aboutMe}</span>
-            )}
-          </div>
-        </My_Page_About>
-        <My_Page_Answer_Question_Wrapper>
-          <My_Page_Answer_Question className="Answer_Box">
-            <My_Page_Title_Span>Answers</My_Page_Title_Span>
-            <My_Page_Answer_Question_Body>
-              {answers.length === 0
-                ? null
-                : answers.map((answer) => {
-                    return (
-                      <div key={answer.answer_id}>
-                        <My_Page_Answer_Question_Title>
-                          My Answer About Question~~~~~~~
-                        </My_Page_Answer_Question_Title>
-                      </div>
-                    );
-                  })}
-            </My_Page_Answer_Question_Body>
-          </My_Page_Answer_Question>
-          <My_Page_Answer_Question>
-            <My_Page_Title_Span>Questions</My_Page_Title_Span>
-            <My_Page_Answer_Question_Body>
-              {questions.length === 0
-                ? null
-                : questions.map((question, index) => {
-                    return (
-                      <div key={question.question_id}>
-                        <My_Page_Answer_Question_Title>
-                          {`${index + 1}.  `}
-
-                          <Link
-                            to={`/question/${question.question_id}`}
-                            className="Question_Link"
-                          >
-                            {question.title}
-                          </Link>
-                        </My_Page_Answer_Question_Title>
-                      </div>
-                    );
-                  })}
-            </My_Page_Answer_Question_Body>
-          </My_Page_Answer_Question>
-        </My_Page_Answer_Question_Wrapper>
-        <My_Page_Delete_User_Button
-          onClick={() => deleteUserHandle(true)}
-          disabled={hiddenAction === true ? true : false}
-        >
-          Delete profile
-        </My_Page_Delete_User_Button>
-      </My_Page_Sub_Container>
-      {hiddenAction === false ? null : (
-        <DeleteUserModal className="hi" deleteUserHandle={deleteUserHandle} />
+              Delete profile
+            </My_Page_Delete_User_Button>
+          </My_Page_Sub_Container>
+          {hiddenAction === false ? null : (
+            <DeleteUserModal
+              className="hi"
+              deleteUserHandle={deleteUserHandle}
+            />
+          )}
+        </>
       )}
     </My_page_Container>
   );

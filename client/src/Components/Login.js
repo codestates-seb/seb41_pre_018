@@ -3,8 +3,11 @@ import { useForm } from 'react-hook-form';
 import { BiUser } from 'react-icons/bi';
 import { BsKey } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { loginThunk } from '../module/thunkModule';
+import { useCookies } from 'react-cookie';
+import { useNavigate } from 'react-router-dom';
+import { loginBoolean } from '../module/loginBooleanSlice';
 
 const Login_Wrapper = styled.div`
   margin: 50px auto 0 auto;
@@ -134,10 +137,26 @@ export default function Login() {
     formState: { errors },
   } = useForm();
   const dispatch = useDispatch();
-  const onSubmit = (data) => {
+  const navigate = useNavigate();
+  const data = useSelector((state) => state.loginBoolean);
+  console.log(data);
+
+  const [cookies, setCookie, removeCookie] = useCookies([]);
+  const onSubmit = async (data) => {
     const { email, password } = data;
-    console.log(email, password);
-    dispatch(loginThunk({ email, password }));
+    const [token, memberId] = await dispatch(
+      loginThunk({ email, password })
+    ).then((data) => {
+      if (data.payload === false) {
+        alert('확인');
+      } else {
+        return data.payload;
+      }
+    });
+    dispatch(loginBoolean({ isLogin: true, memberId: memberId }));
+    setCookie('access_token', token.split(' ')[1], { path: '/' });
+
+    navigate('/');
   };
 
   return (
