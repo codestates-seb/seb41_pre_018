@@ -44,6 +44,7 @@ public interface AnswerMapper {
         return AnswerResponseDto.builder()
                 .answerId(answer.getAnswerId())
                 .memberId(member.getMemberId())
+                .username(member.getUsername())
                 .questionId(question.getQuestionId())
                 .voteResult(answer.getVoteResult())
                 .text(answer.getText())

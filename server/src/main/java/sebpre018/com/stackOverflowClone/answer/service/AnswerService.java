@@ -52,7 +52,7 @@ public class AnswerService {
         Optional.ofNullable(answer.getText())
                 .ifPresent(text -> findAnswer.setText(text));
 
-        return answerRepository.save(answer);
+        return answerRepository.save(findAnswer);
     }
 
     public Answer findAnswer(Long answerId) {
@@ -66,6 +66,10 @@ public class AnswerService {
 
     public void deleteAnswer(Long answerId) {
         Answer findAnswer = findVerifiedAnswer(answerId);
+        Question findQuestion = questionService.findQuestion(findAnswer.getQuestion().getQuestionId());
+        int answerCount = findQuestion.getAnswerCount();
+        findQuestion.setAnswerCount(--answerCount);
+        questionService.updateAnswerCount(findQuestion);
         Member writer = memberService.findVerifiedMember(findAnswer.getMember().getMemberId());
         answerRepository.delete(findAnswer);
     }

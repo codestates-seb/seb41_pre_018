@@ -102,6 +102,8 @@ public interface QuestionMapper {
                         .answerId(answer.getAnswerId())
                         .questionId(answer.getQuestion().getQuestionId())
                         .memberId(answer.getMember().getMemberId())
+                        .voteResult(answer.getVoteResult())
+                        .username(answer.getMember().getUsername())
                         .createdAt(answer.getCreatedTime())
                         .modifiedAt(answer.getModifiedTime())
                         .text(answer.getText())
