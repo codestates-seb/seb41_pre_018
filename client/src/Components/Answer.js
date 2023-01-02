@@ -10,6 +10,8 @@ import {
   deleteUserThunk,
   getUserInfoThunk,
   patchAnswerThunk,
+  postAnswerVoteUpThunk,
+  postAnswerVoteDownThunk,
 } from '../module/thunkModule';
 import { useParams } from 'react-router-dom';
 import { render } from 'react-dom';
@@ -128,6 +130,7 @@ const Text_Content = styled.div`
 const Gray_Text = styled.span`
   color: #7f7f7f;
   white-space: pre;
+  margin: 0px 5px 0px 10px;
 `;
 const Middle_Text_Wrapper = styled.div`
   display: flex;
@@ -143,21 +146,21 @@ const Answer = (props) => {
   const [cookies] = useCookies([]);
   const dispatch = useDispatch();
   const { memberId } = useSelector((state) => state.loginBoolean);
-  const [username, setUsername] = useState('');
+  // const [username, setUsername] = useState('');
 
-  useEffect(() => {
-    async function fetchUsername() {
-      const response = await dispatch(
-        getUserInfoThunk({
-          cookie: cookies.access_token,
-          memberId: props.memberId,
-        })
-      ).then((data) => {
-        setUsername(data.payload.username);
-      });
-    }
-    fetchUsername();
-  }, []);
+  // useEffect(() => {
+  //   async function fetchUsername() {
+  //     const response = await dispatch(
+  //       getUserInfoThunk({
+  //         cookie: cookies.access_token,
+  //         memberId: props.memberId,
+  //       })
+  //     ).then((data) => {
+  //       setUsername(data.payload.username);
+  //     });
+  //   }
+  //   fetchUsername();
+  // }, []);
 
   const handleUserAnswer = (val) => {
     setCurrentUserAnswer(val);
@@ -186,17 +189,48 @@ const Answer = (props) => {
     data.answerId = props.answerId;
     data.cookie = cookies.access_token;
     if (confirm('답변을 삭제하시겠습니까?')) {
-      const response = await dispatch(deleteAnswerThunk(data)).then((res) =>
-        props.handleRender(!props.render)
-      );
+      const response = await dispatch(deleteAnswerThunk(data)).then((res) => {
+        if (res.payload === 500) {
+          alert('준비 중 입니다.');
+        }
+        props.handleRender(!props.render);
+      });
     }
   };
 
-  const upVote_answer = () => {
-    setAnswerVotes(answerVotes + 1);
+  const upVote_answer = async () => {
+    const response = await dispatch(
+      postAnswerVoteUpThunk({
+        answerId: props.answerId,
+        memberId: memberId,
+        cookie: cookies.access_token,
+      })
+    ).then((data) => {
+      if (data.payload === 401) {
+        navigate('/login');
+      } else if (data.payload === 409) {
+        alert('이미 투표하셨습니다.');
+      } else {
+        setAnswerVotes(answerVotes + 1);
+      }
+    });
   };
-  const downVote_answer = () => {
-    setAnswerVotes(answerVotes - 1);
+  const downVote_answer = async () => {
+    const response = await dispatch(
+      postAnswerVoteDownThunk({
+        answerId: props.answerId,
+        memberId: memberId,
+        cookie: cookies.access_token,
+      })
+    ).then((data) => {
+      if (data.payload === 401) {
+        navigate('/login');
+      } else if (data.payload === 409) {
+        alert('이미 투표하셨습니다.');
+      } else {
+        setAnswerVotes(answerVotes - 1);
+      }
+    });
   };
 
   // useEffect(() => {
@@ -209,19 +243,26 @@ const Answer = (props) => {
   //   }
   //   fetchUserInfo();
   // }, []);
-
   return (
     <div>
       <Userinfo_Wrapper>
         <User_Wrapper>
           <Profile_Image src={process.env.PUBLIC_URL + '/Sample_Avatar.png'} />
-          <Username>{username}</Username>
+          <Username>{props.username}</Username>
         </User_Wrapper>
         <Middle_Text_Wrapper>
           <Gray_Text> Answered </Gray_Text>
-          <span>{` ${props.createdAt}`}</span>
+          <span>
+            {props.createdAt === 0
+              ? 'today'
+              : ` at ${props.createdAt} days ago `}
+          </span>
           <Gray_Text>Modified</Gray_Text>
-          <span>{` ${props.modifiedAt}`}</span>
+          <span>
+            {props.modifiedAt === 0
+              ? 'today'
+              : ` at ${props.modifiedAt} days ago `}
+          </span>
         </Middle_Text_Wrapper>
         {memberId === props.memberId ? (
           <Button_Wrapper>

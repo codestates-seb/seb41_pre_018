@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import Comments from '../Components/Comments';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { MdKeyboardArrowUp, MdKeyboardArrowDown } from 'react-icons/md';
@@ -6,7 +6,6 @@ import styled from 'styled-components';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { data } from '../dummydata';
-import { BiNoEntry } from 'react-icons/bi';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   postQuestionVoteUpThunk,
@@ -19,7 +18,6 @@ import {
 } from '../module/questionPageInfoSlice';
 import { useCookies } from 'react-cookie';
 import { dateChange } from './MyPage';
-import { loginBoolean } from '../module/loginBooleanSlice';
 import Answer from '../Components/Answer';
 
 const Outer_Wrapper = styled.div`
@@ -216,11 +214,11 @@ const Question_Page = () => {
   const [commentsData, setCommentsData] = useState([]);
   const dispatch = useDispatch();
   const [questionVotes, setQuestionVotes] = useState(0);
-  const [answerVotes, setAnswerVotes] = useState(0);
   const [isAnswerEditOn, setIsAnswerEditOn] = useState(false);
   const [currentUserAnswer, setCurrentUserAnswer] = useState(
     data.member[0].answers[0].answer_content
   );
+  const [alreadyPostAnswer, setAlreadyPostAnswer] = useState(false);
   const navigate = useNavigate();
   const [cookies, setCookie, removeCookie] = useCookies([]);
   const [answersList, setAnswersList] = useState([]);
@@ -231,9 +229,18 @@ const Question_Page = () => {
     async function fetchQuestion() {
       const response = await dispatch(getQuestionThunk(currentId.id)).then(
         (res) => {
+          const answers = res.payload.answers.map((el) => {
+            const createdAt = dateChange(el.createdAt);
+            const modifiedAt = dateChange(el.modifiedAt);
+            return { ...el, createdAt: createdAt, modifiedAt: modifiedAt };
+          });
+          setAnswersList(answers);
+          if (answers.some((el) => el.memberId === memberId)) {
+            setAlreadyPostAnswer(true);
+          } else {
+            setAlreadyPostAnswer(false);
+          }
           const payload = res.payload;
-
-          setAnswersList(res.payload.answers);
           const createdAtTime = dateChange(res.payload.createdAt);
           const modifiedAtTime = dateChange(res.payload.modifiedAt);
           setCurrentQuestion({
@@ -279,10 +286,10 @@ const Question_Page = () => {
     data.text = newAnswer;
     data.cookie = cookies.access_token;
     const response = await dispatch(postAnswerThunk(data)).then((res) => {
+      setNewAnswer('');
       setRender(!render);
     });
   };
-
   const quillModules = {
     toolbar: [
       [{ header: [1, 2, false] }],
@@ -349,13 +356,6 @@ const Question_Page = () => {
       }
     });
   };
-
-  const upVote_answer = () => {
-    setAnswerVotes(answerVotes + 1);
-  };
-  const downVote_answer = () => {
-    setAnswerVotes(answerVotes - 1);
-  };
   return (
     currentQuestion && (
       <Outer_Wrapper>
@@ -377,7 +377,6 @@ const Question_Page = () => {
               </span>
               <Gray_Text> Modified </Gray_Text>
               <span>
-                {' '}
                 {currentQuestion.modifiedAt === 0
                   ? 'today'
                   : `Member for ${currentQuestion.modifiedAt} days`}
@@ -398,7 +397,7 @@ const Question_Page = () => {
                 >
                   <Blue_Button>질문 수정하기</Blue_Button>
                 </Link>
-                <Red_Button onClick={() => console.log('work in progress')}>
+                <Red_Button onClick={() => alert('준비 중 입니다.')}>
                   질문 삭제하기
                 </Red_Button>
               </Button_Wrapper>
@@ -452,35 +451,40 @@ const Question_Page = () => {
               memberId={item.memberId}
               questionId={currentId}
               answerId={item.answerId}
+              username={item.username}
               render={render}
               handleRender={handleRender}
             />
           ))}
-          <Content_Wrapper>
-            <Vote_Wrapper />
-            <Text_Content>
-              <ReactQuill
-                modules={quillModules}
-                theme="snow"
-                className="Rich_Text_Editor"
-                value={newAnswer}
-                onChange={handleNewAnswer}
-                placeholder="답변을 작성하세요"
-              />
-            </Text_Content>
-          </Content_Wrapper>
-          <Content_Wrapper>
-            <Vote_Wrapper />
-            <Button_Wrapper>
-              <Answer_Submit_Button onClick={() => handleAddAnswer()}>
-                답변 등록하기
-              </Answer_Submit_Button>
-            </Button_Wrapper>
-          </Content_Wrapper>
+
+          {alreadyPostAnswer === true ? null : (
+            <Fragment>
+              <Content_Wrapper>
+                <Vote_Wrapper />
+                <Text_Content>
+                  <ReactQuill
+                    modules={quillModules}
+                    theme="snow"
+                    className="Rich_Text_Editor"
+                    value={newAnswer}
+                    onChange={handleNewAnswer}
+                    placeholder="답변을 작성하세요"
+                  />
+                </Text_Content>
+              </Content_Wrapper>
+              <Content_Wrapper>
+                <Vote_Wrapper />
+                <Button_Wrapper>
+                  <Answer_Submit_Button onClick={() => handleAddAnswer()}>
+                    답변 등록하기
+                  </Answer_Submit_Button>
+                </Button_Wrapper>
+              </Content_Wrapper>
+            </Fragment>
+          )}
         </Inner_Wrapper>
       </Outer_Wrapper>
     )
   );
 };
-
 export default Question_Page;
