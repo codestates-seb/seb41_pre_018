@@ -151,7 +151,10 @@ const Answer = (props) => {
   useEffect(() => {
     async function fetchUsername() {
       const response = await dispatch(
-        getUserInfoThunk({ cookie: cookies.access_token, memberId })
+        getUserInfoThunk({
+          cookie: cookies.access_token,
+          memberId: props.memberId,
+        })
       ).then((data) => {
         setUsername(data.payload.username);
       });
