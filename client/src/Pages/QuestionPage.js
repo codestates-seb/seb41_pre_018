@@ -356,7 +356,6 @@ const Question_Page = () => {
   const downVote_answer = () => {
     setAnswerVotes(answerVotes - 1);
   };
-
   return (
     currentQuestion && (
       <Outer_Wrapper>
@@ -451,7 +450,6 @@ const Question_Page = () => {
               text={item.text}
               id={item.answerId}
               memberId={item.memberId}
-              username={item.username}
               questionId={currentId}
               answerId={item.answerId}
               render={render}
