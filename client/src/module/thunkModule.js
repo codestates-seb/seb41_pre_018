@@ -466,6 +466,7 @@ export const postQuestionVoteUpThunk = createAsyncThunk(
   'thunkModule/postQuestionVoteUpThunk',
   async (data) => {
     const { questionId, memberId, cookie } = data;
+    console.log(memberId);
     try {
       await axios.post(
         `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/vote/questions/${questionId}/${memberId}/up`,
@@ -498,7 +499,7 @@ export const postQuestionVoteDownThunk = createAsyncThunk(
         }
       );
     } catch (e) {
-      return false;
+      return e.response.status;
     }
   }
 );
