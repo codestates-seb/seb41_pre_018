@@ -320,7 +320,7 @@ const Question_Page = () => {
     const response = await dispatch(
       postQuestionVoteUpThunk({
         questionId: currentQuestion.questionId,
-        memberId: currentQuestion.memberId,
+        memberId: memberId,
         cookie: cookies.access_token,
       })
     ).then((data) => {
@@ -337,12 +337,14 @@ const Question_Page = () => {
     const response = await dispatch(
       postQuestionVoteDownThunk({
         questionId: currentQuestion.questionId,
-        memberId: currentQuestion.memberId,
+        memberId: memberId,
         cookie: cookies.access_token,
       })
     ).then((data) => {
-      if (data.payload === '401') {
+      if (data.payload === 401) {
         navigate('/login');
+      } else if (data.payload === 409) {
+        alert('이미 투표하셨습니다.');
       } else {
         setQuestionVotes(questionVotes - 1);
       }

@@ -329,7 +329,11 @@ function MyPage() {
                               to={`/question/${answer.questionId}`}
                               className="Question_Link"
                             >
-                              {answer.text}
+                              {answer.text.length <= 50
+                                ? answer.text.replace(/<[^>]*>?/g, '')
+                                : answer.text
+                                    .replace(/<[^>]*>?/g, '')
+                                    .slice(0, 50) + '...'}
                             </Link>
                           </My_Page_Answer_Question_Title>
                         </div>
