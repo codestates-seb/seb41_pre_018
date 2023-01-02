@@ -106,13 +106,16 @@ function DeleteUserModal({ deleteUserHandle }) {
   };
 
   const deleteUserFunction = useCallback(() => {
-    console.log(cookies.access_token, memberId);
     dispatch(deleteUserThunk({ cookie: cookies.access_token, memberId })).then(
       (data) => {
         if (data.payload !== false) {
-          removeCookie('access_token');
-          dispatch(loginBoolean({ isLogin: false, memberId: '' }));
-          navigate('/deleteuser-completed');
+          if (data.payload !== 204) {
+            alert('준비 중 입니다.');
+          } else {
+            removeCookie('access_token');
+            dispatch(loginBoolean({ isLogin: false, memberId: '' }));
+            navigate('/deleteuser-completed');
+          }
         } else {
           return data.payload;
         }
