@@ -145,22 +145,19 @@ const Answer = (props) => {
   const { memberId } = useSelector((state) => state.loginBoolean);
   const [username, setUsername] = useState('');
 
-  // console.log(`props text: ${props.text}`);
-  // console.log(`props member: ${memberId}`);
-
   useEffect(() => {
     async function fetchUsername() {
       const response = await dispatch(
-        getUserInfoThunk({ cookie: cookies.access_token, memberId })
+        getUserInfoThunk({
+          cookie: cookies.access_token,
+          memberId: props.memberId,
+        })
       ).then((data) => {
         setUsername(data.payload.username);
       });
     }
     fetchUsername();
   }, []);
-
-  // console.log(`created at : ${props.createdAt}`);
-  // console.log(`modified at: ${props.ModifiedAt}`);
 
   const handleUserAnswer = (val) => {
     setCurrentUserAnswer(val);
@@ -172,7 +169,6 @@ const Answer = (props) => {
     data.answerId = props.answerId;
     data.text = currentUserAnswer;
     data.cookie = cookies.access_token;
-    console.log(data);
     if (isAnswerEditOn === true) {
       await dispatch(patchAnswerThunk(data)).then((data) => {
         if (confirm('수정을 완료하시겠습니까?')) {
@@ -187,10 +183,13 @@ const Answer = (props) => {
 
   const handleDeleteAnswer = async () => {
     const data = {};
-    data.answerId = 1;
-    data.questionId = 2;
+    data.answerId = props.answerId;
     data.cookie = cookies.access_token;
-    const response = await dispatch(deleteAnswerThunk(data));
+    if (confirm('답변을 삭제하시겠습니까?')) {
+      const response = await dispatch(deleteAnswerThunk(data)).then((res) =>
+        props.handleRender(!props.render)
+      );
+    }
   };
 
   const upVote_answer = () => {
@@ -224,14 +223,16 @@ const Answer = (props) => {
           <Gray_Text>Modified</Gray_Text>
           <span>{` ${props.modifiedAt}`}</span>
         </Middle_Text_Wrapper>
-        <Button_Wrapper>
-          <Answer_Edit_Button onClick={handleEditAnswer}>
-            {isAnswerEditOn ? '수정 완료' : '답변 수정하기'}
-          </Answer_Edit_Button>
-          <Answer_Delete_Button onClick={handleDeleteAnswer}>
-            답변 삭제하기
-          </Answer_Delete_Button>
-        </Button_Wrapper>
+        {memberId === props.memberId ? (
+          <Button_Wrapper>
+            <Answer_Edit_Button onClick={handleEditAnswer}>
+              {isAnswerEditOn ? '수정 완료' : '답변 수정하기'}
+            </Answer_Edit_Button>
+            <Answer_Delete_Button onClick={handleDeleteAnswer}>
+              답변 삭제하기
+            </Answer_Delete_Button>
+          </Button_Wrapper>
+        ) : null}
       </Userinfo_Wrapper>
       <Custom_Hr />
       <Content_Wrapper>

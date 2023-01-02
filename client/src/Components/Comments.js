@@ -186,7 +186,7 @@ const Comments = ({
         <li key={`${currentQuestion.questionId}_${idx}`}>
           <div className="Comment_Block">
             <p>{item.text}</p>
-            {memberId === currentQuestion.memberId ? (
+            {memberId === item.memberId ? (
               <Comment_Buttons_Wrapper>
                 <button
                   className="Edit_Comment_Button"

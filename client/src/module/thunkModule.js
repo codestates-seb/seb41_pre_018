@@ -311,11 +311,8 @@ export const postAnswerThunk = createAsyncThunk(
   'thunkModule/postAnswerThunk',
   async (data) => {
     const { questionId, text, cookie } = data;
-    // console.log(`cookie: ${cookie}`)
-    // console.log(`questionId: ${questionId}`)
-    // console.log(`text: ${text}`)
     try {
-      await axios.post(
+      const response = await axios.post(
         `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/answers/${questionId}`,
         { text },
         {
@@ -324,6 +321,8 @@ export const postAnswerThunk = createAsyncThunk(
           },
         }
       );
+
+      return response;
     } catch (e) {
       console.error(e);
     }
@@ -376,18 +375,18 @@ export const patchAnswerThunk = createAsyncThunk(
 export const deleteAnswerThunk = createAsyncThunk(
   'thunkModule/deleteAnswerThunk',
   async (data) => {
-    const { answerId, questionId, cookie } = data;
-    console.log(cookie);
+    const { answerId, cookie } = data;
     try {
-      await axios.delete(
-        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/${questionId}/${answerId}`,
-        null,
+      const response = await axios.delete(
+        `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/answers/${answerId}`,
         {
           headers: {
             Authorization: `Bearer ${cookie}`,
           },
         }
       );
+
+      return response;
     } catch (e) {
       console.error(e);
     }
@@ -466,7 +465,6 @@ export const postQuestionVoteUpThunk = createAsyncThunk(
   'thunkModule/postQuestionVoteUpThunk',
   async (data) => {
     const { questionId, memberId, cookie } = data;
-    console.log(memberId);
     try {
       await axios.post(
         `http://ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com/vote/questions/${questionId}/${memberId}/up`,
@@ -499,7 +497,7 @@ export const postQuestionVoteDownThunk = createAsyncThunk(
         }
       );
     } catch (e) {
-      return e.response.status;
+      return false;
     }
   }
 );
