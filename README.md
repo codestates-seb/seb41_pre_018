@@ -64,6 +64,7 @@
   * Discord 
   * Kakao Oven
   * Figma
+  * Github Project
   * Notion
   * Postman
 
@@ -77,7 +78,7 @@
   * 질문 삭제 불가
   * 투표 후 답변 삭제 불가
 
-
+<hr />
 <p> 배포 링크: http://soc-client-bucket.s3-website.ap-northeast-2.amazonaws.com/login </p>
 <p> 서버 링크 1 : 13.124.223.25 </p>
 <p> 서버 링크 2 : ec2-13-124-223-25.ap-northeast-2.compute.amazonaws.com </p>
