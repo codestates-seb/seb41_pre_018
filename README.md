@@ -46,6 +46,8 @@
   * React 
   * React-Redux 
   * React-Quill
+  * React-Icon
+  * React-Cookie
   * Styled-Component 
 
 * ![database-storage (1)](https://user-images.githubusercontent.com/61323917/210227811-8c85d452-d03d-4273-80a8-b6d7dbdb4eb6.png) Back-End
